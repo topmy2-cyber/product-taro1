@@ -624,7 +624,7 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 </div>
 
 <div class="flex gap-3 pt-2">
-<button type="button" onclick="goToSelection()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+<button type="button" onclick="goBack()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
 뒤로
 </button>
 <button type="submit" class="w-2/3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-amber-500/50 transition-all flex justify-center items-center">
@@ -916,9 +916,9 @@ let selectedTarotType = '';
 const tarotDatabase = [
 // --- Major Arcana ---
 { id: 0, name: { ko: '바보 (The Fool)', en: 'The Fool' }, icon: 'footprints', baseCore: { ko: '새로운 시작과 순수함, 얽매이지 않는 자유로움', en: 'New beginnings, purity, and untethered freedom' } },
-{ id: 1, name: { ko: '마법사 (The Magician)', en: 'The Magician' }, icon: 'wand2', baseCore: { ko: '무한한 잠재력과 창조력, 의지를 현실로 만드는 힘', en: 'Infinite potential, creativity, and the power to manifest will' } },
+{ id: 1, name: { ko: '마법사 (The Magician)', en: 'The Magician' }, icon: 'wand-2', baseCore: { ko: '무한한 잠재력과 창조력, 의지를 현실로 만드는 힘', en: 'Infinite potential, creativity, and the power to manifest will' } },
 { id: 2, name: { ko: '여사제 (The High Priestess)', en: 'The High Priestess' }, icon: 'moon', baseCore: { ko: '깊은 통찰력과 직관, 내면의 지혜와 기다림', en: 'Deep insight, intuition, inner wisdom, and patience' } },
-{ id: 3, name: { ko: '여황제 (The Empress)', en: 'The Empress' }, icon: 'flower-2', baseCore: { ko: '풍요로움과 모성, 사랑과 따뜻한 결실', en: 'Abundance, maternity, love, and warm fruition' } },
+{ id: 3, name: { ko: '여황제 (The Empress)', en: 'The Empress' }, icon: 'flower', baseCore: { ko: '풍요로움과 모성, 사랑과 따뜻한 결실', en: 'Abundance, maternity, love, and warm fruition' } },
 { id: 4, name: { ko: '황제 (The Emperor)', en: 'The Emperor' }, icon: 'crown', baseCore: { ko: '확고한 기반과 안정, 책임감과 구조적인 통제력', en: 'Solid foundation, stability, responsibility, and structural control' } },
 { id: 5, name: { ko: '교황 (The Hierophant)', en: 'The Hierophant' }, icon: 'book-open', baseCore: { ko: '정신적인 가르침과 전통, 귀인의 도움과 믿음', en: 'Spiritual guidance, tradition, noble assistance, and faith' } },
 { id: 6, name: { ko: '연인 (The Lovers)', en: 'The Lovers' }, icon: 'heart-handshake', baseCore: { ko: '조화로운 결합과 깊은 유대감, 인생의 중요한 선택', en: 'Harmonious union, deep bonds, and important life choices' } },
