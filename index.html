@@ -1044,6 +1044,11 @@ if(!document.getElementById('selection-screen').classList.contains('hidden') && 
 document.getElementById('display-name').textContent = userInfo.name;
 }
 
+// 결과 화면이 열려있는 경우 결과 내용도 즉시 번역 업데이트
+if(!document.getElementById('result-screen').classList.contains('hidden') && drawnCardsData.length > 0) {
+    showResultScreen(); 
+}
+
 // 로그인 버튼 상태 동기화
 if (currentMode === 'login') {
 document.getElementById('auth-submit-btn').textContent = uiTranslations.btnSubmitLogin[currentLang];
