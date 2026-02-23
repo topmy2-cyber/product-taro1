@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>꿈타로 - 당신의 운명을 비춰보는 거울 | 맞춤형 타로 운세 서비스</title>
 
-<!-- SEO 및 메타 데이터 -->
-<meta name="description" content="신비로운 보석 로고와 함께하는 꿈타로에서 당신의 연애운, 올해운, 직업운을 확인하세요. 슈파베이스와 AI 기술이 결합된 고품질 운세 리딩을 제공합니다.">
+<meta name="description" content="신비로운 보석 로고와 함께하는 꿈타로에서 당신의 연애운, 올해운, 직업운을 확인하세요. 정교한 알고리즘과 AI의 지혜가 결합된 고품질 운세 리딩을 제공합니다.">
 <meta name="keywords" content="타로, 타로운세, 무료타로, 오늘운세, 궁합, 직업운, 연애운, 꿈타로, 인공지능타로, 사주타로">
 
 <!-- Google AdSense -->
@@ -92,7 +91,7 @@ input[type="checkbox"]:checked + div { background-color: #f59e0b; border-color: 
 </div>
 </div>
 <h1 class="text-4xl font-bold text-amber-100 mb-2 font-serif tracking-widest" data-i18n="appTitle">꿈타로</h1>
-<p class="text-purple-300" data-i18n="appSubtitle">슈파베이스로 더 안전해진 당신의 운명</p>
+<p class="text-purple-300" data-i18n="appSubtitle">당신의 운명을 비춰보는 신비로운 거울</p>
 </div>
 
 <div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md border border-purple-500/30">
@@ -138,7 +137,7 @@ input[type="checkbox"]:checked + div { background-color: #f59e0b; border-color: 
 </div>
 </div>
 
-<!-- 3단계: 선택 -->
+<!-- 3단계: 타로 종류 선택 -->
 <div id="selection-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
 <h2 class="text-3xl font-bold text-amber-100 mb-8 font-serif"><span id="display-name">여행자</span>님, 환영합니다.</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
@@ -162,7 +161,7 @@ input[type="checkbox"]:checked + div { background-color: #f59e0b; border-color: 
 <!-- 리딩 로딩 -->
 <div id="reading-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
 <div class="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-6 shadow-[0_0_15px_rgba(251,191,36,0.5)]"></div>
-<h2 class="text-2xl font-bold text-amber-100 font-serif">카드를 섞으며 기운을 모으고 있습니다...</h2>
+<h2 class="text-2xl font-bold text-amber-100 font-serif">타로술사가 당신의 기운을 읽으며 별의 속삭임을 정리하고 있습니다...</h2>
 </div>
 
 <!-- 카드 뽑기 -->
@@ -182,7 +181,7 @@ input[type="checkbox"]:checked + div { background-color: #f59e0b; border-color: 
 </div>
 </div>
 
-<!-- 법적 고지 화면들 -->
+<!-- 약관 화면 -->
 <div id="privacy-screen" class="hidden p-8 flex-col items-center min-h-screen"><div class="max-w-2xl bg-slate-900 p-8 rounded-xl border border-purple-500/30 shadow-2xl"><h2 class="text-xl font-bold text-amber-100 mb-4">개인정보처리방침</h2><div class="text-sm text-slate-400 leading-relaxed">입력하신 정보는 슈파베이스 보안 데이터베이스에 안전하게 보관됩니다.</div><button onclick="goBack()" class="mt-8 bg-slate-800 px-8 py-2 rounded-lg text-slate-300">닫기</button></div></div>
 <div id="terms-screen" class="hidden p-8 flex-col items-center min-h-screen"><div class="max-w-2xl bg-slate-900 p-8 rounded-xl border border-purple-500/30 shadow-2xl"><h2 class="text-xl font-bold text-amber-100 mb-4">이용약관</h2><div class="text-sm text-slate-400 leading-relaxed">리딩 결과는 참고용이며 법적 책임을 지지 않습니다.</div><button onclick="goBack()" class="mt-8 bg-slate-800 px-8 py-2 rounded-lg text-slate-300">닫기</button></div></div>
 <div id="contact-screen" class="hidden p-8 flex-col items-center min-h-screen"><div class="max-w-2xl bg-slate-900 p-8 rounded-xl border border-purple-500/30 shadow-2xl"><h2 class="text-xl font-bold text-amber-100 mb-4">제휴 및 협업 문의</h2><form action="https://formspree.io/f/xqedgezb" method="POST" class="space-y-4"><input type="text" name="name" placeholder="성함/업체명" class="w-full bg-slate-800 p-3 rounded-lg border border-purple-500/20 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" /><textarea name="message" rows="4" placeholder="문의 내용" class="w-full bg-slate-800 p-3 rounded-lg border border-purple-500/20 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors"></textarea><button type="submit" class="w-full bg-amber-600 p-3 rounded-lg font-bold text-slate-900 hover:bg-amber-500 transition-colors">문의 보내기</button></form><button onclick="goBack()" class="mt-4 text-slate-500 text-sm">돌아가기</button></div></div>
@@ -192,26 +191,26 @@ input[type="checkbox"]:checked + div { background-color: #f59e0b; border-color: 
 <script>
 // --- 0. Supabase 설정 및 데이터베이스 ---
 const SUPABASE_URL = "https://xqedgezb.supabase.co"; 
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // 사용자의 실제 키 입력 필요
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // 사용자의 실제 KEY 확인 필요
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const tarotDatabase = [
-    { id: 0, name: { ko: '바보 (The Fool)', en: 'The Fool' }, icon: 'footprints', baseCore: { ko: '새로운 시작과 자유', en: 'New beginnings' } },
-    { id: 1, name: { ko: '마법사 (The Magician)', en: 'The Magician' }, icon: 'wand-2', baseCore: { ko: '무한한 잠재력과 의지', en: 'Infinite potential' } },
-    { id: 2, name: { ko: '여사제 (The High Priestess)', en: 'The High Priestess' }, icon: 'moon', baseCore: { ko: '깊은 통찰력과 지혜', en: 'Inner wisdom' } },
-    { id: 3, name: { ko: '여황제 (The Empress)', en: 'The Empress' }, icon: 'flower', baseCore: { ko: '풍요로움과 모성', en: 'Abundance' } },
-    { id: 4, name: { ko: '황제 (The Emperor)', en: 'The Emperor' }, icon: 'crown', baseCore: { ko: '안정과 확고한 기반', en: 'Stability' } }
-    // ... (78장 전체 데이터 매핑 로직은 실제 운영 시 포함)
+{ id: 0, name: { ko: '바보 (The Fool)', en: 'The Fool' }, icon: 'footprints', baseCore: { ko: '새로운 시작과 자유', en: 'New beginnings' } },
+{ id: 1, name: { ko: '마법사 (The Magician)', en: 'The Magician' }, icon: 'wand-2', baseCore: { ko: '무한한 잠재력과 의지', en: 'Infinite potential' } },
+{ id: 2, name: { ko: '여사제 (The High Priestess)', en: 'The High Priestess' }, icon: 'moon', baseCore: { ko: '깊은 통찰력과 지혜', en: 'Inner wisdom' } },
+{ id: 3, name: { ko: '여황제 (The Empress)', en: 'The Empress' }, icon: 'flower', baseCore: { ko: '풍요로움과 모성', en: 'Abundance' } },
+{ id: 4, name: { ko: '황제 (The Emperor)', en: 'The Emperor' }, icon: 'crown', baseCore: { ko: '안정과 확고한 기반', en: 'Stability' } }
+// (실제 데이터 78장 전체 매핑 필요)
 ];
 
 const uiTranslations = {
-    appTitle: { ko: "꿈타로", en: "DreamTarot" },
-    tabLogin: { ko: "로그인", en: "Log In" },
-    tabSignup: { ko: "회원가입", en: "Sign Up" },
-    btnSubmitLogin: { ko: "운명의 문 열기", en: "Open the Gate" },
-    msgDrawInst: { ko: (c) => `마음을 집중해 <strong>${c}장</strong>을 뽑으세요.`, en: (c) => `Focus and draw <strong>${c} cards</strong>.` },
-    msgDrawDone: { ko: "운명의 선택이 완료되었습니다.", en: "Selection complete." },
-    errConsent: { ko: "개인정보 수집에 동의해주세요.", en: "Please agree to privacy policy." }
+appTitle: { ko: "꿈타로", en: "DreamTarot" },
+tabLogin: { ko: "로그인", en: "Log In" },
+tabSignup: { ko: "회원가입", en: "Sign Up" },
+btnSubmitLogin: { ko: "운명의 문 열기", en: "Open the Gate" },
+msgDrawInst: { ko: (c) => `마음을 집중해 <strong>${c}장</strong>을 뽑으세요.`, en: (c) => `Focus and draw <strong>${c} cards</strong>.` },
+msgDrawDone: { ko: "운명의 선택이 완료되었습니다.", en: "Selection complete." },
+errConsent: { ko: "개인정보 수집에 동의해주세요.", en: "Please agree to privacy policy." }
 };
 
 let currentLang = 'ko';
@@ -223,7 +222,7 @@ let drawnCardsCount = 0;
 let maxDrawCount = 3;
 let selectedTarotType = '';
 
-// --- 1. 초기화 및 세션 체크 ---
+// --- 1. 초기화 및 내비게이션 ---
 document.addEventListener('DOMContentLoaded', async () => {
     lucide.createIcons();
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -237,9 +236,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function showScreen(id) {
     const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'today-profile-screen', 'reading-screen', 'draw-screen', 'result-screen', 'privacy-screen', 'terms-screen', 'contact-screen'];
-    screens.forEach(s => document.getElementById(s).classList.add('hidden'));
+    screens.forEach(s => {
+        const el = document.getElementById(s);
+        if(el) el.classList.add('hidden');
+    });
     const target = document.getElementById(id);
-    if (target) { target.classList.remove('hidden'); target.classList.add('flex'); }
+    if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('flex');
+    }
     window.scrollTo(0, 0);
 }
 
@@ -251,7 +256,7 @@ function setAuthMode(mode) {
     document.getElementById('auth-submit-btn').textContent = mode === 'login' ? uiTranslations.btnSubmitLogin[currentLang] : '여정 시작하기';
 }
 
-// --- 2. 인증 및 데이터 처리 ---
+// --- 2. 슈파베이스 인증 및 데이터 ---
 document.getElementById('auth-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email-input').value;
@@ -284,10 +289,10 @@ async function loadUserProfile() {
 document.getElementById('profile-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name-input').value;
-    const y = document.getElementById('year-input').value;
-    const m = document.getElementById('month-input').value;
-    const d = document.getElementById('day-input').value;
-    const birth_date = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+    const year = document.getElementById('year-input').value;
+    const month = document.getElementById('month-input').value;
+    const day = document.getElementById('day-input').value;
+    const birth_date = `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
     const calendar_type = document.getElementById('calendar-type-input').value;
 
     const { error } = await supabaseClient.from('profiles').upsert({ id: currentUser.id, name, birth_date, calendar_type });
@@ -297,42 +302,53 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
     }
 });
 
-// --- 3. 타로 해석 로직 (AI Edge Function 호출) ---
+// --- 3. 타로 해석 로직 ---
+async function fetchAIInterpretation(cards, user, type, contextInfo) {
+    const previousId = localStorage.getItem('lastInteractionId');
+    try {
+        const { data, error } = await supabaseClient.functions.invoke('generate-tarot', {
+            body: { 
+                cards, user, type, 
+                contextInfo, previousId,
+                lang: currentLang
+            }
+        });
+        if (error) throw error;
+        return data;
+    } catch (e) {
+        console.warn("AI 리딩 실패:", e);
+        return null;
+    }
+}
+
 async function showResultScreen() {
     showScreen('result-screen');
     const content = document.getElementById('interpretation-content');
     content.innerHTML = `<div class="flex flex-col items-center py-12 text-center"><div class="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-amber-200 animate-pulse">타로술사가 당신의 기운을 읽으며<br/>별의 속삭임을 정리하고 있습니다...</p></div>`;
 
-    try {
-        const { data, error } = await supabaseClient.functions.invoke('generate-tarot', {
-            body: { 
-                cards: drawnCardsData, 
-                user: userInfo, 
-                type: selectedTarotType, 
-                lang: currentLang,
-                previousId: localStorage.getItem('lastInteractionId')
-            }
-        });
-        if (error) throw error;
+    const contextInfo = selectedTarotType === 'today' ? { question: document.getElementById('today-question-input').value } : {};
+    const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, contextInfo);
 
-        // 결과 표시 (줄바꿈 처리)
-        content.innerHTML = data.mainInterpretation.replace(/\n/g, '<br/>');
-        if (data.interactionId) localStorage.setItem('lastInteractionId', data.interactionId);
-    } catch (e) {
+    content.innerHTML = ''; // 로딩 제거
+
+    if (aiResult && aiResult.mainInterpretation) {
+        // AI 해석 성공 시 (강조 구문 처리)
+        content.innerHTML = aiResult.mainInterpretation.replace(/\n/g, '<br/>');
+        if (aiResult.interactionId) localStorage.setItem('lastInteractionId', aiResult.interactionId);
+    } else {
+        // Fallback 로직
         renderLocalFallback();
     }
 }
 
 function renderLocalFallback() {
     const content = document.getElementById('interpretation-content');
-    content.innerHTML = '';
     const titles = selectedTarotType === 'today' ? ["✦ 태초의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재", "과제", "과거", "미래", "조언"];
     
     drawnCardsData.forEach((card, i) => {
         const div = document.createElement('div');
         div.className = 'bg-slate-800/40 p-6 rounded-xl border border-purple-500/10 mb-6';
-        const core = card.baseCore[currentLang];
-        div.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[i]}</h4><p class="leading-relaxed">선택하신 '${card.name[currentLang]}' 카드는 현재 당신의 상황에서 [${core}]의 의미를 가집니다. <br/><br/> <span class="text-amber-400 font-bold">이 구체적인 상황을 인지하고 행동하는 것이 오늘의 핵심입니다.</span></p>`;
+        div.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[i]}</h4><p class="leading-relaxed">선택하신 '${card.name[currentLang]}' 카드는 현재 당신의 상황에서 [${card.baseCore[currentLang]}]의 의미를 가집니다.<br/><br/><span class="text-amber-400 font-bold">이 상황을 인지하고 행동하는 것이 오늘의 핵심입니다.</span></p>`;
         content.appendChild(div);
     });
 }
@@ -344,18 +360,20 @@ function selectTarot(type) {
     showScreen(type === 'today' ? 'today-profile-screen' : 'reading-screen');
     if (type !== 'today') { setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 2000); }
 }
+
 document.getElementById('today-profile-form').addEventListener('submit', (e) => {
     e.preventDefault();
     showScreen('reading-screen');
     setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 2000);
 });
+
 function initDrawScreen() {
     drawnCardsCount = 0; drawnCardsData = [];
     const deck = document.getElementById('card-deck-container');
     const slots = document.getElementById('slots-container');
     deck.innerHTML = ''; slots.innerHTML = '';
     document.getElementById('draw-instruction').innerHTML = uiTranslations.msgDrawInst[currentLang](maxDrawCount);
-    document.getElementById('result-action-container').classList.add('opacity-0');
+    document.getElementById('result-action-container').style.opacity = '0';
 
     for (let i = 1; i <= maxDrawCount; i++) {
         slots.innerHTML += `<div id="slot-${i}" class="w-14 h-20 md:w-20 md:h-32 border-2 border-dashed border-purple-500/30 rounded-lg"></div>`;
@@ -373,25 +391,28 @@ function initDrawScreen() {
                 slot.className = 'w-14 h-20 md:w-20 md:h-32 bg-amber-900/40 border border-amber-400/50 rounded-lg flex items-center justify-center text-[10px] font-bold text-amber-100 px-1 text-center';
                 slot.innerHTML = cardData.name[currentLang];
                 if (drawnCardsCount === maxDrawCount) {
-                    document.getElementById('result-action-container').classList.replace('opacity-0', 'opacity-100');
+                    document.getElementById('result-action-container').style.opacity = '1';
                 }
             }
         };
         deck.appendChild(card);
     }
 }
+
 function setLanguage(lang) {
     currentLang = lang;
     applyLanguage();
     document.getElementById('lang-ko').classList.toggle('active', lang === 'ko');
     document.getElementById('lang-en').classList.toggle('active', lang === 'en');
 }
+
 function applyLanguage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (uiTranslations[key]) el.innerHTML = typeof uiTranslations[key][currentLang] === 'function' ? uiTranslations[key][currentLang](maxDrawCount) : uiTranslations[key][currentLang];
     });
 }
+
 async function handleLogout() { await supabaseClient.auth.signOut(); location.reload(); }
 function goBack() { showScreen('auth-screen'); }
 </script>
