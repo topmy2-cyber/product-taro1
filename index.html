@@ -742,6 +742,38 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 </div>
 
 <!-- ========================================== -->
+<!-- 오늘운 타로 질문 입력 화면 (today-profile-screen) -->
+<!-- ========================================== -->
+<div id="today-profile-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
+<div class="text-center mb-8">
+<i data-lucide="clock" class="w-12 h-12 text-sky-400 mx-auto mb-4"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="todayTitle">오늘의 흐름을 묻다</h2>
+<p class="text-purple-300" data-i18n="todaySubtitle">오늘 하루 특히 집중하고 싶은 일이나 고민이 있으신가요?</p>
+</div>
+
+<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-sky-900/50 w-full max-w-md border border-sky-500/30">
+<form id="today-profile-form" class="space-y-6">
+
+<div>
+<label class="flex items-center text-sm font-medium text-sky-300 mb-2">
+<i data-lucide="message-circle" class="w-4 h-4 mr-2"></i> <span data-i18n="labelTodayQ">오늘의 질문이나 다짐 (선택사항)</span>
+</label>
+<textarea id="today-question-input" rows="3" class="w-full bg-slate-800 border border-sky-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-sky-400 transition-colors resize-none" data-i18n="phTodayQ" placeholder="예: 오늘 중요한 미팅이 있는데 잘 풀릴까요? 혹은 오늘 하루를 보람차게 보내려면 무엇에 집중해야 할까요?"></textarea>
+</div>
+
+<div class="flex gap-3 mt-4">
+<button type="button" onclick="goToSelection()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+뒤로
+</button>
+<button type="submit" class="w-2/3 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-sky-500/50 transition-all flex justify-center items-center">
+<span data-i18n="btnSubmitToday">오늘의 운세 보기</span> <i data-lucide="sparkles" class="ml-2 w-5 h-5"></i>
+</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ========================================== -->
 <!-- 4단계: 타로 리딩 연출 화면 (reading-screen) -->
 <!-- ========================================== -->
 <div id="reading-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
@@ -869,6 +901,12 @@ labelCareerQ: { ko: "직업/재물 관련 구체적인 질문 (선택사항)", e
 phCareerQ: { ko: "예: 이직을 준비 중인데 올해 긍정적인 변화가 있을까요? 혹은 현재 진행 중인 프로젝트의 방향성이 맞는지 궁금합니다.", en: "Ex: I'm preparing to change jobs, will there be positive changes this year?" },
 btnSubmitCareer: { ko: "흐름 분석하기", en: "Analyze Flow" },
 
+todayTitle: { ko: "오늘의 흐름을 묻다", en: "Asking Today's Flow" },
+todaySubtitle: { ko: "오늘 하루 특히 집중하고 싶은 일이나 고민이 있으신가요?", en: "Is there anything specific you want to focus on or a concern for today?" },
+labelTodayQ: { ko: "오늘의 질문이나 다짐 (선택사항)", en: "Today's Question or Resolution (Optional)" },
+phTodayQ: { ko: "예: 오늘 중요한 미팅이 있는데 잘 풀릴까요? 혹은 오늘 하루를 보람차게 보내려면 무엇에 집중해야 할까요?", en: "Ex: I have an important meeting today, will it go well? Or what should I focus on to have a productive day?" },
+btnSubmitToday: { ko: "오늘의 운세 보기", en: "View Today's Fortune" },
+
 shuffleTitle: { ko: "카드를 섞고 있습니다...", en: "Shuffling the cards..." },
 shuffleSubtitle: { ko: "잠시만 마음을 비우고 기다려주세요.", en: "Please clear your mind and wait a moment." },
 
@@ -947,6 +985,7 @@ let currentMode = 'login';
 let userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
 let partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
 let careerInfo = { question: '' };
+let todayInfo = { question: '' };
 let drawnCardsCount = 0;
 let maxDrawCount = 5; 
 let drawnCardsData = [];
@@ -1175,7 +1214,7 @@ setTimeout(() => toast.remove(), 300);
 
 // 4. 화면 전환 함수
 function showScreen(screenId) {
-const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'partner-profile-screen', 'career-profile-screen', 'reading-screen', 'draw-screen', 'result-screen', 'contact-screen'];
+const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'partner-profile-screen', 'career-profile-screen', 'today-profile-screen', 'reading-screen', 'draw-screen', 'result-screen', 'contact-screen', 'privacy-screen', 'terms-screen'];
 screens.forEach(id => {
 document.getElementById(id).classList.add('hidden');
 document.getElementById(id).classList.remove('flex');
@@ -1284,6 +1323,14 @@ showScreen('reading-screen');
 setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
 });
 
+document.getElementById('today-profile-form').addEventListener('submit', function(e) {
+e.preventDefault();
+const question = document.getElementById('today-question-input').value.trim();
+todayInfo = { question };
+showScreen('reading-screen');
+setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
+});
+
 // 7. 타로 선택 로직
 function selectTarot(type) {
 selectedTarotType = type;
@@ -1293,6 +1340,8 @@ if (type === 'love') {
 showScreen('partner-profile-screen');
 } else if (type === 'career') {
 showScreen('career-profile-screen');
+} else if (type === 'today') {
+showScreen('today-profile-screen');
 } else {
 showScreen('reading-screen');
 setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
@@ -1450,18 +1499,19 @@ const uYearly = destiny.yearlyRhythm[currentLang];
 if (currentLang === 'en') {
 if (type === 'today') {
 let contextPrefix = `In the <strong>overall flow of your day</strong>, `;
+let questionHint = todayInfo.question ? ` Especially regarding your concern <em>"${todayInfo.question}"</em>, ` : "";
 let text = "";
 switch (index) {
 case 0:
-text = `The first card is <strong>'${cName}'</strong>. It represents your psychological state or environment as you open your eyes and start the day. ${contextPrefix} it implies <strong>[${cCore}]</strong>.<br/><br/>
+text = `The first card is <strong>'${cName}'</strong>. It represents your psychological state or environment as you open your eyes and start the day. ${contextPrefix} ${questionHint} it implies <strong>[${cCore}]</strong>.<br/><br/>
                            From a psychological perspective, this morning requires an attitude of observing the given energy as it is rather than trying to control the situation. Your inherent <em>${uEnergy}</em> will combine with the symbolism of this card to form a rational blueprint for today.`;
 break;
 case 1:
-text = `The second card is <strong>'${cName}'</strong>. It symbolizes the main events or inner turmoil you will face during the active midday hours. The aspect of <strong>[${cCore}]</strong> is highly likely to manifest concretely.<br/><br/>
+text = `The second card is <strong>'${cName}'</strong>. It symbolizes the main events or inner turmoil you will face during the active midday hours. ${questionHint} the aspect of <strong>[${cCore}]</strong> is highly likely to manifest concretely.<br/><br/>
                            Do not lose your objective gaze even in a complex daily routine. As an extension of your life cycle, <em>${uCycle}</em>, today's daytime experiences will accumulate as empirical assets for your growth. Practical coping is required rather than an emotional response.`;
 break;
 case 2:
-text = `The third card is <strong>'${cName}'</strong>. It is the result you will face in the evening as you wrap up the day, and a point of reflection to look back on yourself. I recommend organizing your day while reflecting on the meaning of <strong>[${cCore}]</strong>.<br/><br/>
+text = `The third card is <strong>'${cName}'</strong>. It is the result you will face in the evening as you wrap up the day, and a point of reflection to look back on yourself. ${questionHint} I recommend organizing your day while reflecting on the meaning of <strong>[${cCore}]</strong>.<br/><br/>
                            After finishing all routines, it is important to take a rest while looking back at yourself with an objective gaze. The series of processes you went through today will serve as an essential time of relaxation to prepare for the next step within the grand flow of this year, which is <em>${uYearly}</em>.`;
 break;
 }
@@ -1525,18 +1575,19 @@ return text;
 // 기존 국문 해석 로직
 if (type === 'today') {
 let contextPrefix = `<strong>오늘 하루의 전반적인 흐름</strong> 속에서 `;
+let questionHint = todayInfo.question ? ` 특히 고민하시는 <em>"${todayInfo.question}"</em>라는 사안과 관련하여, ` : "";
 let text = "";
 switch (index) {
 case 0:
-text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 아침에 눈을 뜨고 하루를 시작할 때 당신의 심리적 상태나 처한 환경을 나타냅니다. ${contextPrefix} <strong>[${cCore}]</strong>의 의미를 내포하고 있습니다.<br/><br/>
+text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 아침에 눈을 뜨고 하루를 시작할 때 당신의 심리적 상태나 처한 환경을 나타냅니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>의 의미를 내포하고 있습니다.<br/><br/>
                            심리적 관점에서 볼 때, 오늘 아침은 상황을 통제하려 하기보다는 주어진 기운을 있는 그대로 관찰하는 태도가 필요합니다. 당신이 지닌 <em>${uEnergy}</em>이 이 카드의 상징과 결합하여, 오늘 하루의 이성적인 밑그림을 형성하게 될 것입니다.`;
 break;
 case 1:
-text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 하루가 전개되는 낮 시간 동안 마주하게 될 주요한 사건이나 내적 동요를 상징합니다. <strong>[${cCore}]</strong>의 양상이 구체적으로 드러날 가능성이 높습니다.<br/><br/>
+text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 하루가 전개되는 낮 시간 동안 마주하게 될 주요한 사건이나 내적 동요를 상징합니다. ${questionHint} <strong>[${cCore}]</strong>의 양상이 구체적으로 드러날 가능성이 높습니다.<br/><br/>
                            복잡한 일상 속에서도 객관적인 시선을 잃지 마십시오. 당신의 삶의 주기인 <em>${uCycle}</em>의 연장선상에서, 오늘 낮의 경험들은 당신의 성장을 위한 경험적 자산으로 축적될 것입니다. 감정적 대응보다는 실용적인 대처가 요구됩니다.`;
 break;
 case 2:
-text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 하루를 마무리하는 저녁 시간에 직면하게 될 결과이자, 스스로를 돌아볼 수 있는 성찰의 지점입니다. <strong>[${cCore}]</strong>의 의미를 되새기며 하루를 정리해 보시길 권장합니다.<br/><br/>
+text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 하루를 마무리하는 저녁 시간에 직면하게 될 결과이자, 스스로를 돌아볼 수 있는 성찰의 지점입니다. ${questionHint} <strong>[${cCore}]</strong>의 의미를 되새기며 하루를 정리해 보시길 권장합니다.<br/><br/>
                            모든 일과를 마친 후에는 객관적인 시선으로 자신을 돌아보며 휴식을 취하는 것이 중요합니다. 오늘 겪은 일련의 과정들은 <em>${uYearly}</em>이라는 올해의 큰 흐름 속에서, 다음 단계를 준비하기 위한 필수적인 이완의 시간으로 작용할 것입니다.`;
 break;
 }
