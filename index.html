@@ -224,8 +224,48 @@
         <!-- ========================================== -->
         <div id="auth-screen" class="flex flex-col items-center justify-center min-h-screen p-4 fade-in">
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-4">
-                    <i data-lucide="sparkles" class="w-16 h-16 text-amber-400"></i>
+                <div class="relative flex justify-center items-center mb-8 h-24">
+                    <!-- 몽환적인 배경 오로라 효과 -->
+                    <div class="absolute w-32 h-32 bg-indigo-600/30 rounded-full blur-3xl animate-pulse"></div>
+                    <div class="absolute w-24 h-24 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+                    
+                    <!-- 세련된 미래적 별 로고 (SVG) -->
+                    <div class="relative group">
+                        <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_20px_rgba(168,85,247,0.6)]">
+                            <defs>
+                                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#fbbf24" />
+                                    <stop offset="50%" stop-color="#a855f7" />
+                                    <stop offset="100%" stop-color="#6366f1" />
+                                </linearGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <!-- 메인 심볼: 겹쳐진 다이아몬드/별 형태 -->
+                            <path d="M50 5L65 35L95 50L65 65L50 95L35 65L5 50L35 35L50 5Z" fill="url(#logoGrad)" fill-opacity="0.9">
+                                <animateTransform attributeName="transform" type="scale" values="1;1.05;1" dur="3s" repeatCount="indefinite" />
+                            </path>
+                            <!-- 내부 장식 선 -->
+                            <path d="M50 20L58 42L80 50L58 58L50 80L42 58L20 50L42 42L50 20Z" stroke="white" stroke-width="0.5" stroke-opacity="0.5" />
+                            <!-- 중앙 빛점 -->
+                            <circle cx="50" cy="50" r="3" fill="white" filter="url(#glow)">
+                                <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite" />
+                            </circle>
+                        </svg>
+                        
+                        <!-- 회전하는 고리 (Futuristic Ring) -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="w-20 h-20 border border-purple-400/30 rounded-full border-t-transparent border-l-transparent animate-spin" style="animation-duration: 4s;"></div>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="w-16 h-16 border border-amber-400/20 rounded-full border-b-transparent border-r-transparent animate-spin" style="animation-duration: 6s; animation-direction: reverse;"></div>
+                        </div>
+                    </div>
                 </div>
                 <h1 class="text-4xl font-bold text-amber-100 mb-2 font-serif tracking-widest" data-i18n="appTitle">꿈타로</h1>
                 <p class="text-purple-300" data-i18n="appSubtitle">당신의 운명을 비춰보는 신비로운 거울</p>
