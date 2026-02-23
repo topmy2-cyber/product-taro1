@@ -449,7 +449,7 @@
             </div>
 
             <!-- 하단: 오늘운 타로 -->
-            <div class="w-full flex justify-center">
+            <div class="w-full flex justify-center mb-12">
                 <button onclick="selectTarot('today')" class="w-full md:w-3/4 flex flex-col md:flex-row items-center text-center md:text-left p-6 md:p-8 bg-slate-900/60 backdrop-blur-sm border border-sky-500/30 rounded-2xl transition-all duration-300 group cursor-pointer hover:bg-sky-900/30 hover:border-sky-400/50 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-900/50">
                     <div class="p-4 rounded-full bg-slate-800 mb-4 md:mb-0 md:mr-6 group-hover:scale-110 transition-transform text-sky-400 shrink-0">
                         <i data-lucide="clock" class="w-10 h-10"></i>
@@ -464,6 +464,56 @@
                         </span>
                     </div>
                 </button>
+            </div>
+
+            <!-- 제휴 문의 버튼 -->
+            <div class="w-full text-center pb-8">
+                <button onclick="showScreen('contact-screen')" class="inline-flex items-center text-slate-400 hover:text-amber-400 transition-colors text-sm font-medium border border-slate-700 hover:border-amber-500/50 px-6 py-2 rounded-full backdrop-blur-sm">
+                    <i data-lucide="mail" class="w-4 h-4 mr-2"></i> <span data-i18n="btnContact">제휴 및 협업 문의</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 제휴 문의 화면 (contact-screen) -->
+        <!-- ========================================== -->
+        <div id="contact-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
+            <div class="text-center mb-8">
+                <i data-lucide="mail" class="w-12 h-12 text-amber-400 mx-auto mb-4"></i>
+                <h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="contactTitle">함께 꿈을 그리다</h2>
+                <p class="text-purple-300" data-i18n="contactSubtitle">꿈타로와 함께할 비즈니스 파트너를 기다립니다.</p>
+            </div>
+
+            <div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-purple-900/50 w-full max-w-lg border border-purple-500/30">
+                <form action="https://formspree.io/f/xqedgezb" method="POST" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactName">업체명/성함</label>
+                            <input type="text" name="name" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" placeholder="홍길동" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactEmail">회신 이메일</label>
+                            <input type="email" name="email" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" placeholder="email@example.com" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactSubject">문의 제목</label>
+                        <input type="text" name="subject" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" placeholder="제휴 문의드립니다" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactMessage">상세 내용</label>
+                        <textarea name="message" rows="4" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors resize-none" placeholder="문의하실 내용을 입력해주세요."></textarea>
+                    </div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="goToSelection()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+                            뒤로
+                        </button>
+                        <button type="submit" class="w-2/3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-amber-500/50 transition-all flex justify-center items-center">
+                            <span data-i18n="btnSubmitContact">문의 보내기</span> <i data-lucide="send" class="ml-2 w-5 h-5"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -720,6 +770,15 @@
             resHeader: { ko: "상세 해석", en: "Detailed Analysis" },
             btnRestart: { ko: "새로운 질문하기", en: "Ask a New Question" },
 
+            btnContact: { ko: "제휴 및 협업 문의", en: "Partnership Inquiry" },
+            contactTitle: { ko: "함께 꿈을 그리다", en: "Drawing Dreams Together" },
+            contactSubtitle: { ko: "꿈타로와 함께할 비즈니스 파트너를 기다립니다.", en: "We look forward to business partners to join DreamTarot." },
+            labelContactName: { ko: "업체명/성함", en: "Company/Name" },
+            labelContactEmail: { ko: "회신 이메일", en: "Reply Email" },
+            labelContactSubject: { ko: "문의 제목", en: "Inquiry Subject" },
+            labelContactMessage: { ko: "상세 내용", en: "Details" },
+            btnSubmitContact: { ko: "문의 보내기", en: "Send Inquiry" },
+
             errDate: { ko: "이름과 올바른 생년월일(월 1~12, 일 1~31)을 입력해주세요.", en: "Please enter your name and a valid birthdate." },
             errConsent: { ko: "개인정보 수집 및 이용에 동의해주세요.", en: "Please agree to the privacy policy." }
         };
@@ -953,7 +1012,7 @@
 
         // 4. 화면 전환 함수
         function showScreen(screenId) {
-            const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'partner-profile-screen', 'career-profile-screen', 'reading-screen', 'draw-screen', 'result-screen'];
+            const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'partner-profile-screen', 'career-profile-screen', 'reading-screen', 'draw-screen', 'result-screen', 'contact-screen'];
             screens.forEach(id => {
                 document.getElementById(id).classList.add('hidden');
                 document.getElementById(id).classList.remove('flex');
