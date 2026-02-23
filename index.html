@@ -21,8 +21,6 @@ crossorigin="anonymous"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <!-- Lucide Icons (CDN) -->
 <script src="https://unpkg.com/lucide@latest"></script>
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 /* 기본 폰트 및 배경 설정 */
@@ -266,6 +264,18 @@ text-align: center;
 <stop offset="0%" stop-color="#fef3c7" /> <!-- 빛나는 부분 -->
 <stop offset="100%" stop-color="#fbbf24" />
 </linearGradient>
+<linearGradient id="gemMedium" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#a855f7" />
+<stop offset="100%" stop-color="#7e22ce" />
+</linearGradient>
+<linearGradient id="gemDark" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#6366f1" />
+<stop offset="100%" stop-color="#4338ca" />
+</linearGradient>
+<filter id="innerGlow">
+<feGaussianBlur stdDeviation="1.5" result="blur"/>
+<feComposite in="SourceGraphic" in2="blur" operator="arithmetic" k2="1" k3="0.5" />
+</filter>
 <filter id="glow">
 <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
 <feMerge>
@@ -276,16 +286,40 @@ text-align: center;
 </defs>
 
 <!-- 8면체 입체 보석 효과 -->
+<g filter="url(#innerGlow)">
+<!-- 상단 -->
 <path d="M50 5 L35 35 L50 50 Z" fill="url(#gemLight)" opacity="0.9" />
 <path d="M50 5 L65 35 L50 50 Z" fill="#fbbf24" opacity="0.7" />
-<path d="M95 50 L65 35 L50 50 Z" fill="#a855f7" opacity="0.9" />
-<path d="M50 95 L65 65 L50 50 Z" fill="#6366f1" opacity="0.9" />
+<!-- 우측 -->
+<path d="M95 50 L65 35 L50 50 Z" fill="url(#gemMedium)" opacity="0.9" />
+<path d="M95 50 L65 65 L50 50 Z" fill="#9333ea" opacity="0.7" />
+<!-- 하단 -->
+<path d="M50 95 L65 65 L50 50 Z" fill="url(#gemDark)" opacity="0.9" />
+<path d="M50 95 L35 65 L50 50 Z" fill="#4f46e5" opacity="0.7" />
+<!-- 좌측 -->
+<path d="M5 50 L35 65 L50 50 Z" fill="#a855f7" opacity="0.8" />
+<path d="M5 50 L35 35 L50 50 Z" fill="#fbbf24" opacity="0.5" />
+</g>
 
 <!-- 중앙 코어 -->
 <circle cx="50" cy="50" r="4" fill="white" filter="url(#glow)">
 <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" />
 </circle>
 </svg>
+
+<!-- 3D 회전 궤도 고리 (Futuristic 3D Rings) -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="perspective: 500px;">
+<div class="w-24 h-24 border-2 border-purple-400/40 rounded-full animate-spin" 
+style="animation-duration: 4s; transform: rotateX(70deg) rotateY(10deg);"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="perspective: 500px;">
+<div class="w-20 h-20 border-2 border-amber-400/30 rounded-full animate-spin" 
+style="animation-duration: 7s; animation-direction: reverse; transform: rotateX(60deg) rotateY(-20deg);"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="perspective: 500px;">
+<div class="w-28 h-28 border border-indigo-400/20 rounded-full animate-spin" 
+style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div>
+</div>
 </div>
 </div>
 <h1 class="text-4xl font-bold text-amber-100 mb-2 font-serif tracking-widest" data-i18n="appTitle">꿈타로</h1>
@@ -319,12 +353,13 @@ text-align: center;
 <label class="flex items-start space-x-3 cursor-pointer group">
 <div class="flex-shrink-0 mt-0.5 relative">
 <input type="checkbox" id="consent-checkbox" class="peer sr-only" />
-<div class="w-5 h-5 border-2 border-purple-500/50 rounded peer-checked:bg-amber-500 flex items-center justify-center transition-colors">
+<div class="w-5 h-5 border-2 border-purple-500/50 rounded flex items-center justify-center transition-colors">
 <i data-lucide="check" class="w-3 h-3 text-slate-900 opacity-0 peer-checked:opacity-100 transition-opacity"></i>
 </div>
 </div>
 <span class="text-xs text-purple-300 group-hover:text-purple-200 transition-colors" data-i18n="consentText">
-[필수] 개인정보 수집 및 이용에 동의합니다.
+[필수] 개인정보 수집 및 이용에 동의합니다. <br/>
+<span class="text-slate-500">운세 제공을 위해 이름, 생년월일 등의 정보를 수집합니다.</span>
 </span>
 </label>
 </div>
@@ -335,7 +370,19 @@ text-align: center;
 </form>
 </div>
 
-<!-- 푸터 -->
+<!-- AdSense 최적화: 정보성 콘텐츠 섹션 -->
+<div class="w-full max-w-4xl mt-12 mb-12 grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+<div class="bg-slate-900/40 backdrop-blur-sm p-6 rounded-2xl border border-purple-500/20 text-sm leading-relaxed text-slate-400">
+<h3 class="text-amber-200 font-bold mb-3 flex items-center"><i data-lucide="info" class="w-4 h-4 mr-2"></i> <span data-i18n="aboutTitle1">꿈타로의 서비스 원리</span></h3>
+<p data-i18n="aboutText1">꿈타로는 고전 타로의 상징 체계와 현대적인 데이터 분석을 결합하여 개인에게 최적화된 리딩을 제공합니다. 78장의 카드가 지닌 고유한 에너지는 사용자의 현재 상황과 공명하여 다각도의 통찰력을 제시합니다. 저희는 단순한 점술을 넘어, 사용자가 스스로를 성찰하고 더 나은 미래를 설계할 수 있도록 돕는 '운명의 조언자' 역할을 목표로 합니다.</p>
+</div>
+<div class="bg-slate-900/40 backdrop-blur-sm p-6 rounded-2xl border border-purple-500/20 text-sm leading-relaxed text-slate-400">
+<h3 class="text-amber-200 font-bold mb-3 flex items-center"><i data-lucide="shield-check" class="w-4 h-4 mr-2"></i> <span data-i18n="aboutTitle2">신뢰할 수 있는 운세 가이드</span></h3>
+<p data-i18n="aboutText2">모든 리딩 결과는 사주 명리학의 '기운(Energy)' 개념과 타로의 '직관(Intuition)'을 교차 분석하여 생성됩니다. 연애, 직업, 금전, 건강 등 삶의 주요 영역에 대해 구체적이고 현실적인 조언을 담고 있습니다. 꿈타로와 함께 매일의 흐름을 파악하고, 중요한 결정의 순간에 별의 지혜를 빌려보세요.</p>
+</div>
+</div>
+
+<!-- AdSense 최적화: 푸터 영역 -->
 <footer class="mt-20 py-8 w-full border-t border-purple-500/10 flex flex-col items-center gap-4 text-xs text-slate-500">
 <div class="flex gap-6">
 <button onclick="showScreen('privacy-screen')" class="hover:text-amber-400 transition-colors" data-i18n="linkPrivacy">개인정보처리방침</button>
@@ -347,26 +394,118 @@ text-align: center;
 </div>
 
 <!-- ========================================== -->
-<!-- 2단계: 프로필 입력 화면 (profile-screen) -->
+<!-- 개인정보처리방침 화면 (privacy-screen) -->
+<!-- ========================================== -->
+<div id="privacy-screen" class="hidden flex-col items-center py-16 px-4 min-h-screen fade-in">
+<div class="w-full max-w-3xl bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-purple-500/30">
+<h2 class="text-2xl font-bold text-amber-100 mb-6 font-serif" data-i18n="privacyTitle">개인정보처리방침</h2>
+<div class="text-sm text-slate-300 space-y-4 overflow-y-auto max-h-[60vh] pr-4 custom-scrollbar leading-relaxed" data-i18n="privacyContent">
+<p>꿈타로(이하 '회사')는 이용자의 개인정보를 중요시하며, '개인정보 보호법' 등 관련 법령을 준수합니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">1. 수집하는 개인정보 항목</h4>
+<p>- 필수항목: 이메일, 이름, 생년월일, 성별, 결혼 여부<br/>- 수집방법: 서비스 이용 단계에서의 직접 입력</p>
+<h4 class="text-amber-200 font-bold mt-4">2. 개인정보의 수집 및 이용목적</h4>
+<p>- 타로 리딩 및 운세 서비스 결과 제공<br/>- 회원 관리 및 본인 확인<br/>- 서비스 개선 및 통계 분석</p>
+<h4 class="text-amber-200 font-bold mt-4">3. 개인정보의 보유 및 이용기간</h4>
+<p>이용자의 개인정보는 원칙적으로 회원 탈퇴 시까지 보유하며, 법령에서 정한 기간 동안 안전하게 보관 후 파기합니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">4. 개인정보의 파기절차 및 방법</h4>
+<p>전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용하여 삭제합니다.</p>
+</div>
+<button onclick="goBack()" class="mt-8 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 px-6 rounded-lg transition-colors font-bold" data-i18n="btnClose">닫기 (뒤로가기)</button>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 이용약관 화면 (terms-screen) -->
+<!-- ========================================== -->
+<div id="terms-screen" class="hidden flex-col items-center py-16 px-4 min-h-screen fade-in">
+<div class="w-full max-w-3xl bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-purple-500/30">
+<h2 class="text-2xl font-bold text-amber-100 mb-6 font-serif" data-i18n="termsTitle">이용약관</h2>
+<div class="text-sm text-slate-300 space-y-4 overflow-y-auto max-h-[60vh] pr-4 custom-scrollbar leading-relaxed" data-i18n="termsContent">
+<h4 class="text-amber-200 font-bold">제 1 조 (목적)</h4>
+<p>본 약관은 꿈타로가 제공하는 운세 서비스의 이용 조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">제 2 조 (서비스의 성격)</h4>
+<p>본 서비스가 제공하는 타로 리딩 결과는 오락 및 참고용이며, 이용자의 중대한 결정에 대한 법적 책임을 지지 않습니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">제 3 조 (이용자의 의무)</h4>
+<p>이용자는 본인의 정보를 정확히 입력해야 하며, 타인의 정보를 도용하여 발생하는 문제에 대한 책임은 이용자에게 있습니다.</p>
+</div>
+<button onclick="goBack()" class="mt-8 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 px-6 rounded-lg transition-colors font-bold" data-i18n="btnClose">닫기 (뒤로가기)</button>
+</div>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 2단계: 개인정보 입력 화면 (profile-screen) -->
 <!-- ========================================== -->
 <div id="profile-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
-<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md border border-purple-500/30">
-<h2 class="text-2xl font-bold text-amber-100 mb-6 text-center" data-i18n="profileTitle">당신의 별자리를 찾아서</h2>
+<div class="text-center mb-8">
+<i data-lucide="moon" class="w-12 h-12 text-purple-400 mx-auto mb-4"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="profileTitle">당신의 별자리를 찾아서</h2>
+<p class="text-purple-300" data-i18n="profileSubtitle">정확한 타로 리딩을 위해 당신의 이야기를 들려주세요.</p>
+</div>
+
+<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-purple-900/50 w-full max-w-md border border-purple-500/30">
 <form id="profile-form" class="space-y-6">
+
 <div>
-<label class="block text-sm font-medium text-purple-300 mb-2" data-i18n="labelName">이름</label>
-<input type="text" id="name-input" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-400" />
+<label class="flex items-center text-sm font-medium text-purple-300 mb-2">
+<i data-lucide="user" class="w-4 h-4 mr-2"></i> <span data-i18n="labelName">이름</span>
+</label>
+<input type="text" id="name-input" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" data-i18n="phName" placeholder="홍길동" />
 </div>
+
 <div>
-<label class="block text-sm font-medium text-purple-300 mb-2" data-i18n="labelBirth">생년월일</label>
-<div class="flex gap-2">
-<input type="text" id="year-input" placeholder="YYYY" class="w-20 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-center text-amber-100" />
-<input type="text" id="month-input" placeholder="MM" class="w-14 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-center text-amber-100" />
-<input type="text" id="day-input" placeholder="DD" class="w-14 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-center text-amber-100" />
-<select id="calendar-type-input" class="bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-amber-100"><option value="solar">양력</option><option value="lunar">음력</option></select>
+<label class="flex items-center text-sm font-medium text-purple-300 mb-2">
+<i data-lucide="calendar" class="w-4 h-4 mr-2"></i> <span data-i18n="labelBirth">생년월일</span>
+</label>
+<div class="flex gap-2 items-center">
+<input type="text" id="year-input" required inputmode="numeric" pattern="[0-9]*" maxlength="4" class="w-20 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors text-center" placeholder="YYYY" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length === 4) document.getElementById('month-input').focus();" />
+<span class="text-purple-500 font-bold">-</span>
+<input type="text" id="month-input" required inputmode="numeric" pattern="[0-9]*" maxlength="2" class="w-14 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors text-center" placeholder="MM" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length === 2) document.getElementById('day-input').focus();" />
+<span class="text-purple-500 font-bold">-</span>
+<input type="text" id="day-input" required inputmode="numeric" pattern="[0-9]*" maxlength="2" class="w-14 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors text-center" placeholder="DD" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length === 2) document.getElementById('calendar-type-input').focus();" />
+
+<select id="calendar-type-input" class="ml-2 flex-1 bg-slate-800 border border-purple-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors">
+<option value="solar" data-i18n="optSolar">양력</option>
+<option value="lunar" data-i18n="optLunar">음력</option>
+</select>
 </div>
 </div>
-<button type="submit" class="w-full bg-amber-600 text-slate-900 font-bold py-3 rounded-lg shadow-lg" data-i18n="btnSubmitProfile">정보 저장 및 시작</button>
+
+<div>
+<label class="block text-sm font-medium text-purple-300 mb-2" data-i18n="labelGender">성별</label>
+<div class="grid grid-cols-3 gap-3">
+<label class="cursor-pointer">
+<input type="radio" name="gender" value="male" class="sr-only peer" />
+<div class="text-center bg-slate-800 border border-purple-500/50 rounded-lg py-2 text-sm text-purple-300 transition-all" data-i18n="genMale">남성</div>
+</label>
+<label class="cursor-pointer">
+<input type="radio" name="gender" value="female" class="sr-only peer" />
+<div class="text-center bg-slate-800 border border-purple-500/50 rounded-lg py-2 text-sm text-purple-300 transition-all" data-i18n="genFemale">여성</div>
+</label>
+<label class="cursor-pointer">
+<input type="radio" name="gender" value="none" class="sr-only peer" checked />
+<div class="text-center bg-slate-800 border border-purple-500/50 rounded-lg py-2 text-sm text-purple-300 transition-all" data-i18n="genNone">선택안함</div>
+</label>
+</div>
+</div>
+
+<div>
+<label class="block text-sm font-medium text-purple-300 mb-2" data-i18n="labelMarital">결혼 여부</label>
+<div class="grid grid-cols-2 gap-3">
+<label class="cursor-pointer">
+<input type="radio" name="marital-status" value="single" class="sr-only peer" checked />
+<div class="text-center bg-slate-800 border border-purple-500/50 rounded-lg py-2 text-sm text-purple-300 transition-all" data-i18n="marSingle">미혼</div>
+</label>
+<label class="cursor-pointer">
+<input type="radio" name="marital-status" value="married" class="sr-only peer" />
+<div class="text-center bg-slate-800 border border-purple-500/50 rounded-lg py-2 text-sm text-purple-300 transition-all" data-i18n="marMarried">기혼</div>
+</label>
+</div>
+</div>
+
+<button type="submit" class="w-full mt-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-amber-500/50 transition-all flex justify-center items-center">
+<span data-i18n="btnSubmitProfile">운명의 수레바퀴 돌리기</span> <i data-lucide="chevron-right" class="ml-2 w-5 h-5"></i>
+</button>
 </form>
 </div>
 </div>
@@ -375,275 +514,1404 @@ text-align: center;
 <!-- 3단계: 타로 종류 선택 화면 (selection-screen) -->
 <!-- ========================================== -->
 <div id="selection-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 w-full max-w-4xl mx-auto fade-in">
-<h2 class="text-3xl font-bold text-amber-100 mb-8 font-serif"><span id="display-name">여행자</span>님, 환영합니다.</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
-<button onclick="selectTarot('today')" class="p-8 bg-slate-900/60 border border-sky-500/30 rounded-2xl hover:bg-sky-900/30 text-center transition-all transform hover:-translate-y-1"><h3 class="text-xl font-bold text-amber-100 mb-2">오늘운 타로</h3><p class="text-sm text-purple-300">운명의 뿌리와 피어나는 파동, 별의 인도를 듣습니다.</p></button>
-<button onclick="selectTarot('love')" class="p-8 bg-slate-900/60 border border-rose-500/30 rounded-2xl hover:bg-rose-900/30 text-center transition-all transform hover:-translate-y-1"><h3 class="text-xl font-bold text-amber-100 mb-2">궁합 타로</h3><p class="text-sm text-purple-300">당신과 그 사람을 잇는 인연의 끈을 확인하세요.</p></button>
-</div>
-<button onclick="handleLogout()" class="mt-12 text-slate-500 hover:text-rose-400 transition-colors">로그아웃</button>
+<div class="text-center mb-10">
+<h2 class="text-3xl md:text-4xl font-bold text-amber-100 mb-4 font-serif">
+<span id="display-name">사용자</span><span data-i18n="selGreeting">님, 환영합니다.</span>
+</h2>
+<p class="text-purple-300 text-lg" data-i18n="selSubtitle">어떤 운명의 속삭임을 듣고 싶으신가요?</p>
 </div>
 
-<!-- 오늘운 질문 입력 화면 -->
-<div id="today-profile-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
-<div class="bg-slate-900/80 p-8 rounded-2xl w-full max-w-md border border-sky-500/30">
-<h2 class="text-2xl font-bold text-amber-100 mb-6 text-center">오늘의 흐름을 묻다</h2>
-<form id="today-profile-form" class="space-y-6">
-<textarea id="today-question-input" rows="3" class="w-full bg-slate-800 border border-sky-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none" placeholder="오늘 특히 집중하고 싶은 일이나 고민이 있으신가요?"></textarea>
-<div class="flex gap-3"><button type="button" onclick="showScreen('selection-screen')" class="w-1/3 bg-slate-800 py-3 rounded-lg text-slate-300">뒤로</button><button type="submit" class="w-2/3 bg-sky-600 py-3 rounded-lg font-bold text-white shadow-lg">운세 보기</button></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
+<!-- 궁합 타로 -->
+<button onclick="selectTarot('love')" class="flex flex-col items-center text-center p-8 bg-slate-900/60 backdrop-blur-sm border border-purple-500/30 rounded-2xl transition-all duration-300 group cursor-pointer hover:bg-rose-900/30 hover:border-rose-400/50 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-900/50">
+<div class="p-4 rounded-full bg-slate-800 mb-6 group-hover:scale-110 transition-transform text-rose-400">
+<i data-lucide="heart" class="w-10 h-10"></i>
+</div>
+<h3 class="text-2xl font-bold text-amber-100 mb-3 font-serif" data-i18n="tarotLove">궁합 타로</h3>
+<p class="text-purple-300 text-sm leading-relaxed" data-i18n="tarotLoveDesc">당신과 그 사람을 잇는 인연의 끈을 확인해보세요.</p>
+<div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="inline-flex items-center text-amber-400 text-sm font-medium">
+<span data-i18n="btnSelect">선택하기</span> <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+</span>
+</div>
+</button>
+
+<!-- 올해운 타로 -->
+<button onclick="selectTarot('year')" class="flex flex-col items-center text-center p-8 bg-slate-900/60 backdrop-blur-sm border border-purple-500/30 rounded-2xl transition-all duration-300 group cursor-pointer hover:bg-amber-900/30 hover:border-amber-400/50 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-900/50">
+<div class="p-4 rounded-full bg-slate-800 mb-6 group-hover:scale-110 transition-transform text-amber-400">
+<i data-lucide="sun" class="w-10 h-10"></i>
+</div>
+<h3 class="text-2xl font-bold text-amber-100 mb-3 font-serif" data-i18n="tarotYear">올해운 타로</h3>
+<p class="text-purple-300 text-sm leading-relaxed" data-i18n="tarotYearDesc">올 한 해 당신의 삶에 펼쳐질 전반적인 흐름을 읽어드립니다.</p>
+<div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="inline-flex items-center text-amber-400 text-sm font-medium">
+<span data-i18n="btnSelect">선택하기</span> <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+</span>
+</div>
+</button>
+
+<!-- 직업 타로 -->
+<button onclick="selectTarot('career')" class="flex flex-col items-center text-center p-8 bg-slate-900/60 backdrop-blur-sm border border-purple-500/30 rounded-2xl transition-all duration-300 group cursor-pointer hover:bg-emerald-900/30 hover:border-emerald-400/50 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-900/50">
+<div class="p-4 rounded-full bg-slate-800 mb-6 group-hover:scale-110 transition-transform text-emerald-400">
+<i data-lucide="briefcase" class="w-10 h-10"></i>
+</div>
+<h3 class="text-2xl font-bold text-amber-100 mb-3 font-serif" data-i18n="tarotCareer">직업 타로</h3>
+<p class="text-purple-300 text-sm leading-relaxed" data-i18n="tarotCareerDesc">당신의 재능이 빛날 길과 금전의 흐름을 조언해드립니다.</p>
+<div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="inline-flex items-center text-amber-400 text-sm font-medium">
+<span data-i18n="btnSelect">선택하기</span> <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+</span>
+</div>
+</button>
+</div>
+
+<!-- 하단: 오늘운 타로 -->
+<div class="w-full flex justify-center mb-16">
+<button onclick="selectTarot('today')" class="w-full md:w-3/4 flex flex-col md:flex-row items-center text-center md:text-left p-6 md:p-8 bg-slate-900/60 backdrop-blur-sm border border-sky-500/30 rounded-2xl transition-all duration-300 group cursor-pointer hover:bg-sky-900/30 hover:border-sky-400/50 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-900/50">
+<div class="p-4 rounded-full bg-slate-800 mb-4 md:mb-0 md:mr-6 group-hover:scale-110 transition-transform text-sky-400 shrink-0">
+<i data-lucide="clock" class="w-10 h-10"></i>
+</div>
+<div class="flex-1">
+<h3 class="text-2xl font-bold text-amber-100 mb-2 font-serif" data-i18n="tarotToday">오늘운 타로</h3>
+<p class="text-purple-300 text-sm leading-relaxed" data-i18n="tarotTodayDesc">오늘 하루의 아침, 낮, 저녁 흐름을 3장의 카드로 가볍게 살펴봅니다.</p>
+</div>
+<div class="mt-4 md:mt-0 md:ml-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center shrink-0">
+<span class="inline-flex items-center text-amber-400 text-sm font-medium">
+<span data-i18n="btnSelect">선택하기</span> <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+</span>
+</div>
+</button>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 제휴 문의 화면 (contact-screen) -->
+<!-- ========================================== -->
+<div id="contact-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
+<div class="text-center mb-8">
+<i data-lucide="mail" class="w-12 h-12 text-amber-400 mx-auto mb-4"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="contactTitle">함께 꿈을 그리다</h2>
+<p class="text-purple-300" data-i18n="contactSubtitle">꿈타로와 함께할 비즈니스 파트너를 기다립니다.</p>
+</div>
+
+<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-purple-900/50 w-full max-w-lg border border-purple-500/30">
+<form action="https://formspree.io/f/xqedgezb" method="POST" class="space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactName">업체명/성함</label>
+<input type="text" name="name" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" placeholder="홍길동" />
+</div>
+<div>
+<label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactEmail">회신 이메일</label>
+<input type="email" name="email" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" placeholder="email@example.com" />
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactSubject">문의 제목</label>
+<input type="text" name="subject" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" placeholder="제휴 문의드립니다" />
+</div>
+<div>
+<label class="block text-sm font-medium text-purple-300 mb-1" data-i18n="labelContactMessage">상세 내용</label>
+<textarea name="message" rows="4" required class="w-full bg-slate-800 border border-purple-500/50 rounded-lg px-4 py-2 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors resize-none" placeholder="문의하실 내용을 입력해주세요."></textarea>
+</div>
+
+<div class="flex gap-3 pt-2">
+<button type="button" onclick="goBack()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+뒤로
+</button>
+<button type="submit" class="w-2/3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-amber-500/50 transition-all flex justify-center items-center">
+<span data-i18n="btnSubmitContact">문의 보내기</span> <i data-lucide="send" class="ml-2 w-5 h-5"></i>
+</button>
+</div>
 </form>
 </div>
 </div>
 
-<!-- 리딩 로딩 화면 -->
+<!-- ========================================== -->
+<!-- 3-5단계: 상대방 정보 입력 화면 (partner-profile-screen) -->
+<!-- ========================================== -->
+<div id="partner-profile-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
+<div class="text-center mb-8">
+<i data-lucide="users" class="w-12 h-12 text-rose-400 mx-auto mb-4"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="partnerTitle">인연의 끈을 찾아서</h2>
+<p class="text-purple-300" data-i18n="partnerSubtitle">궁합을 확인하기 위해 상대방의 정보를 입력해주세요.</p>
+</div>
+
+<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-rose-900/50 w-full max-w-md border border-rose-500/30">
+<form id="partner-profile-form" class="space-y-6">
+
+<div>
+<label class="flex items-center text-sm font-medium text-rose-300 mb-2">
+<i data-lucide="user" class="w-4 h-4 mr-2"></i> <span data-i18n="labelPartnerName">상대방 이름</span>
+</label>
+<input type="text" id="partner-name-input" required class="w-full bg-slate-800 border border-rose-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors" data-i18n="phPartnerName" placeholder="성춘향" />
+</div>
+
+<div>
+<label class="flex items-center text-sm font-medium text-rose-300 mb-2">
+<i data-lucide="calendar" class="w-4 h-4 mr-2"></i> <span data-i18n="labelBirth">생년월일</span>
+</label>
+<div class="flex gap-2 items-center">
+<input type="text" id="partner-year-input" required inputmode="numeric" pattern="[0-9]*" maxlength="4" class="w-20 bg-slate-800 border border-rose-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors text-center" placeholder="YYYY" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length === 4) document.getElementById('partner-month-input').focus();" />
+<span class="text-rose-500 font-bold">-</span>
+<input type="text" id="partner-month-input" required inputmode="numeric" pattern="[0-9]*" maxlength="2" class="w-14 bg-slate-800 border border-rose-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors text-center" placeholder="MM" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length === 2) document.getElementById('partner-day-input').focus();" />
+<span class="text-rose-500 font-bold">-</span>
+<input type="text" id="partner-day-input" required inputmode="numeric" pattern="[0-9]*" maxlength="2" class="w-14 bg-slate-800 border border-rose-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors text-center" placeholder="DD" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length === 2) document.getElementById('partner-calendar-type-input').focus();" />
+
+<select id="partner-calendar-type-input" class="ml-2 flex-1 bg-slate-800 border border-rose-500/50 rounded-lg px-2 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors">
+<option value="solar" data-i18n="optSolar">양력</option>
+<option value="lunar" data-i18n="optLunar">음력</option>
+</select>
+</div>
+</div>
+
+<div>
+<label class="block text-sm font-medium text-rose-300 mb-2" data-i18n="labelGender">성별</label>
+<div class="grid grid-cols-3 gap-3">
+<label class="cursor-pointer">
+<input type="radio" name="partner-gender" value="male" class="sr-only peer" />
+<div class="text-center bg-slate-800 border border-rose-500/50 rounded-lg py-2 text-sm text-rose-300 transition-all" data-i18n="genMale">남성</div>
+</label>
+<label class="cursor-pointer">
+<input type="radio" name="partner-gender" value="female" class="sr-only peer" />
+<div class="text-center bg-slate-800 border border-rose-500/50 rounded-lg py-2 text-sm text-rose-300 transition-all" data-i18n="genFemale">여성</div>
+</label>
+<label class="cursor-pointer">
+<input type="radio" name="partner-gender" value="none" class="sr-only peer" checked />
+<div class="text-center bg-slate-800 border border-rose-500/50 rounded-lg py-2 text-sm text-rose-300 transition-all" data-i18n="genNone">선택안함</div>
+</label>
+</div>
+</div>
+
+<div>
+<label class="flex items-center text-sm font-medium text-rose-300 mb-2">
+<i data-lucide="message-circle" class="w-4 h-4 mr-2"></i> <span data-i18n="labelQuestion">궁금한 점이나 고민 (선택사항)</span>
+</label>
+<textarea id="partner-question-input" rows="2" class="w-full bg-slate-800 border border-rose-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors resize-none" data-i18n="phPartnerQ" placeholder="예: 앞으로 우리가 좋은 인연으로 발전할 수 있을까요?"></textarea>
+</div>
+
+<div class="flex gap-3 mt-4">
+<button type="button" onclick="goToSelection()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+뒤로
+</button>
+<button type="submit" class="w-2/3 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-rose-500/50 transition-all flex justify-center items-center">
+<span data-i18n="btnSubmitLove">궁합 확인하기</span> <i data-lucide="heart" class="ml-2 w-5 h-5"></i>
+</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 직업 타로 질문 입력 화면 (career-profile-screen) -->
+<!-- ========================================== -->
+<div id="career-profile-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
+<div class="text-center mb-8">
+<i data-lucide="briefcase" class="w-12 h-12 text-emerald-400 mx-auto mb-4"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="careerTitle">직업과 재물의 길을 묻다</h2>
+<p class="text-purple-300" data-i18n="careerSubtitle">더 객관적이고 깊이 있는 분석을 위해, 현재 마주하신 고민을 적어주세요.</p>
+</div>
+
+<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-emerald-900/50 w-full max-w-md border border-emerald-500/30">
+<form id="career-profile-form" class="space-y-6">
+
+<div>
+<label class="flex items-center text-sm font-medium text-emerald-300 mb-2">
+<i data-lucide="message-circle" class="w-4 h-4 mr-2"></i> <span data-i18n="labelCareerQ">직업/재물 관련 구체적인 질문 (선택사항)</span>
+</label>
+<textarea id="career-question-input" rows="3" class="w-full bg-slate-800 border border-emerald-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-amber-400 transition-colors resize-none" data-i18n="phCareerQ" placeholder="예: 이직을 준비 중인데 올해 긍정적인 변화가 있을까요? 혹은 현재 진행 중인 프로젝트의 방향성이 맞는지 궁금합니다."></textarea>
+</div>
+
+<div class="flex gap-3 mt-4">
+<button type="button" onclick="goToSelection()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+뒤로
+</button>
+<button type="submit" class="w-2/3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-emerald-500/50 transition-all flex justify-center items-center">
+<span data-i18n="btnSubmitCareer">흐름 분석하기</span> <i data-lucide="briefcase" class="ml-2 w-5 h-5"></i>
+</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 오늘운 타로 질문 입력 화면 (today-profile-screen) -->
+<!-- ========================================== -->
+<div id="today-profile-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
+<div class="text-center mb-8">
+<i data-lucide="clock" class="w-12 h-12 text-sky-400 mx-auto mb-4"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="todayTitle">오늘의 흐름을 묻다</h2>
+<p class="text-purple-300" data-i18n="todaySubtitle">오늘 하루 특히 집중하고 싶은 일이나 고민이 있으신가요?</p>
+</div>
+
+<div class="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl shadow-sky-900/50 w-full max-w-md border border-sky-500/30">
+<form id="today-profile-form" class="space-y-6">
+
+<div>
+<label class="flex items-center text-sm font-medium text-sky-300 mb-2">
+<i data-lucide="message-circle" class="w-4 h-4 mr-2"></i> <span data-i18n="labelTodayQ">오늘의 질문이나 다짐 (선택사항)</span>
+</label>
+<textarea id="today-question-input" rows="3" class="w-full bg-slate-800 border border-sky-500/50 rounded-lg px-4 py-3 text-amber-100 focus:outline-none focus:border-sky-400 transition-colors resize-none" data-i18n="phTodayQ" placeholder="예: 오늘 중요한 미팅이 있는데 잘 풀릴까요? 혹은 오늘 하루를 보람차게 보내려면 무엇에 집중해야 할까요?"></textarea>
+</div>
+
+<div class="flex gap-3 mt-4">
+<button type="button" onclick="goToSelection()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="btnBack">
+뒤로
+</button>
+<button type="submit" class="w-2/3 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-sky-500/50 transition-all flex justify-center items-center">
+<span data-i18n="btnSubmitToday">오늘의 운세 보기</span> <i data-lucide="sparkles" class="ml-2 w-5 h-5"></i>
+</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- 4단계: 타로 리딩 연출 화면 (reading-screen) -->
+<!-- ========================================== -->
 <div id="reading-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
-<div class="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-<h2 class="text-2xl font-bold text-amber-100 font-serif">타로술사가 기운을 모으고 있습니다...</h2>
+<i data-lucide="sparkles" class="w-16 h-16 text-amber-400 animate-pulse mb-6"></i>
+<h2 class="text-3xl font-bold text-amber-100 mb-4 font-serif" data-i18n="shuffleTitle">카드를 섞고 있습니다...</h2>
+<p class="text-purple-300" data-i18n="shuffleSubtitle">잠시만 마음을 비우고 기다려주세요.</p>
 </div>
 
-<!-- 카드 뽑기 화면 -->
-<div id="draw-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 fade-in">
-<h2 id="draw-instruction" class="text-2xl font-bold text-amber-100 mb-8 font-serif"></h2>
-<div id="card-deck-container" class="tarot-card-deck mb-12"></div>
-<div class="w-full max-w-xl bg-slate-900/60 p-6 rounded-2xl border border-purple-500/30 shadow-2xl"><div id="slots-container" class="flex justify-center gap-4"></div></div>
-<div id="result-action-container" class="mt-8 opacity-0 transition-opacity duration-500"><button onclick="showResultScreen()" class="bg-amber-600 text-slate-900 font-bold py-3 px-10 rounded-full shadow-lg">해석 보기</button></div>
+<!-- ========================================== -->
+<!-- 5단계: 타로 카드 뽑기 화면 (draw-screen) -->
+<!-- ========================================== -->
+<div id="draw-screen" class="hidden flex-col items-center justify-center min-h-screen p-4 w-full max-w-4xl mx-auto fade-in">
+<div class="text-center mb-6">
+<h2 class="text-2xl md:text-3xl font-bold text-amber-100 mb-2 font-serif" data-i18n="drawTitle">운명의 카드 선택</h2>
+<p id="draw-instruction" class="text-purple-300 text-lg"></p>
 </div>
 
-<!-- 결과 화면 -->
-<div id="result-screen" class="hidden flex-col items-center py-12 px-4 fade-in w-full max-w-5xl mx-auto">
-<div class="star-spread-container mb-12"><div id="spread-svg-container"></div><div id="star-cards-container"></div></div>
-<div class="w-full bg-slate-900/80 backdrop-blur-md p-8 md:p-12 rounded-2xl border border-amber-500/30">
-<div id="interpretation-content" class="space-y-8 text-slate-200 text-lg leading-relaxed whitespace-pre-line"></div>
-<button onclick="showScreen('selection-screen')" class="mt-12 w-full bg-slate-800 py-4 rounded-lg border border-amber-500/30 text-amber-100 font-bold hover:bg-slate-700 transition-colors">새로운 질문하기</button>
+<!-- 상단: 엎어져 있는 카드 덱 -->
+<div id="card-deck-container" class="tarot-card-deck mb-8 min-h-[120px]"></div>
+
+<!-- 하단: 뽑힌 카드 배열 구조 (스프레드) -->
+<div class="w-full max-w-2xl bg-slate-900/60 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 shadow-2xl shadow-purple-900/50">
+<div id="slots-container" class="flex justify-center flex-wrap gap-3 md:gap-6"></div>
+</div>
+
+<!-- 결과 보기 버튼 -->
+<div id="result-action-container" class="mt-8 opacity-0 pointer-events-none transition-opacity duration-500">
+<button onclick="showResultScreen()" class="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-900 font-bold py-3 px-8 rounded-full shadow-[0_0_15px_rgba(251,191,36,0.5)] hover:shadow-[0_0_25px_rgba(251,191,36,0.8)] transition-all flex items-center text-lg">
+<span data-i18n="btnShowResult">운명의 해석 듣기</span> <i data-lucide="sparkles" class="ml-2 w-5 h-5"></i>
+</button>
 </div>
 </div>
 
-<!-- 약관 화면들 -->
-<div id="privacy-screen" class="hidden p-8 flex-col items-center min-h-screen"><div class="max-w-2xl bg-slate-900 p-8 rounded-xl border border-purple-500/30"><h2 class="text-xl font-bold text-amber-100 mb-4">개인정보처리방침</h2><div class="text-sm text-slate-400">슈파베이스 보안 서버에 안전하게 보관됩니다.</div><button onclick="goBack()" class="mt-8 bg-slate-800 px-8 py-2 rounded-lg">닫기</button></div></div>
-<div id="terms-screen" class="hidden p-8 flex-col items-center min-h-screen"><div class="max-w-2xl bg-slate-900 p-8 rounded-xl border border-purple-500/30"><h2 class="text-xl font-bold text-amber-100 mb-4">이용약관</h2><div class="text-sm text-slate-400">본 서비스는 오락용이며 법적 책임을 지지 않습니다.</div><button onclick="goBack()" class="mt-8 bg-slate-800 px-8 py-2 rounded-lg">닫기</button></div></div>
-<div id="contact-screen" class="hidden p-8 flex-col items-center min-h-screen"><div class="max-w-2xl bg-slate-900 p-8 rounded-xl border border-purple-500/30"><h2 class="text-xl font-bold text-amber-100 mb-4">제휴 및 협업 문의</h2><form action="https://formspree.io/f/xqedgezb" method="POST" class="space-y-4"><input type="text" name="name" placeholder="성함" class="w-full bg-slate-800 p-3 rounded-lg border border-purple-500/20 text-amber-100" /><textarea name="message" placeholder="내용" class="w-full bg-slate-800 p-3 rounded-lg border border-purple-500/20 text-amber-100"></textarea><button type="submit" class="w-full bg-amber-600 p-3 rounded-lg font-bold text-slate-900">보내기</button></form><button onclick="goBack()" class="mt-4 text-slate-500">닫기</button></div></div>
+<!-- ========================================== -->
+<!-- 6단계: 타로 결과 및 해석 화면 (result-screen) -->
+<!-- ========================================== -->
+<div id="result-screen" class="hidden flex-col items-center py-12 px-4 w-full max-w-5xl mx-auto fade-in">
+<div class="text-center mb-10">
+<h2 class="text-3xl md:text-4xl font-bold text-amber-100 mb-4 font-serif" data-i18n="resTitle">별의 궤적이 그리는 운명</h2>
+<p class="text-purple-300 text-lg" data-i18n="resSubtitle">당신이 선택한 카드가 전하는 다정한 메시지입니다.</p>
+</div>
+
+<div class="star-spread-container mb-12">
+<div id="spread-svg-container"></div>
+<div id="star-cards-container"></div>
+</div>
+
+<div class="w-full bg-slate-900/80 backdrop-blur-md border border-amber-500/30 rounded-2xl p-6 md:p-10 shadow-2xl shadow-purple-900/50">
+<div class="flex items-center justify-center mb-6 pb-6 border-b border-purple-500/30">
+<i data-lucide="scroll-text" class="w-8 h-8 text-amber-400 mr-3"></i>
+<h3 class="text-2xl font-bold text-amber-100 font-serif" data-i18n="resHeader">상세 해석</h3>
+</div>
+
+<div id="interpretation-content" class="space-y-6 text-purple-100 leading-relaxed text-base md:text-lg"></div>
+
+<div class="mt-10 pt-6 border-t border-purple-500/30 text-center">
+<button onclick="goToSelection()" class="bg-slate-800 hover:bg-slate-700 text-amber-100 border border-amber-500/50 font-bold py-3 px-8 rounded-lg transition-all flex items-center justify-center mx-auto">
+<i data-lucide="rotate-ccw" class="mr-2 w-5 h-5"></i> <span data-i18n="btnRestart">새로운 질문하기</span>
+</button>
+</div>
+</div>
+</div>
 
 </div>
 
+<!-- JavaScript 로직 -->
 <script>
-// --- 0. Supabase 설정 ---
-const SUPABASE_URL = "https://xqedgezb.supabase.co"; 
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+// --- 0. 다국어 데이터 (i18n Dictionary) ---
 const uiTranslations = {
 appTitle: { ko: "꿈타로", en: "DreamTarot" },
+appSubtitle: { ko: "당신의 운명을 비춰보는 신비로운 거울", en: "A mystical mirror reflecting your destiny" },
 tabLogin: { ko: "로그인", en: "Log In" },
 tabSignup: { ko: "회원가입", en: "Sign Up" },
-btnSubmitLogin: { ko: "운명의 문 열기", en: "Open the Gate" },
-msgDrawInst: { ko: (c) => `마음을 집중해 <strong>${c}장</strong>을 뽑으세요.`, en: (c) => `Focus and draw <strong>${c} cards</strong>.` },
-msgDrawDone: { ko: "선택이 완료되었습니다.", en: "Selection complete." },
-errConsent: { ko: "개인정보 수집에 동의해주세요.", en: "Please agree to privacy policy." }
+labelEmail: { ko: "이메일", en: "Email" },
+labelPassword: { ko: "비밀번호", en: "Password" },
+consentText: { ko: "[필수] 개인정보 수집 및 이용에 동의합니다. <br/><span class='text-slate-500'>운세 제공을 위해 이름, 생년월일 등의 정보를 수집합니다.</span>", en: "[Required] I agree to the privacy policy. <br/><span class='text-slate-500'>We collect data like name and birthdate for readings.</span>" },
+btnSubmitLogin: { ko: "운명의 문 열기", en: "Open the Gate of Destiny" },
+btnSubmitSignup: { ko: "새로운 여정 시작하기", en: "Start a New Journey" },
+
+aboutTitle1: { ko: "꿈타로의 서비스 원리", en: "How DreamTarot Works" },
+aboutTitle2: { ko: "신뢰할 수 있는 운세 가이드", en: "Trusted Fortune Guide" },
+aboutText1: { ko: "꿈타로는 고전 타로의 상징 체계와 현대적인 데이터 분석을 결합하여 개인에게 최적화된 리딩을 제공합니다. 78장의 카드가 지닌 고유한 에너지는 사용자의 현재 상황과 공명하여 다각도의 통찰력을 제시합니다. 저희는 단순한 점술을 넘어, 사용자가 스스로를 성찰하고 더 나은 미래를 설계할 수 있도록 돕는 '운명의 조언자' 역할을 목표로 합니다.", en: "DreamTarot combines classical tarot symbolism with modern data analysis to provide optimized readings. The unique energy of the 78 cards resonates with your current situation to provide multi-faceted insights. We aim to be a 'Destiny Advisor' that helps you reflect on yourself and design a better future beyond simple divination." },
+aboutText2: { ko: "모든 리딩 결과는 사주 명리학의 '기운(Energy)' 개념과 타로의 '직관(Intuition)'을 교차 분석하여 생성됩니다. 연애, 직업, 금전, 건강 등 삶의 주요 영역에 대해 구체적이고 현실적인 조언을 담고 있습니다. 꿈타로와 함께 매일의 흐름을 파악하고, 중요한 결정의 순간에 별의 지혜를 빌려보세요.", en: "All readings are generated by cross-analyzing the concept of 'Energy' from Saju and 'Intuition' from Tarot. It contains specific and realistic advice on major areas of life such as love, career, money, and health. Understand the daily flow with DreamTarot and borrow the wisdom of the stars at moments of important decisions." },
+
+profileTitle: { ko: "당신의 별자리를 찾아서", en: "Finding Your Constellation" },
+profileSubtitle: { ko: "정확한 타로 리딩을 위해 당신의 이야기를 들려주세요.", en: "Tell us your story for an accurate tarot reading." },
+labelName: { ko: "이름", en: "Name" },
+phName: { ko: "홍길동", en: "John Doe" },
+labelBirth: { ko: "생년월일", en: "Date of Birth" },
+optSolar: { ko: "양력", en: "Solar" },
+optLunar: { ko: "음력", en: "Lunar" },
+labelGender: { ko: "성별", en: "Gender" },
+genMale: { ko: "남성", en: "Male" },
+genFemale: { ko: "여성", en: "Female" },
+genNone: { ko: "선택안함", en: "None" },
+labelMarital: { ko: "결혼 여부", en: "Marital Status" },
+marSingle: { ko: "미혼", en: "Single" },
+marMarried: { ko: "기혼", en: "Married" },
+btnSubmitProfile: { ko: "운명의 수레바퀴 돌리기", en: "Turn the Wheel of Fate" },
+
+selGreeting: { ko: "님, 환영합니다.", en: ", Welcome." },
+selSubtitle: { ko: "어떤 운명의 속삭임을 듣고 싶으신가요?", en: "Which whisper of destiny would you like to hear?" },
+tarotLove: { ko: "궁합 타로", en: "Relationship Tarot" },
+tarotLoveDesc: { ko: "당신과 그 사람을 잇는 인연의 끈을 확인해보세요.", en: "Check the threads of connection between you and them." },
+tarotYear: { ko: "올해운 타로", en: "Yearly Tarot" },
+tarotYearDesc: { ko: "올 한 해 당신의 삶에 펼쳐질 전반적인 흐름을 읽어드립니다.", en: "Read the overall flow of your life for this year." },
+tarotCareer: { ko: "직업 타로", en: "Career Tarot" },
+tarotCareerDesc: { ko: "당신의 재능이 빛날 길과 금전의 흐름을 조언해드립니다.", en: "Advice on the path where your talents shine and financial flows." },
+tarotToday: { ko: "오늘운 타로", en: "Daily Tarot" },
+tarotTodayDesc: { ko: "오늘 하루의 아침, 낮, 저녁 흐름을 3장의 카드로 가볍게 살펴봅니다.", en: "A light look at today's morning, day, and evening flow with 3 cards." },
+btnSelect: { ko: "선택하기", en: "Select" },
+
+partnerTitle: { ko: "인연의 끈을 찾아서", en: "Seeking the Threads of Fate" },
+partnerSubtitle: { ko: "궁합을 확인하기 위해 상대방의 정보를 입력해주세요.", en: "Please enter your partner's information to check compatibility." },
+labelPartnerName: { ko: "상대방 이름", en: "Partner's Name" },
+phPartnerName: { ko: "성춘향", en: "Jane Doe" },
+labelQuestion: { ko: "궁금한 점이나 고민 (선택사항)", en: "Questions or Concerns (Optional)" },
+phPartnerQ: { ko: "예: 앞으로 우리가 좋은 인연으로 발전할 수 있을까요?", en: "Ex: Can we develop into a good relationship in the future?" },
+btnBack: { ko: "뒤로", en: "Back" },
+btnSubmitLove: { ko: "궁합 확인하기", en: "Check Compatibility" },
+
+careerTitle: { ko: "직업과 재물의 길을 묻다", en: "Asking the Path of Career and Wealth" },
+careerSubtitle: { ko: "더 객관적이고 깊이 있는 분석을 위해, 현재 마주하신 고민을 적어주세요.", en: "For a deeper objective analysis, please write down your current concerns." },
+labelCareerQ: { ko: "직업/재물 관련 구체적인 질문 (선택사항)", en: "Specific Career/Wealth Questions (Optional)" },
+phCareerQ: { ko: "예: 이직을 준비 중인데 올해 긍정적인 변화가 있을까요? 혹은 현재 진행 중인 프로젝트의 방향성이 맞는지 궁금합니다.", en: "Ex: I'm preparing to change jobs, will there be positive changes this year?" },
+btnSubmitCareer: { ko: "흐름 분석하기", en: "Analyze Flow" },
+
+todayTitle: { ko: "오늘의 흐름을 묻다", en: "Asking Today's Flow" },
+todaySubtitle: { ko: "오늘 하루 특히 집중하고 싶은 일이나 고민이 있으신가요?", en: "Is there anything specific you want to focus on or a concern for today?" },
+labelTodayQ: { ko: "오늘의 질문이나 다짐 (선택사항)", en: "Today's Question or Resolution (Optional)" },
+phTodayQ: { ko: "예: 오늘 중요한 미팅이 있는데 잘 풀릴까요? 혹은 오늘 하루를 보람차게 보내려면 무엇에 집중해야 할까요?", en: "Ex: I have an important meeting today, will it go well? Or what should I focus on to have a productive day?" },
+btnSubmitToday: { ko: "오늘의 운세 보기", en: "View Today's Fortune" },
+
+shuffleTitle: { ko: "카드를 섞고 있습니다...", en: "Shuffling the cards..." },
+shuffleSubtitle: { ko: "잠시만 마음을 비우고 기다려주세요.", en: "Please clear your mind and wait a moment." },
+
+drawTitle: { ko: "운명의 카드 선택", en: "Choose Your Destiny Cards" },
+msgDrawInst: { 
+ko: (count) => `마음을 집중하고 <strong>${count}장을 뽑아주세요.</strong>`, 
+en: (count) => `Focus your mind and draw <strong>${count} cards.</strong>` 
+},
+msgDrawProgress: { 
+ko: (drawn, left) => `<strong>${drawn}장</strong> 뽑았습니다. <strong>${left}장</strong> 남았습니다.`, 
+en: (drawn, left) => `<strong>${drawn}</strong> drawn. <strong>${left}</strong> remaining.` 
+},
+msgDrawDone: { 
+ko: `<span class="text-amber-400">카드가 모두 선택되었습니다.</span>`, 
+en: `<span class="text-amber-400">All cards have been selected.</span>` 
+},
+btnShowResult: { ko: "운명의 해석 듣기", en: "Listen to the Interpretation" },
+
+resTitle: { ko: "별의 궤적이 그리는 운명", en: "Destiny Drawn by the Stars" },
+resSubtitle: { ko: "당신이 선택한 카드가 전하는 다정한 메시지입니다.", en: "A warm message conveyed by the cards you selected." },
+resHeader: { ko: "상세 해석", en: "Detailed Analysis" },
+btnRestart: { ko: "새로운 질문하기", en: "Ask a New Question" },
+
+privacyTitle: { ko: "개인정보처리방침", en: "Privacy Policy" },
+linkPrivacy: { ko: "개인정보처리방침", en: "Privacy Policy" },
+linkTerms: { ko: "이용약관", en: "Terms of Service" },
+privacyContent: { 
+ko: `<p>꿈타로(이하 '회사')는 이용자의 개인정보를 중요시하며, '개인정보 보호법' 등 관련 법령을 준수합니다.</p>
+       <h4 class="text-amber-200 font-bold mt-4">1. 수집하는 개인정보 항목</h4>
+       <p>- 필수항목: 이메일, 이름, 생년월일, 성별, 결혼 여부<br/>- 수집방법: 서비스 이용 단계에서의 직접 입력</p>
+       <h4 class="text-amber-200 font-bold mt-4">2. 개인정보의 수집 및 이용목적</h4>
+       <p>- 타로 리딩 및 운세 서비스 결과 제공<br/>- 회원 관리 및 본인 확인<br/>- 서비스 개선 및 통계 분석</p>
+       <h4 class="text-amber-200 font-bold mt-4">3. 개인정보의 보유 및 이용기간</h4>
+       <p>이용자의 개인정보는 원칙적으로 회원 탈퇴 시까지 보유하며, 법령에서 정한 기간 동안 안전하게 보관 후 파기합니다.</p>`,
+en: `<p>DreamTarot (the 'Company') values your personal information and complies with relevant laws like the 'Personal Information Protection Act'.</p>
+       <h4 class="text-amber-200 font-bold mt-4">1. Items of Personal Information Collected</h4>
+       <p>- Required: Email, Name, Birthdate, Gender, Marital Status<br/>- Method: Direct input during service use</p>
+       <h4 class="text-amber-200 font-bold mt-4">2. Purpose of Collection and Use</h4>
+       <p>- Providing tarot reading and fortune-telling results<br/>- Member management and identification<br/>- Service improvement and statistical analysis</p>
+       <h4 class="text-amber-200 font-bold mt-4">3. Retention and Use Period</h4>
+       <p>In principle, personal information is retained until membership withdrawal and safely destroyed after the period prescribed by law.</p>`
+},
+termsTitle: { ko: "이용약관", en: "Terms of Service" },
+termsContent: {
+ko: `<h4 class="text-amber-200 font-bold">제 1 조 (목적)</h4>
+       <p>본 약관은 꿈타로가 제공하는 운세 서비스의 이용 조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.</p>
+       <h4 class="text-amber-200 font-bold mt-4">제 2 조 (서비스의 성격)</h4>
+       <p>본 서비스가 제공하는 타로 리딩 결과는 오락 및 참고용이며, 이용자의 중대한 결정에 대한 법적 책임을 지지 않습니다.</p>
+       <h4 class="text-amber-200 font-bold mt-4">제 3 조 (이용자의 의무)</h4>
+       <p>이용자는 본인의 정보를 정확히 입력해야 하며, 타인의 정보를 도용하여 발생하는 문제에 대한 책임은 이용자에게 있습니다.</p>`,
+en: `<h4 class="text-amber-200 font-bold">Article 1 (Purpose)</h4>
+       <p>These terms aim to stipulate the conditions and procedures for using the fortune service provided by DreamTarot.</p>
+       <h4 class="text-amber-200 font-bold mt-4">Article 2 (Nature of Service)</h4>
+       <p>Tarot results are for entertainment and reference only. The company is not legally liable for serious decisions made by users.</p>
+       <h4 class="text-amber-200 font-bold mt-4">Article 3 (User Obligations)</h4>
+       <p>Users must enter their information accurately. Responsibility for problems arising from theft of others' information lies with the user.</p>`
+},
+btnClose: { ko: "닫기 (뒤로가기)", en: "Close (Go Back)" },
+
+btnContact: { ko: "제휴 및 협업 문의", en: "Partnership Inquiry" },
+contactTitle: { ko: "함께 꿈을 그리다", en: "Drawing Dreams Together" },
+contactSubtitle: { ko: "꿈타로와 함께할 비즈니스 파트너를 기다립니다.", en: "We look forward to business partners to join DreamTarot." },
+labelContactName: { ko: "업체명/성함", en: "Company/Name" },
+labelContactEmail: { ko: "회신 이메일", en: "Reply Email" },
+labelContactSubject: { ko: "문의 제목", en: "Inquiry Subject" },
+labelContactMessage: { ko: "상세 내용", en: "Details" },
+btnSubmitContact: { ko: "문의 보내기", en: "Send Inquiry" },
+
+errDate: { ko: "이름과 올바른 생년월일(월 1~12, 일 1~31)을 입력해주세요.", en: "Please enter your name and a valid birthdate." },
+errConsent: { ko: "개인정보 수집 및 이용에 동의해주세요.", en: "Please agree to the privacy policy." }
 };
 
-let currentLang = 'ko';
-let currentMode = 'login';
-let currentUser = null;
-let userInfo = { name: '', birthDate: '', calendarType: 'solar' };
-let drawnCardsData = [];
+// 1. 상태(State) 변수 관리
+const GEMINI_API_KEY = ""; // 여기에 Gemini API 키를 입력하세요.
+let currentLang = 'ko'; 
+// 기본 언어 한글 설정
+let currentMode = 'login'; 
+let userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
+let partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
+let careerInfo = { question: '' };
+let todayInfo = { question: '' };
+let userTendency = { traits: [], keywords: [], summary: '' }; // 지속적 성향 데이터
 let drawnCardsCount = 0;
-let maxDrawCount = 3;
-let selectedTarotType = '';
+let maxDrawCount = 5; 
+let drawnCardsData = [];
+let selectedTarotType = ''; 
+let lastAIResult = null; 
 
+// 가상의 타로 카드 데이터베이스 (78장 다국어 맵핑)
 const tarotDatabase = [
-{ id: 0, name: { ko: '바보 (The Fool)', en: 'The Fool' }, icon: 'footprints', baseCore: { ko: '새로운 시작과 자유', en: 'New beginnings' } },
-{ id: 1, name: { ko: '마법사 (The Magician)', en: 'The Magician' }, icon: 'wand-2', baseCore: { ko: '무한한 잠재력과 의지', en: 'Infinite potential' } },
-{ id: 2, name: { ko: '여사제 (The High Priestess)', en: 'The High Priestess' }, icon: 'moon', baseCore: { ko: '깊은 통찰력과 지혜', en: 'Inner wisdom' } },
-{ id: 3, name: { ko: '여황제 (The Empress)', en: 'The Empress' }, icon: 'flower', baseCore: { ko: '풍요로움과 모성', en: 'Abundance' } },
-{ id: 4, name: { ko: '황제 (The Emperor)', en: 'The Emperor' }, icon: 'crown', baseCore: { ko: '안정과 확고한 기반', en: 'Stability' } }
+// --- Major Arcana ---
+{ id: 0, name: { ko: '바보 (The Fool)', en: 'The Fool' }, icon: 'footprints', baseCore: { ko: '새로운 시작과 순수함, 얽매이지 않는 자유로움', en: 'New beginnings, purity, and untethered freedom' } },
+{ id: 1, name: { ko: '마법사 (The Magician)', en: 'The Magician' }, icon: 'wand-2', baseCore: { ko: '무한한 잠재력과 창조력, 의지를 현실로 만드는 힘', en: 'Infinite potential, creativity, and the power to manifest will' } },
+{ id: 2, name: { ko: '여사제 (The High Priestess)', en: 'The High Priestess' }, icon: 'moon', baseCore: { ko: '깊은 통찰력과 직관, 내면의 지혜와 기다림', en: 'Deep insight, intuition, inner wisdom, and patience' } },
+{ id: 3, name: { ko: '여황제 (The Empress)', en: 'The Empress' }, icon: 'flower', baseCore: { ko: '풍요로움과 모성, 사랑과 따뜻한 결실', en: 'Abundance, maternity, love, and warm fruition' } },
+{ id: 4, name: { ko: '황제 (The Emperor)', en: 'The Emperor' }, icon: 'crown', baseCore: { ko: '확고한 기반과 안정, 책임감과 구조적인 통제력', en: 'Solid foundation, stability, responsibility, and structural control' } },
+{ id: 5, name: { ko: '교황 (The Hierophant)', en: 'The Hierophant' }, icon: 'book-open', baseCore: { ko: '정신적인 가르침과 전통, 귀인의 도움과 믿음', en: 'Spiritual guidance, tradition, noble assistance, and faith' } },
+{ id: 6, name: { ko: '연인 (The Lovers)', en: 'The Lovers' }, icon: 'heart-handshake', baseCore: { ko: '조화로운 결합과 깊은 유대감, 인생의 중요한 선택', en: 'Harmonious union, deep bonds, and important life choices' } },
+{ id: 7, name: { ko: '전차 (The Chariot)', en: 'The Chariot' }, icon: 'swords', baseCore: { ko: '장애물을 뚫고 나아가는 강한 의지와 쟁취, 긍정적인 이동', en: 'Strong will to overcome obstacles, achievement, and positive movement' } },
+{ id: 8, name: { ko: '힘 (Strength)', en: 'Strength' }, icon: 'flame', baseCore: { ko: '부드러운 내면의 강인함과 인내, 사랑으로 갈등을 포용하는 힘', en: 'Gentle inner strength, patience, and embracing conflict with love' } },
+{ id: 9, name: { ko: '은둔자 (The Hermit)', en: 'The Hermit' }, icon: 'lantern', baseCore: { ko: '깊은 자기 성찰과 고독, 진리를 탐구하는 내면의 여정', en: 'Deep self-reflection, solitude, and the inner journey for truth' } },
+{ id: 10, name: { ko: '운명의 수레바퀴', en: 'Wheel of Fortune' }, icon: 'dribbble', baseCore: { ko: '피할 수 없는 삶의 거대한 전환점과 새로운 주기의 시작', en: 'Inevitable turning points in life and the start of a new cycle' } },
+{ id: 11, name: { ko: '정의 (Justice)', en: 'Justice' }, icon: 'scale', baseCore: { ko: '감정에 치우치지 않는 냉철한 균형과 공정한 결정', en: 'Cold balance without emotional bias and fair decisions' } },
+{ id: 12, name: { ko: '매달린 사람 (The Hanged Man)', en: 'The Hanged Man' }, icon: 'anchor', baseCore: { ko: '자발적인 희생과 헌신, 관점의 전환과 새로운 깨달음', en: 'Voluntary sacrifice, devotion, shift in perspective, and new realization' } },
+{ id: 13, name: { ko: '죽음 (Death)', en: 'Death' }, icon: 'skull', baseCore: { ko: '하나의 주기가 끝나는 완전한 종결, 그리고 새로운 부활', en: 'Complete termination of a cycle, followed by a new resurrection' } },
+{ id: 14, name: { ko: '절제 (Temperance)', en: 'Temperance' }, icon: 'infinity', baseCore: { ko: '서로 다른 요소들의 조화로운 융합, 인내와 적절한 타협', en: 'Harmonious fusion of different elements, patience, and proper compromise' } },
+{ id: 15, name: { ko: '악마 (The Devil)', en: 'The Devil' }, icon: 'flame-kindling', baseCore: { ko: '끊어내기 힘든 유혹과 집착, 물질적인 쾌락과 내면의 그림자', en: 'Hard-to-break temptations, obsession, material pleasure, and inner shadows' } },
+{ id: 16, name: { ko: '탑 (The Tower)', en: 'The Tower' }, icon: 'building-2', baseCore: { ko: '예기치 않은 갑작스러운 붕괴, 오래된 허울을 깨고 나오는 충격적 변화', en: 'Unexpected sudden collapse, shocking change breaking old illusions' } },
+{ id: 17, name: { ko: '별 (The Star)', en: 'The Star' }, icon: 'sparkles', baseCore: { ko: '고난 이후에 찾아오는 평온한 치유와 반짝이는 희망', en: 'Peaceful healing and twinkling hope that comes after hardship' } },
+{ id: 18, name: { ko: '달 (The Moon)', en: 'The Moon' }, icon: 'moon-star', baseCore: { ko: '모호함 속에 숨겨진 불안과 환상, 무의식의 수면 아래에서 일어나는 변화', en: 'Anxiety hidden in ambiguity, illusions, and subconscious changes' } },
+{ id: 19, name: { ko: '태양 (The Sun)', en: 'The Sun' }, icon: 'sun', baseCore: { ko: '어둠을 걷어내는 밝은 긍정과 활력, 명확한 성공', en: 'Bright positivity and vitality clearing darkness, and clear success' } },
+{ id: 20, name: { ko: '심판 (Judgement)', en: 'Judgement' }, icon: 'bell-ring', baseCore: { ko: '과거의 업보에 대한 보상과 구원, 거듭남을 알리는 내면의 부름', en: 'Reward and salvation for past karma, an inner call for rebirth' } },
+{ id: 21, name: { ko: '세계 (The World)', en: 'The World' }, icon: 'globe', baseCore: { ko: '하나의 완벽한 챕터의 완성, 그리고 더 높은 차원으로의 도약', en: 'Completion of a perfect chapter and a leap to a higher dimension' } },
+
+// --- Minor Arcana : Wands ---
+{ id: 22, name: { ko: '지팡이 에이스', en: 'Ace of Wands' }, icon: 'flame', baseCore: { ko: '순수한 열정의 점화, 주도적으로 무언가를 시작할 수 있는 에너지', en: 'Ignition of pure passion, energy to proactively start something' } },
+{ id: 23, name: { ko: '지팡이 2', en: 'Two of Wands' }, icon: 'flame', baseCore: { ko: '현재에 안주하지 않고 더 먼 미래를 바라보는 계획과 확장', en: 'Planning and expanding towards a farther future beyond the present' } },
+{ id: 24, name: { ko: '지팡이 3', en: 'Three of Wands' }, icon: 'flame', baseCore: { ko: '기반을 다지고 새로운 무대를 향해 나아가는 긍정적 기다림', en: 'Positive waiting as you build a foundation and step onto a new stage' } },
+{ id: 25, name: { ko: '지팡이 4', en: 'Four of Wands' }, icon: 'flame', baseCore: { ko: '목표 달성 후의 평온한 휴식과 축하, 안정된 유대감', en: 'Peaceful rest, celebration, and stable bonds after achieving a goal' } },
+{ id: 26, name: { ko: '지팡이 5', en: 'Five of Wands' }, icon: 'flame', baseCore: { ko: '서로의 주장이 엇갈리는 치열한 경쟁과 건강한 의견 충돌', en: 'Fierce competition and healthy clashes of differing opinions' } },
+{ id: 27, name: { ko: '지팡이 6', en: 'Six of Wands' }, icon: 'flame', baseCore: { ko: '노력의 결과를 타인에게 인정받는 명예로운 승리와 환호', en: 'Honorable victory and cheers, recognized by others for your efforts' } },
+{ id: 28, name: { ko: '지팡이 7', en: 'Seven of Wands' }, icon: 'flame', baseCore: { ko: '유리한 고지에서 자신의 신념과 자리를 굳건히 지켜내는 용기', en: 'Courage to firmly defend your beliefs and position from an advantage' } },
+{ id: 29, name: { ko: '지팡이 8', en: 'Eight of Wands' }, icon: 'flame', baseCore: { ko: '상황이 지체 없이 매우 빠르고 급격하게 전개되는 흐름', en: 'A flow where situations develop very quickly and rapidly without delay' } },
+{ id: 30, name: { ko: '지팡이 9', en: 'Nine of Wands' }, icon: 'flame', baseCore: { ko: '상처 입었지만 끝까지 포기하지 않고 버텨내는 끈기와 경계', en: 'Perseverance and vigilance to endure without giving up despite being hurt' } },
+{ id: 31, name: { ko: '지팡이 10', en: 'Ten of Wands' }, icon: 'flame', baseCore: { ko: '목표에 닿기 직전 짊어지게 된 과도한 책임감과 압박', en: 'Excessive responsibility and pressure borne right before reaching the goal' } },
+{ id: 32, name: { ko: '지팡이 시종', en: 'Page of Wands' }, icon: 'flame', baseCore: { ko: '새로운 소식을 전하거나 호기심 가득한 에너지로 시작하는 단계', en: 'A phase of delivering news or starting with curiosity-filled energy' } },
+{ id: 33, name: { ko: '지팡이 기사', en: 'Knight of Wands' }, icon: 'flame', baseCore: { ko: '목표를 향해 거침없이 돌진하는 폭발적인 추진력과 모험심', en: 'Explosive drive and adventurous spirit charging towards the goal' } },
+{ id: 34, name: { ko: '지팡이 여왕', en: 'Queen of Wands' }, icon: 'flame', baseCore: { ko: '밝은 에너지로 주변을 이끌어가는 따뜻하고 긍정적인 카리스마', en: 'Warm and positive charisma leading others with bright energy' } },
+{ id: 35, name: { ko: '지팡이 왕', en: 'King of Wands' }, icon: 'flame', baseCore: { ko: '비전을 현실로 만들어내는 결단력과 강력한 통솔력', en: 'Decisiveness and strong leadership to turn visions into reality' } },
+
+// --- Minor Arcana : Cups ---
+{ id: 36, name: { ko: '컵 에이스', en: 'Ace of Cups' }, icon: 'droplets', baseCore: { ko: '마음속에서 흘러넘치는 깊은 감정의 시작, 새로운 사랑이나 영감', en: 'The start of deep overflowing emotions, new love, or inspiration' } },
+{ id: 37, name: { ko: '컵 2', en: 'Two of Cups' }, icon: 'droplets', baseCore: { ko: '서로의 마음이 온전히 통하는 조화로운 결합과 교감', en: 'Harmonious union and communion where hearts fully connect' } },
+{ id: 38, name: { ko: '컵 3', en: 'Three of Cups' }, icon: 'droplets', baseCore: { ko: '사람들과 감정을 나누며 즐기는 기쁨과 화기애애한 우정', en: 'Joy and amicable friendship enjoyed by sharing feelings with others' } },
+{ id: 39, name: { ko: '컵 4', en: 'Four of Cups' }, icon: 'droplets', baseCore: { ko: '현실의 안정 속에서 찾아온 권태, 새로운 기회를 돌아볼 시간', en: 'Boredom found in realistic stability, time to reflect on new opportunities' } },
+{ id: 40, name: { ko: '컵 5', en: 'Five of Cups' }, icon: 'droplets', baseCore: { ko: '상실에 대한 깊은 슬픔과 미련, 그러나 아직 남아있는 희망', en: 'Deep sorrow and lingering regret over loss, yet remaining hope' } },
+{ id: 41, name: { ko: '컵 6', en: 'Six of Cups' }, icon: 'droplets', baseCore: { ko: '과거의 순수했던 추억에 대한 향수와 조건 없는 따뜻한 도움', en: 'Nostalgia for pure past memories and unconditional warm help' } },
+{ id: 42, name: { ko: '컵 7', en: 'Seven of Cups' }, icon: 'droplets', baseCore: { ko: '수많은 선택지 앞에서 길을 잃은 환상, 현실적인 판단의 필요', en: 'Illusions of getting lost among many choices, a need for realistic judgment' } },
+{ id: 43, name: { ko: '컵 8', en: 'Eight of Cups' }, icon: 'droplets', baseCore: { ko: '익숙한 것을 뒤로하고 더 깊은 의미를 찾아 떠나는 성숙한 여정', en: 'A mature journey leaving the familiar behind to seek deeper meaning' } },
+{ id: 44, name: { ko: '컵 9', en: 'Nine of Cups' }, icon: 'droplets', baseCore: { ko: '간절히 바라던 소원이 이루어지고 만끽하는 내면의 충만한 만족', en: 'Inner fulfilling satisfaction as a desperately desired wish comes true' } },
+{ id: 45, name: { ko: '컵 10', en: 'Ten of Cups' }, icon: 'droplets', baseCore: { ko: '사랑하는 이들과 함께 누리는 완벽한 조화와 무지개빛 행복', en: 'Perfect harmony and rainbow-like happiness enjoyed with loved ones' } },
+{ id: 46, name: { ko: '컵 시종', en: 'Page of Cups' }, icon: 'droplets', baseCore: { ko: '예술적 영감과 풍부한 감수성으로 세상을 바라보는 순수한 마음', en: 'A pure heart viewing the world with artistic inspiration and rich sensitivity' } },
+{ id: 47, name: { ko: '컵 기사', en: 'Knight of Cups' }, icon: 'droplets', baseCore: { ko: '마음을 담은 로맨틱한 제안과 부드러운 평화주의적 접근', en: 'A heartfelt romantic proposal and a gentle, pacifist approach' } },
+{ id: 48, name: { ko: '컵 여왕', en: 'Queen of Cups' }, icon: 'droplets', baseCore: { ko: '바다처럼 깊은 공감 능력으로 타인을 치유하고 안아주는 포용력', en: 'Tolerance to heal and embrace others with an ocean-deep empathy' } },
+{ id: 49, name: { ko: '컵 왕', en: 'King of Cups' }, icon: 'droplets', baseCore: { ko: '파도를 통제하듯 감정에 휩쓸리지 않고 성숙하게 조절하는 힘', en: 'The power to maturely regulate emotions without being swept away' } },
+
+// --- Minor Arcana : Swords ---
+{ id: 50, name: { ko: '검 에이스', en: 'Ace of Swords' }, icon: 'sword', baseCore: { ko: '혼란을 베어내는 명확하고 객관적인 통찰력과 단호한 결단', en: 'Clear, objective insight and resolute decision cutting through chaos' } },
+{ id: 51, name: { ko: '검 2', en: 'Two of Swords' }, icon: 'sword', baseCore: { ko: '두 가지 선택지 사이에서 눈을 가린 채 유지하는 팽팽한 내적 갈등', en: 'Tense inner conflict maintained blindfolded between two choices' } },
+{ id: 52, name: { ko: '검 3', en: 'Three of Swords' }, icon: 'sword', baseCore: { ko: '심장을 찌르는 듯한 깊은 슬픔과 상처, 피할 수 없는 아픔', en: 'Heart-piercing deep sorrow and wounds, unavoidable pain' } },
+{ id: 53, name: { ko: '검 4', en: 'Four of Swords' }, icon: 'sword', baseCore: { ko: '치열한 생각에서 잠시 벗어나 회복과 안정을 취해야 할 휴식기', en: 'A resting period to step away from fierce thoughts and seek recovery' } },
+{ id: 54, name: { ko: '검 5', en: 'Five of Swords' }, icon: 'sword', baseCore: { ko: '이기고도 잃는 것이 많은 씁쓸한 승리와 관계의 훼손', en: 'A bitter victory where much is lost despite winning, and damaged relationships' } },
+{ id: 55, name: { ko: '검 6', en: 'Six of Swords' }, icon: 'sword', baseCore: { ko: '상처를 안고 잔잔한 물가를 향해 나아가는 점진적인 치유와 이동', en: 'Gradual healing and movement carrying wounds towards calm waters' } },
+{ id: 56, name: { ko: '검 7', en: 'Seven of Swords' }, icon: 'sword', baseCore: { ko: '정면 돌파보다는 상황을 교묘하게 회피하거나 이탈하려는 심리', en: 'A mindset to cleverly avoid or escape situations rather than head-on' } },
+{ id: 57, name: { ko: '검 8', en: 'Eight of Swords' }, icon: 'sword', baseCore: { ko: '스스로 만든 두려움에 갇혀 이러지도 저러지도 못하는 고립감', en: 'Isolation trapped in self-made fears, unable to move' } },
+{ id: 58, name: { ko: '검 9', en: 'Nine of Swords' }, icon: 'sword', baseCore: { ko: '밤잠을 설치게 만드는 과도한 불안과 절망, 생각의 악순환', en: 'Excessive anxiety and despair causing sleepless nights, a vicious cycle of thoughts' } },
+{ id: 59, name: { ko: '검 10', en: 'Ten of Swords' }, icon: 'sword', baseCore: { ko: '가장 깊은 바닥에 닿은 고통스러운 끝남, 역설적으로 다가오는 새로운 시작', en: 'Painful ending hitting rock bottom, paradoxically bringing a new beginning' } },
+{ id: 60, name: { ko: '검 시종', en: 'Page of Swords' }, icon: 'sword', baseCore: { ko: '예리한 관찰력과 경계심, 날카로운 지적 호기심', en: 'Sharp observation and vigilance, keen intellectual curiosity' } },
+{ id: 61, name: { ko: '검 기사', en: 'Knight of Swords' }, icon: 'sword', baseCore: { ko: '머뭇거림 없이 목표를 향해 달려가는 차갑고 논리적인 돌파력', en: 'Cold, logical breakthrough power rushing towards a goal without hesitation' } },
+{ id: 62, name: { ko: '검 여왕', en: 'Queen of Swords' }, icon: 'sword', baseCore: { ko: '사사로운 감정을 배제하고 진실만을 꿰뚫어보는 냉철한 객관성', en: 'Cold objectivity piercing through truth by excluding personal feelings' } },
+{ id: 63, name: { ko: '검 왕', en: 'King of Swords' }, icon: 'sword', baseCore: { ko: '확고한 권위와 이성적인 판단으로 혼란을 통제하는 지성', en: 'Intellect controlling chaos with firm authority and rational judgment' } },
+
+// --- Minor Arcana : Pentacles ---
+{ id: 64, name: { ko: '펜타클 에이스', en: 'Ace of Pentacles' }, icon: 'coins', baseCore: { ko: '물질적이고 현실적인 성과를 가져다줄 아주 든든하고 새로운 기회', en: 'A very solid and new opportunity bringing material and realistic results' } },
+{ id: 65, name: { ko: '펜타클 2', en: 'Two of Pentacles' }, icon: 'coins', baseCore: { ko: '끊임없이 변하는 현실 속에서 유연하게 대처하며 균형을 잡는 기술', en: 'The skill of flexibly coping and balancing in a constantly changing reality' } },
+{ id: 66, name: { ko: '펜타클 3', en: 'Three of Pentacles' }, icon: 'coins', baseCore: { ko: '서로 다른 전문성을 가진 이들과의 성공적인 협력과 조화', en: 'Successful cooperation and harmony with those holding different expertise' } },
+{ id: 67, name: { ko: '펜타클 4', en: 'Four of Pentacles' }, icon: 'coins', baseCore: { ko: '가진 것을 잃지 않으려는 강한 집착과 보수적인 방어 태세', en: 'Strong obsession and conservative defensive stance to not lose what one has' } },
+{ id: 68, name: { ko: '펜타클 5', en: 'Five of Pentacles' }, icon: 'coins', baseCore: { ko: '물질적, 혹은 정신적 결핍으로 인해 누군가의 도움이 절실한 시기', en: 'A time when someone\'s help is desperately needed due to material or mental deficiency' } },
+{ id: 69, name: { ko: '펜타클 6', en: 'Six of Pentacles' }, icon: 'coins', baseCore: { ko: '관대함과 인색함 사이에서 이루어지는 베풂과 적절한 보상', en: 'Giving and appropriate rewards made between generosity and stinginess' } },
+{ id: 70, name: { ko: '펜타클 7', en: 'Seven of Pentacles' }, icon: 'coins', baseCore: { ko: '지금까지 가꿔온 결실을 바라보며 향후의 방향을 평가하는 시간', en: 'Time to evaluate future directions while looking at the fruits cultivated so far' } },
+{ id: 71, name: { ko: '펜타클 8', en: 'Eight of Pentacles' }, icon: 'coins', baseCore: { ko: '묵묵하고 성실하게 자신만의 기술과 역량을 갈고닦는 장인정신', en: 'Craftsmanship of silently and diligently honing one\'s own skills and capabilities' } },
+{ id: 72, name: { ko: '펜타클 9', en: 'Nine of Pentacles' }, icon: 'coins', baseCore: { ko: '스스로의 노력으로 이룩해낸 안전하고 우아한 나만의 풍요', en: 'Safe and elegant personal abundance achieved through one\'s own efforts' } },
+{ id: 73, name: { ko: '펜타클 10', en: 'Ten of Pentacles' }, icon: 'coins', baseCore: { ko: '대대로 이어지는 물질적 유산과 견고하게 완성된 가족의 부', en: 'Material legacy passed down generations and solidly completed family wealth' } },
+{ id: 74, name: { ko: '펜타클 시종', en: 'Page of Pentacles' }, icon: 'coins', baseCore: { ko: '신중하게 현실을 파악하고 차근차근 배우며 나아가는 성실함', en: 'Diligence in carefully grasping reality and learning step-by-step' } },
+{ id: 75, name: { ko: '펜타클 기사', en: 'Knight of Pentacles' }, icon: 'coins', baseCore: { ko: '느리지만 멈추지 않고 끝까지 책임을 다하는 우직함', en: 'Steadfastness in slowly but unstoppingly fulfilling responsibilities to the end' } },
+{ id: 76, name: { ko: '펜타클 여왕', en: 'Queen of Pentacles' }, icon: 'coins', baseCore: { ko: '풍요로운 대지처럼 타인을 보살피고 아낌없이 내어주는 관대함', en: 'Generosity to care for others and give selflessly like the abundant earth' } },
+{ id: 77, name: { ko: '펜타클 왕', en: 'King of Pentacles' }, icon: 'coins', baseCore: { ko: '확고한 재력과 성취를 이뤄내고 그것을 여유롭게 누리는 권위', en: 'Authority in achieving firm financial power and success, and enjoying it leisurely' } }
 ];
 
-// --- 1. 초기화 및 세션 ---
-document.addEventListener('DOMContentLoaded', async () => {
-    lucide.createIcons();
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) {
-        currentUser = session.user;
-        await loadUserProfile();
-        showScreen('selection-screen');
-    }
-    applyLanguage();
+// 2. 초기화 및 언어 설정
+document.addEventListener('DOMContentLoaded', () => {
+lucide.createIcons();
+const savedLang = localStorage.getItem('mungTarotLang');
+if (savedLang) {
+setLanguage(savedLang);
+} else {
+applyLanguage(); // 기본(ko) 적용
+}
+loadSavedData();
 });
 
-function showScreen(id) {
-    const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'today-profile-screen', 'reading-screen', 'draw-screen', 'result-screen', 'privacy-screen', 'terms-screen', 'contact-screen'];
-    screens.forEach(s => {
-        const el = document.getElementById(s);
-        if(el) el.classList.add('hidden');
-    });
-    const target = document.getElementById(id);
-    if (target) { target.classList.remove('hidden'); target.classList.add('flex'); }
-    if (id === 'selection-screen') document.getElementById('display-name').textContent = userInfo.name || '여행자';
-    window.scrollTo(0, 0);
-}
-
-function setAuthMode(mode) {
-    currentMode = mode;
-    document.getElementById('tab-login').className = mode === 'login' ? 'flex-1 pb-3 text-amber-400 border-b-2 border-amber-400 font-bold' : 'flex-1 pb-3 text-slate-400';
-    document.getElementById('tab-signup').className = mode === 'signup' ? 'flex-1 pb-3 text-amber-400 border-b-2 border-amber-400 font-bold' : 'flex-1 pb-3 text-slate-400';
-    document.getElementById('consent-group').classList.toggle('hidden', mode === 'login');
-    document.getElementById('auth-submit-btn').textContent = mode === 'login' ? uiTranslations.btnSubmitLogin[currentLang] : '여정 시작하기';
-}
-
-// --- 2. 인증 및 데이터 처리 ---
-document.getElementById('auth-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email-input').value;
-    const password = document.getElementById('password-input').value;
-
-    if (currentMode === 'signup') {
-        if (!document.getElementById('consent-checkbox').checked) return alert(uiTranslations.errConsent[currentLang]);
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-        if (error) return alert(error.message);
-        currentUser = data.user;
-        showScreen('profile-screen');
-    } else {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) return alert("인증 실패: 정보를 확인해주세요.");
-        currentUser = data.user;
-        await loadUserProfile();
-        showScreen(userInfo.name ? 'selection-screen' : 'profile-screen');
-    }
-});
-
-async function loadUserProfile() {
-    if (!currentUser) return;
-    const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
-    if (data) {
-        userInfo = { name: data.name, birthDate: data.birth_date, calendarType: data.calendar_type };
-    }
-}
-
-document.getElementById('profile-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('name-input').value;
-    const year = document.getElementById('year-input').value;
-    const month = document.getElementById('month-input').value;
-    const day = document.getElementById('day-input').value;
-    const birth_date = `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
-    const calendar_type = document.getElementById('calendar-type-input').value;
-
-    const { error } = await supabaseClient.from('profiles').upsert({ id: currentUser.id, name, birth_date, calendar_type });
-    if (!error) {
-        userInfo = { name, birthDate: birth_date, calendarType: calendar_type };
-        showScreen('selection-screen');
-    }
-});
-
-// --- 3. 타로 해석 로직 (AI Edge Function) ---
-async function fetchAIInterpretation(cards, user, type, contextInfo) {
-    const previousId = localStorage.getItem('lastInteractionId');
-    try {
-        const { data, error } = await supabaseClient.functions.invoke('generate-tarot', {
-            body: { 
-                cards, user, type, 
-                contextInfo, previousId,
-                lang: currentLang
-            }
-        });
-        if (error) throw error;
-        return data;
-    } catch (e) {
-        console.warn("AI 실패:", e);
-        return null;
-    }
-}
-
-async function showResultScreen() {
-    showScreen('result-screen');
-    const content = document.getElementById('interpretation-content');
-    content.innerHTML = `<div class="flex flex-col items-center py-12"><div class="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-amber-200 animate-pulse">타로술사가 당신의 기운을 읽으며<br/>별의 속삭임을 정리하고 있습니다...</p></div>`;
-
-    const contextInfo = selectedTarotType === 'today' ? { question: document.getElementById('today-question-input').value } : {};
-    const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, contextInfo);
-
-    content.innerHTML = ''; 
-
-    if (aiResult && aiResult.mainInterpretation) {
-        content.innerHTML = aiResult.mainInterpretation.replace(/\n/g, '<br/>');
-        if (aiResult.interactionId) localStorage.setItem('lastInteractionId', aiResult.interactionId);
-    } else {
-        renderLocalFallback();
-    }
-}
-
-function renderLocalFallback() {
-    const content = document.getElementById('interpretation-content');
-    const titles = selectedTarotType === 'today' ? ["✦ 태초의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재", "과제", "과거", "미래", "조언"];
-    drawnCardsData.forEach((card, i) => {
-        const div = document.createElement('div');
-        div.className = 'bg-slate-800/40 p-6 rounded-xl border border-purple-500/10 mb-6';
-        div.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[i]}</h4><p class="leading-relaxed">선택하신 '${card.name[currentLang]}' 카드는 현재 [${card.baseCore[currentLang]}]의 의미를 가집니다.<br/><br/><span class="text-amber-400 font-bold">이 상황을 인지하고 행동하는 것이 오늘의 핵심입니다.</span></p>`;
-        content.appendChild(div);
-    });
-}
-
-// --- 4. 기타 로직 ---
-function selectTarot(type) {
-    selectedTarotType = type;
-    maxDrawCount = (type === 'today') ? 3 : 5;
-    showScreen(type === 'today' ? 'today-profile-screen' : 'reading-screen');
-    if (type !== 'today') { setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 2000); }
-}
-
-document.getElementById('today-profile-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    showScreen('reading-screen');
-    setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 2000);
-});
-
-function initDrawScreen() {
-    drawnCardsCount = 0; drawnCardsData = [];
-    const deck = document.getElementById('card-deck-container');
-    const slots = document.getElementById('slots-container');
-    deck.innerHTML = ''; slots.innerHTML = '';
-    document.getElementById('draw-instruction').innerHTML = uiTranslations.msgDrawInst[currentLang](maxDrawCount);
-    document.getElementById('result-action-container').style.opacity = '0';
-
-    for (let i = 1; i <= maxDrawCount; i++) {
-        slots.innerHTML += `<div id="slot-${i}" class="w-14 h-20 md:w-20 md:h-32 border-2 border-dashed border-purple-500/30 rounded-lg"></div>`;
-    }
-    for (let i = 0; i < 22; i++) {
-        const card = document.createElement('div');
-        card.className = 'tarot-card-item';
-        card.onclick = function() {
-            if (drawnCardsCount < maxDrawCount && !this.classList.contains('drawn')) {
-                this.classList.add('drawn');
-                drawnCardsCount++;
-                const cardData = tarotDatabase[Math.floor(Math.random() * tarotDatabase.length)];
-                drawnCardsData.push(cardData);
-                const slot = document.getElementById(`slot-${drawnCardsCount}`);
-                slot.className = 'w-14 h-20 md:w-20 md:h-32 bg-amber-900/40 border border-amber-400/50 rounded-lg flex items-center justify-center text-[10px] font-bold text-amber-100 px-1 text-center';
-                slot.innerHTML = cardData.name[currentLang];
-                if (drawnCardsCount === maxDrawCount) {
-                    document.getElementById('result-action-container').style.opacity = '1';
-                }
-            }
-        };
-        deck.appendChild(card);
-    }
-}
-
+// [추가] 언어 전환 로직
 function setLanguage(lang) {
-    currentLang = lang;
-    applyLanguage();
-    document.getElementById('lang-ko').classList.toggle('active', lang === 'ko');
-    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+currentLang = lang;
+localStorage.setItem('mungTarotLang', lang);
+
+document.getElementById('lang-ko').classList.remove('active');
+document.getElementById('lang-en').classList.remove('active');
+document.getElementById(`lang-${lang}`).classList.add('active');
+
+applyLanguage();
 }
 
+// [추가] 텍스트 동적 렌더링
 function applyLanguage() {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (uiTranslations[key]) el.textContent = typeof uiTranslations[key][currentLang] === 'function' ? uiTranslations[key][currentLang](maxDrawCount) : uiTranslations[key][currentLang];
-    });
+document.querySelectorAll('[data-i18n]').forEach(el => {
+const key = el.getAttribute('data-i18n');
+if (uiTranslations[key] && uiTranslations[key][currentLang]) {
+if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+el.placeholder = uiTranslations[key][currentLang];
+} else {
+el.innerHTML = uiTranslations[key][currentLang];
+}
+}
+});
+
+if(!document.getElementById('selection-screen').classList.contains('hidden') && userInfo.name) {
+document.getElementById('display-name').textContent = userInfo.name;
 }
 
-async function handleLogout() { await supabaseClient.auth.signOut(); location.reload(); }
-function goBack() { showScreen('auth-screen'); }
+// 결과 화면이 열려있는 경우 언어만 번역 업데이트 (AI 재호출 방지)
+if(!document.getElementById('result-screen').classList.contains('hidden') && drawnCardsData.length > 0) {
+const starContainer = document.getElementById('star-cards-container');
+if (starContainer && starContainer.children.length > 0) {
+Array.from(starContainer.children).forEach((cardEl, index) => {
+const cardNameSpan = cardEl.querySelector('.card-front span');
+if (cardNameSpan && drawnCardsData[index]) {
+cardNameSpan.textContent = drawnCardsData[index].name[currentLang];
+}
+});
+}
+renderInterpretation();
+}
+
+// 로그인 버튼 상태 동기화
+if (currentMode === 'login') {
+document.getElementById('auth-submit-btn').textContent = uiTranslations.btnSubmitLogin[currentLang];
+} else {
+document.getElementById('auth-submit-btn').textContent = uiTranslations.btnSubmitSignup[currentLang];
+}
+
+// 카드 뽑기 지시문 동기화
+const instruction = document.getElementById('draw-instruction');
+if (instruction && instruction.innerHTML !== '') {
+if (drawnCardsCount === 0) {
+instruction.innerHTML = uiTranslations.msgDrawInst[currentLang](maxDrawCount);
+} else if (drawnCardsCount < maxDrawCount) {
+instruction.innerHTML = uiTranslations.msgDrawProgress[currentLang](drawnCardsCount, maxDrawCount - drawnCardsCount);
+} else {
+instruction.innerHTML = uiTranslations.msgDrawDone[currentLang];
+}
+}
+}
+
+// [추가] 해석 텍스트 렌더링 함수
+function renderInterpretation() {
+const interpretationContent = document.getElementById('interpretation-content');
+if (!interpretationContent) return;
+
+// AI 로딩 중이거나 데이터가 없으면 중단
+if (interpretationContent.querySelector('#ai-loading-indicator') || drawnCardsData.length === 0) return;
+
+interpretationContent.innerHTML = '';
+
+if (lastAIResult && lastAIResult.mainInterpretation) {
+const formattedText = lastAIResult.mainInterpretation.replace(/\\n/g, '<br/>');
+interpretationContent.innerHTML = `
+<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in shadow-inner leading-relaxed text-slate-200 whitespace-pre-line text-lg">
+${formattedText}
+</div>
+${lastAIResult.newInsights ? `
+<div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-sm text-amber-200 fade-in">
+<i data-lucide="brain-circuit" class="w-4 h-4 inline mr-2"></i> AI Insight: ${lastAIResult.newInsights}
+</div>
+` : ''}
+`;
+} else {
+const spreadTitlesKO = maxDrawCount === 3 ? ["✦ 태초의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
+const spreadTitlesEN = maxDrawCount === 3 ? ["✦ Primeval Energy", "✦ Unfolding Flow", "✦ Celestial Revelation"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
+const activeTitles = currentLang === 'en' ? spreadTitlesEN : spreadTitlesKO;
+
+drawnCardsData.forEach((card, index) => {
+const textEl = document.createElement('div');
+textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 fade-in shadow-inner mb-4`;
+const deepInterpretationText = generateDeepInterpretation(card, index, userInfo, selectedTarotType, partnerInfo);
+textEl.innerHTML = `
+<h4 class="text-amber-300 font-bold mb-4 flex items-center text-xl">
+<span class="bg-amber-500/20 text-amber-200 w-8 h-8 flex items-center justify-center rounded-full text-sm mr-3 border border-amber-500/30">${index + 1}</span>
+${activeTitles[index]}
+</h4>
+<p class="text-slate-200 md:ml-11 ml-2 leading-loose">
+${deepInterpretationText}
+</p>
+`;
+interpretationContent.appendChild(textEl);
+});
+}
+lucide.createIcons({ root: interpretationContent });
+}
+
+function loadSavedData() {
+try {
+const savedUser = localStorage.getItem('mungTarotUser');
+if (savedUser) {
+userInfo = JSON.parse(savedUser);
+document.getElementById('name-input').value = userInfo.name || '';
+if (userInfo.birthDate) {
+const parts = userInfo.birthDate.split('-');
+if (parts.length === 3) {
+document.getElementById('year-input').value = parts[0];
+document.getElementById('month-input').value = parts[1];
+document.getElementById('day-input').value = parts[2];
+}
+}
+document.getElementById('calendar-type-input').value = userInfo.calendarType || 'solar';
+
+document.querySelectorAll('input[name="gender"]').forEach(radio => {
+if (radio.value === userInfo.gender) radio.checked = true;
+});
+document.querySelectorAll('input[name="marital-status"]').forEach(radio => {
+if (radio.value === userInfo.maritalStatus) radio.checked = true;
+});
+}
+
+const savedPartner = localStorage.getItem('mungTarotPartner');
+if (savedPartner) {
+partnerInfo = JSON.parse(savedPartner);
+document.getElementById('partner-name-input').value = partnerInfo.name || '';
+if (partnerInfo.birthDate) {
+const parts = partnerInfo.birthDate.split('-');
+if (parts.length === 3) {
+document.getElementById('partner-year-input').value = parts[0];
+document.getElementById('partner-month-input').value = parts[1];
+document.getElementById('partner-day-input').value = parts[2];
+}
+}
+document.getElementById('partner-calendar-type-input').value = partnerInfo.calendarType || 'solar';
+
+document.querySelectorAll('input[name="partner-gender"]').forEach(radio => {
+if (radio.value === partnerInfo.gender) radio.checked = true;
+});
+}
+
+// 성향 데이터 로드
+const savedTendency = localStorage.getItem('mungTarotTendency');
+if (savedTendency) {
+userTendency = JSON.parse(savedTendency);
+}
+
+} catch (error) {
+console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
+}
+}
+
+// AI 해석 엔진 (Gemini API) - 토큰 최적화 버전
+// AI 해석 엔진 (Gemini Interactions API Beta) - 상태 유지 및 토큰 최적화 버전
+async function fetchAIInterpretation(cards, user, type, contextInfo) {
+if (!GEMINI_API_KEY) return null;
+
+const destiny = calculateDestinyEnergy(user.birthDate);
+const cardNames = cards.map(c => c.name.ko).join(', ');
+const question = contextInfo.question || "전반적인 운세";
+
+// 서버측 상태 유지를 위한 이전 인터랙션 ID 가져오기
+const previousId = localStorage.getItem('lastInteractionId');
+
+const prompt = `
+       [필수지시] 현실적인 타로/명리 상담사로서 답변하라.
+       상황: ${type} 리딩 (${question}), 카드: ${cardNames}.
+       사용자특징: ${user.name}, 사주기운: ${destiny.energyFlavor.ko}.
+       
+       규칙:
+       1. '에너지', '궤적', '공명' 같은 추상적 단어 금지. "지금 당장 ~하세요" 식의 일상 언어만 사용.
+       2. 가독성을 위해 문장 사이사이에 줄바꿈(엔터)을 자주 사용하라.
+       3. **중요한 문장이나 핵심 조언은 반드시 <span class="text-amber-400 font-bold">...</span> 태그로 감싸서 강조하라.**
+       4. 이전 리딩 내용을 기억하고 있다면, 그 흐름이 어떻게 변했는지 반드시 언급하며 '진화된 조언'을 줄 것.
+       5. '오늘운 타로'는 반드시 세 단락으로 나누고, 단락 사이에는 빈 줄을 두 번 넣어라. 
+          **이때 [운명의 뿌리]와 같은 단락 제목은 절대 텍스트로 쓰지 말고, 내용만으로 흐름을 전달하라.**
+       6. 마지막 줄에 반드시 [INSIGHT] 사용자 성향 한줄 요약 포함.
+   `;
+
+const payload = {
+model: "gemini-2.5-flash",
+input: prompt,
+generation_config: { 
+max_output_tokens: 1000, 
+temperature: 0.7,
+thinking_level: "low"
+}
+};
+
+if (previousId) {
+payload.previous_interaction_id = previousId;
+}
+
+try {
+const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/interactions?key=${GEMINI_API_KEY}`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(payload)
+});
+
+if (!response.ok) throw new Error('INTERACTIONS_API_ERROR');
+
+const data = await response.json();
+
+if (data.id) {
+localStorage.setItem('lastInteractionId', data.id);
+}
+
+const outputs = data.outputs || [];
+const fullText = outputs[outputs.length - 1]?.text || "";
+
+const insightMatch = fullText.match(/\[INSIGHT\](.*)/);
+const mainInterpretation = fullText.replace(/\[INSIGHT\].*/, '').trim();
+const newInsights = insightMatch ? insightMatch[1].trim() : "";
+
+return { mainInterpretation, newInsights };
+} catch (error) {
+console.warn("AI 리딩 실패, 로컬 엔진 전환:", error);
+return null;
+}
+}
+
+// 성향 데이터 업데이트 로직
+function updateTendencyData(newInsight) {
+if (!newInsight) return;
+
+// 기존 요약에 새로운 통찰 결합 (간단한 진화 로직)
+if (!userTendency.summary) {
+userTendency.summary = newInsight;
+} else {
+userTendency.summary = `기존에 ${userTendency.summary} 성향이 있었으며, 최근에는 ${newInsight} 모습이 관찰됨.`;
+}
+
+localStorage.setItem('mungTarotTendency', JSON.stringify(userTendency));
+}
+
+// 3. 커스텀 토스트 메시지 함수
+function showMessage(msgObj, type = 'error') {
+const msg = typeof msgObj === 'string' ? msgObj : msgObj[currentLang];
+const container = document.getElementById('toast-container');
+const toast = document.createElement('div');
+const bgClass = type === 'error' ? 'bg-rose-900/80 border-rose-500/50 text-rose-100' : 'bg-slate-800 border-purple-500/50 text-amber-100';
+toast.className = `toast-enter flex items-center p-4 rounded-lg shadow-lg border backdrop-blur-md pointer-events-auto ${bgClass}`;
+toast.innerHTML = `<i data-lucide="${type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5 mr-3"></i><span class="text-sm font-medium">${msg}</span>`;
+container.appendChild(toast);
+lucide.createIcons({ root: toast });
+setTimeout(() => {
+toast.classList.remove('toast-enter');
+toast.classList.add('toast-leave');
+setTimeout(() => toast.remove(), 300);
+}, 3000);
+}
+
+// 4. 화면 전환 함수
+function showScreen(screenId) {
+// 모든 가능 화면 ID 목록 (누락 방지)
+const screens = [
+'auth-screen', 'profile-screen', 'selection-screen', 
+'partner-profile-screen', 'career-profile-screen', 'today-profile-screen', 
+'reading-screen', 'draw-screen', 'result-screen', 
+'contact-screen', 'privacy-screen', 'terms-screen'
+];
+
+screens.forEach(id => {
+const el = document.getElementById(id);
+if (el) {
+el.classList.add('hidden');
+el.classList.remove('flex');
+}
+});
+
+const targetScreen = document.getElementById(screenId);
+if (targetScreen) {
+targetScreen.classList.remove('hidden');
+targetScreen.classList.add('flex');
+
+// 특정 화면 진입 시 추가 처리
+if (screenId === 'selection-screen') {
+document.getElementById('display-name').textContent = userInfo.name || '여행자';
+}
+window.scrollTo(0, 0); // 화면 전환 시 최상단으로 이동
+} else {
+console.error("Target screen not found:", screenId);
+}
+}
+
+// 5. 로그인/회원가입 모드 전환
+function setAuthMode(mode) {
+currentMode = mode;
+const tabLogin = document.getElementById('tab-login');
+const tabSignup = document.getElementById('tab-signup');
+const consentGroup = document.getElementById('consent-group');
+const submitBtn = document.getElementById('auth-submit-btn');
+
+if (mode === 'login') {
+tabLogin.className = "flex-1 pb-3 font-medium transition-colors text-amber-400 border-b-2 border-amber-400";
+tabSignup.className = "flex-1 pb-3 font-medium transition-colors text-slate-400 hover:text-purple-300";
+consentGroup.classList.add('hidden');
+submitBtn.textContent = uiTranslations.btnSubmitLogin[currentLang];
+} else {
+tabSignup.className = "flex-1 pb-3 font-medium transition-colors text-amber-400 border-b-2 border-amber-400";
+tabLogin.className = "flex-1 pb-3 font-medium transition-colors text-slate-400 hover:text-purple-300";
+consentGroup.classList.remove('hidden');
+submitBtn.textContent = uiTranslations.btnSubmitSignup[currentLang];
+}
+}
+
+// 6. 폼 제출 이벤트 로직
+document.getElementById('auth-form').addEventListener('submit', function(e) {
+e.preventDefault(); 
+
+if (currentMode === 'signup') {
+if (!document.getElementById('consent-checkbox').checked) {
+showMessage(uiTranslations.errConsent);
+return;
+}
+showScreen('profile-screen');
+} else {
+// 로그인 모드
+if (userInfo && userInfo.name) {
+showScreen('selection-screen');
+} else {
+showScreen('profile-screen');
+}
+}
+});
+
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+e.preventDefault();
+const name = document.getElementById('name-input').value.trim();
+const year = document.getElementById('year-input').value.trim();
+const month = document.getElementById('month-input').value.trim();
+const day = document.getElementById('day-input').value.trim();
+const calendarType = document.getElementById('calendar-type-input').value;
+const gender = document.querySelector('input[name="gender"]:checked').value;
+const maritalStatus = document.querySelector('input[name="marital-status"]:checked').value;
+
+const y = parseInt(year, 10);
+const m = parseInt(month, 10);
+const d = parseInt(day, 10);
+const currentYear = new Date().getFullYear();
+
+if (!name || isNaN(y) || y < 1900 || y > currentYear || isNaN(m) || m < 1 || m > 12 || isNaN(d) || d < 1 || d > 31) {
+showMessage(uiTranslations.errDate);
+return;
+}
+
+const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+userInfo = { name, birthDate, calendarType, gender, maritalStatus };
+localStorage.setItem('mungTarotUser', JSON.stringify(userInfo));
+
+showScreen('selection-screen');
+});
+
+document.getElementById('partner-profile-form').addEventListener('submit', function(e) {
+e.preventDefault();
+const name = document.getElementById('partner-name-input').value.trim();
+const year = document.getElementById('partner-year-input').value.trim();
+const month = document.getElementById('partner-month-input').value.trim();
+const day = document.getElementById('partner-day-input').value.trim();
+const calendarType = document.getElementById('partner-calendar-type-input').value;
+const gender = document.querySelector('input[name="partner-gender"]:checked').value;
+const question = document.getElementById('partner-question-input').value.trim();
+
+const y = parseInt(year, 10);
+const m = parseInt(month, 10);
+const d = parseInt(day, 10);
+const currentYear = new Date().getFullYear();
+
+if (!name || isNaN(y) || y < 1900 || y > currentYear || isNaN(m) || m < 1 || m > 12 || isNaN(d) || d < 1 || d > 31) {
+showMessage(uiTranslations.errDate);
+return;
+}
+
+const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+partnerInfo = { name, birthDate, calendarType, gender, question };
+
+const partnerToSave = { ...partnerInfo, question: '' };
+localStorage.setItem('mungTarotPartner', JSON.stringify(partnerToSave));
+
+showScreen('reading-screen');
+setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
+});
+
+document.getElementById('career-profile-form').addEventListener('submit', function(e) {
+e.preventDefault();
+const question = document.getElementById('career-question-input').value.trim();
+careerInfo = { question };
+showScreen('reading-screen');
+setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
+});
+
+document.getElementById('today-profile-form').addEventListener('submit', function(e) {
+e.preventDefault();
+const question = document.getElementById('today-question-input').value.trim();
+todayInfo = { question };
+showScreen('reading-screen');
+setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
+});
+
+// 7. 타로 선택 로직
+function selectTarot(type) {
+selectedTarotType = type;
+maxDrawCount = (type === 'today') ? 3 : 5; 
+
+if (type === 'love') {
+showScreen('partner-profile-screen');
+} else if (type === 'career') {
+showScreen('career-profile-screen');
+} else if (type === 'today') {
+showScreen('today-profile-screen');
+} else {
+showScreen('reading-screen');
+setTimeout(() => { initDrawScreen(); showScreen('draw-screen'); }, 3000);
+}
+}
+
+// 8. 카드 뽑기 화면 초기화
+function initDrawScreen() {
+drawnCardsCount = 0;
+drawnCardsData = []; 
+const deckContainer = document.getElementById('card-deck-container');
+const resultContainer = document.getElementById('result-action-container');
+const instruction = document.getElementById('draw-instruction');
+const slotsContainer = document.getElementById('slots-container');
+
+deckContainer.innerHTML = '';
+instruction.innerHTML = uiTranslations.msgDrawInst[currentLang](maxDrawCount);
+
+resultContainer.classList.remove('opacity-100', 'pointer-events-auto');
+resultContainer.classList.add('opacity-0', 'pointer-events-none');
+
+slotsContainer.innerHTML = '';
+for (let i = 1; i <= maxDrawCount; i++) {
+slotsContainer.innerHTML += `
+                  <div id="slot-${i}" class="w-14 h-20 md:w-20 md:h-32 rounded-lg border-2 border-dashed border-purple-500/50 flex flex-col items-center justify-center transition-all duration-500">
+                      <span class="text-purple-500/50 text-xs md:text-sm font-bold">${i}</span>
+                  </div>
+              `;
+}
+
+const totalCards = 78;
+for (let i = 0; i < totalCards; i++) {
+const card = document.createElement('div');
+card.className = 'tarot-card-item fade-in';
+card.style.animationDelay = `${i * 0.015}s`; 
+card.onclick = function() { drawCard(this); };
+deckContainer.appendChild(card);
+}
+}
+
+// 9. 카드 한 장 뽑기
+function drawCard(cardElement) {
+if (drawnCardsCount >= maxDrawCount) return; 
+if (cardElement.classList.contains('drawn')) return; 
+
+drawnCardsCount++;
+cardElement.classList.add('drawn');
+
+let availableCards = tarotDatabase.filter(card => !drawnCardsData.some(drawn => drawn.id === card.id));
+let randomIdx = Math.floor(Math.random() * availableCards.length);
+drawnCardsData.push(availableCards[randomIdx]);
+
+const slot = document.getElementById(`slot-${drawnCardsCount}`);
+slot.className = 'w-14 h-20 md:w-20 md:h-32 rounded-lg border border-amber-400 shadow-lg shadow-amber-900/50 transition-all duration-500 fade-in';
+slot.style.background = "linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%)";
+slot.innerHTML = ''; 
+
+const instruction = document.getElementById('draw-instruction');
+if (drawnCardsCount < maxDrawCount) { 
+instruction.innerHTML = uiTranslations.msgDrawProgress[currentLang](drawnCardsCount, maxDrawCount - drawnCardsCount);
+} else {
+instruction.innerHTML = uiTranslations.msgDrawDone[currentLang];
+const resultContainer = document.getElementById('result-action-container');
+resultContainer.classList.remove('opacity-0', 'pointer-events-none');
+resultContainer.classList.add('opacity-100', 'pointer-events-auto');
+}
+}
+
+// --- 사주/명리 기반 우주 에너지 계산 (다국어 호환 교정) ---
+function calculateDestinyEnergy(birthDateStr) {
+const dateParts = birthDateStr.split('-');
+const birthYear = parseInt(dateParts[0], 10);
+const birthMonth = parseInt(dateParts[1], 10);
+const currentYear = new Date().getFullYear();
+const age = currentYear - birthYear;
+
+let innateEnergy = "";
+let energyFlavor = {};
+if (birthMonth >= 2 && birthMonth <= 4) {
+innateEnergy = "spring";
+energyFlavor = {
+ko: "만물이 소생하는 봄의 기운처럼, 새로운 가능성을 탐색하고 유연하게 상황에 적응하는 잠재력",
+en: "Like the energy of spring where all things revive, the potential to explore new possibilities and flexibly adapt"
+};
+} else if (birthMonth >= 5 && birthMonth <= 7) {
+innateEnergy = "summer";
+energyFlavor = {
+ko: "여름의 태양처럼 강한 확산의 기운을 지니며, 자신의 목표를 향해 열정적으로 에너지를 발산하는 성향",
+en: "Having a strong energy of expansion like the summer sun, a tendency to passionately radiate energy towards goals"
+};
+} else if (birthMonth >= 8 && birthMonth <= 10) {
+innateEnergy = "autumn";
+energyFlavor = {
+ko: "가을의 결실을 맺는 기운처럼, 불필요한 것을 정리하고 현실적이며 구조적인 안정을 추구하는 성향",
+en: "Like the energy of autumn bearing fruit, a tendency to clear the unnecessary and pursue realistic structural stability"
+};
+} else {
+innateEnergy = "winter";
+energyFlavor = {
+ko: "겨울의 응축된 기운처럼, 겉으로 드러나기보다 내면의 사유를 깊이 하고 통찰력을 축적하는 성향",
+en: "Like the condensed energy of winter, a tendency to deepen inner thought and accumulate insight rather than revealing outward"
+};
+}
+
+const lifePhase = age % 10;
+let cycleFlow = {};
+if (lifePhase <= 2) {
+cycleFlow = {
+ko: "기존의 익숙한 환경에서 벗어나 새로운 삶의 방향성을 모색하게 되는 생애 주기의 전환점",
+en: "A turning point in the life cycle where one seeks a new direction, breaking away from the familiar environment"
+};
+} else if (lifePhase <= 6) {
+cycleFlow = {
+ko: "축적된 에너지를 외부로 발산하며, 사회적 역할이나 개인적 역량을 활발히 확장해 나가는 시기",
+en: "A period of actively expanding social roles or personal capabilities by radiating accumulated energy outward"
+};
+} else {
+cycleFlow = {
+ko: "외적인 확장보다는 내실을 다지고, 지나온 경험들을 통합하여 심리적 안정감을 구축해야 하는 시기",
+en: "A period to build psychological stability by consolidating inner strength and integrating past experiences rather than outward expansion"
+};
+}
+
+const yearlyPhase = (currentYear - birthYear) % 12;
+let yearlyRhythm = {};
+if (yearlyPhase < 4) {
+yearlyRhythm = {
+ko: "새로운 계획을 세우거나 기초를 다지기에 적합한, 장기적 관점에서의 시작을 의미하는 흐름",
+en: "A flow signifying a start from a long-term perspective, suitable for making new plans or laying foundations"
+};
+} else if (yearlyPhase < 8) {
+yearlyRhythm = {
+ko: "그간의 노력이 구체적인 결과물로 드러나며, 외부 활동성과 성과가 극대화되는 절정의 흐름",
+en: "A peak flow where past efforts manifest as concrete results, maximizing external activity and achievements"
+};
+} else {
+yearlyRhythm = {
+ko: "현상 유지를 목표로 하며, 에너지를 재충전하고 내면의 균형을 회복하는 데 집중해야 할 휴식의 흐름",
+en: "A resting flow aimed at maintaining the status quo, focusing on recharging energy and restoring inner balance"
+};
+}
+
+return { innateEnergy, energyFlavor, cycleFlow, yearlyRhythm };
+}
+
+// --- 위치별 딥리딩 생성 함수 (다국어 처리) ---
+function generateDeepInterpretation(card, index, userInfo, type, partnerInfo) {
+const destiny = calculateDestinyEnergy(userInfo.birthDate);
+const cName = card.name[currentLang];
+const cCore = card.baseCore[currentLang];
+const uEnergy = destiny.energyFlavor[currentLang];
+const uCycle = destiny.cycleFlow[currentLang];
+const uYearly = destiny.yearlyRhythm[currentLang];
+
+if (currentLang === 'en') {
+if (type === 'today') {
+let contextPrefix = `In the <strong>mystical flow of your destiny</strong>, `;
+let questionHint = todayInfo.question ? ` Especially regarding your task <em>"${todayInfo.question}"</em>, ` : "";
+let text = "";
+switch (index) {
+case 0:
+text = `The first card, <strong>'${cName}'</strong>, reveals the direct cause of today's energy. ${contextPrefix} ${questionHint} it shows that <strong>[${cCore}]</strong> is the foundation.<br/><br/>
+                          <span class="text-amber-400 font-bold">Understanding this starting point is essential to navigating your path today.</span>`;
+break;
+case 1:
+text = `The second card, <strong>'${cName}'</strong>, describes how things are currently manifesting. ${questionHint} the vibration of <strong>[${cCore}]</strong> is becoming more distinct.<br/><br/>
+                          <span class="text-amber-400 font-bold">Observe this movement calmly and maintain your center amidst the unfolding events.</span>`;
+break;
+case 2:
+text = `The third card, <strong>'${cName}'</strong>, offers the guidance as revealed by the stars. ${questionHint} I suggest you take action by focusing on <strong>[${cCore}]</strong>.<br/><br/>
+                          <span class="text-amber-400 font-bold">This is the divine key to transforming today's challenges into wisdom and growth.</span>`;
+break;
+}
+return text;
+}
+
+let contextPrefix = "";
+let questionContext = "";
+let adviceSuffix = "";
+
+if (type === 'love' && partnerInfo.name) {
+const maritalStatusHint = userInfo.maritalStatus === 'married' ? '(within the trajectory of your current married life) ' : '';
+contextPrefix = `In the <strong>relationship dynamics with ${partnerInfo.name}</strong>, ${maritalStatusHint}`;
+
+const partnerDestiny = calculateDestinyEnergy(partnerInfo.birthDate);
+const userEnergyKeyword = uEnergy.split(',')[0].replace('Like the energy of ', '');
+const partnerEnergyKeyword = partnerDestiny.energyFlavor['en'].split(',')[0].replace('Like the energy of ', '');
+
+if (partnerInfo.question) {
+questionContext = ` Specifically, regarding the issue you asked about: <em>"${partnerInfo.question}"</em>, the symbolism of the card is closely related.`;
+adviceSuffix = ` Regarding your question <em>"${partnerInfo.question}"</em>, it implies that recognizing your inherent '${userEnergyKeyword}' and the other person's '${partnerEnergyKeyword}' may be fundamentally different, and the most rational solution will be derived when you coordinate each other's trajectories.`;
+} else {
+adviceSuffix = ` For the relationship to progress, a mature attitude of objectively understanding and complementing the inherent differences between your '${userEnergyKeyword}' and the other person's '${partnerEnergyKeyword}' will be paramount.`;
+}
+} else if (type === 'career') {
+contextPrefix = `In the <strong>realistic flow related to career and wealth</strong>, `;
+if (careerInfo.question) {
+questionContext = ` Specifically, regarding your professional concern: <em>"${careerInfo.question}"</em>, the meaning of this card provides an important clue.`;
+adviceSuffix = ` Regarding your question <em>"${careerInfo.question}"</em>, rather than being swayed by vague advice from others, you will find the most rational breakthrough when you trust your expertise and make judgments based on realistic data.`;
+}
+} else {
+contextPrefix = `Considering the <strong>overall direction of your life this year</strong>, `;
+}
+
+let text = "";
+switch (index) {
+case 0:
+text = `The card placed in the first position is <strong>'${cName}'</strong>. This card reflects the core situation or psychological state you are currently facing. ${contextPrefix} what this card indicates is <strong>[${cCore}]</strong>.${questionContext}<br/><br/>
+                      Looking from an analytical perspective, you are currently positioned in <em>${uCycle}</em>. Behind superficial phenomena, this is a point where this cyclical change inevitably demands your acceptance of new perspectives or a change in action. An attitude of facing the current situation rather than emotionally avoiding it is necessary.`;
+break;
+case 1:
+text = `The second card is <strong>'${cName}'</strong>. It represents the inner conflict or external constraints you must currently overcome. The meaning of <strong>[${cCore}]</strong> implied by the card may be the cause triggering your current concerns.<br/><br/>
+                      When faced with these constraints, your innate <em>${uEnergy}</em> can act as an important coping mechanism. Rather than blaming external factors for the problem at hand, pondering how to practically manifest your unique disposition is the starting point for problem-solving.`;
+break;
+case 2:
+text = `The third card, <strong>'${cName}'</strong>, signifies the past background and unconscious patterns that formed your current situation. Experiences related to <strong>[${cCore}]</strong> during the past times have built your current foundation.<br/><br/>
+                      Positive and negative experiences from the past are never meaningless. It implies that those times have gathered to become the psychological foundation upon which you judge and cope with situations. Rather than regretting past decisions, you should focus on how to apply the insights gained from them to the present.`;
+break;
+case 3:
+text = `The fourth card, <strong>'${cName}'</strong>, predicts the near-future situation that is highly likely to unfold if current conditions are maintained. ${contextPrefix} the aspect of <strong>[${cCore}]</strong> is expected to materialize.<br/><br/>
+                      In particular, the macro rhythm running through your life this year is <em>${uYearly}</em>. Cross-analyzing this flow and the card's symbolism indicates that the approaching future will reduce risks and yield results when you objectively grasp the surrounding context and flexibly respond to the situation, rather than trying to force control.`;
+break;
+case 4:
+text = `The final fifth card, <strong>'${cName}'</strong>, is the ultimate advice derived by observing the overall situation. This card ultimately directs that it is rational to move towards the direction of <strong>[${cCore}]</strong>.<br/><br/>
+                      Synthesizing the context of the previous cards and your temperamental traits, you possess sufficient internal resources to solve the problems you face. Guard against vague expectations or excessive anxiety, acknowledge realistic limits, but maintain a calm attitude of doing your best in the areas you can. Your independent choices will create the right trajectory.${adviceSuffix}`;
+break;
+}
+return text;
+
+} else {
+// 기존 국문 해석 로직 (신비로운 버전 - 라벨 제거 및 강조 추가)
+if (type === 'today') {
+let contextPrefix = `<strong>운명의 신비로운 흐름</strong> 속에서 `;
+let questionHint = todayInfo.question ? ` 특히 고민하시는 <em>"${todayInfo.question}"</em>라는 일과 관련하여, ` : "";
+let text = "";
+switch (index) {
+case 0:
+text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 오늘 당신이 마주한 에너지의 깊은 뿌리를 드러냅니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>라는 상황이 근간을 이루고 있습니다.<br/><br/>
+                          <span class="text-amber-400 font-bold">이 근본 원인을 이해하는 것이 오늘 하루를 지혜롭게 통과하는 시작점이 될 것입니다.</span>`;
+break;
+case 1:
+text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 지금 당신의 삶에서 일어나는 파동이 어떻게 전개되고 있는지를 보여줍니다. ${questionHint} <strong>[${cCore}]</strong>라는 움직임이 더욱 선명한 울림으로 다가올 것입니다.<br/><br/>
+                          <span class="text-amber-400 font-bold">흐름에 몸을 맡기되, 중심을 잃지 말고 상황의 변화를 조용히 관찰하십시오.</span>`;
+break;
+case 2:
+text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 밤하늘의 빛처럼 당신을 이끄는 별의 인도를 전합니다. ${questionHint} 주저하지 말고 <strong>[${cCore}]</strong>라는 방향으로 발걸음을 옮겨 보시길 권합니다.<br/><br/>
+                          <span class="text-amber-400 font-bold">이것이 오늘 하루의 혼란을 지혜로 바꾸고 평온을 되찾아줄 신성한 열쇠가 될 것입니다.</span>`;
+break;
+}
+return text;
+}
+
+let contextPrefix = "";
+let questionContext = "";
+let adviceSuffix = "";
+
+if (type === 'love' && partnerInfo.name) {
+const maritalStatusHint = userInfo.maritalStatus === 'married' ? '(현재 가정을 꾸리고 계신 삶의 궤적 안에서) ' : '';
+contextPrefix = `<strong>${partnerInfo.name}님과의 관계 역학</strong> 속에서 ${maritalStatusHint}`;
+
+const partnerDestiny = calculateDestinyEnergy(partnerInfo.birthDate);
+const userEnergyKeyword = uEnergy.split('처럼')[0];
+const partnerEnergyKeyword = partnerDestiny.energyFlavor['ko'].split('처럼')[0];
+
+if (partnerInfo.question) {
+questionContext = ` 특히, 질문해주신 <em>"${partnerInfo.question}"</em>라는 사안에 대하여 카드의 상징성이 밀접하게 연관되어 있습니다.`;
+adviceSuffix = ` 남겨주셨던 <em>"${partnerInfo.question}"</em>라는 질문에 대해서는, 당신이 지닌 '${userEnergyKeyword}'과 상대방의 '${partnerEnergyKeyword}'이 본질적으로 다를 수 있음을 인지하고, 서로의 궤적을 조율해 나갈 때 가장 합리적인 해결책이 도출될 것임을 시사합니다.`;
+} else {
+adviceSuffix = ` 관계의 진전을 위해서는 당신이 지닌 '${userEnergyKeyword}'과 상대방의 '${partnerEnergyKeyword}'이 지니는 고유한 차이를 객관적으로 이해하고, 상호 보완하려는 성숙한 태도가 무엇보다 중요할 것입니다.`;
+}
+} else if (type === 'career') {
+contextPrefix = `<strong>직업 및 재물과 관련된 현실적 흐름</strong> 속에서 `;
+if (careerInfo.question) {
+questionContext = ` 특히, 작성해주신 <em>"${careerInfo.question}"</em>라는 직업적 고민과 관련하여 이 카드의 의미가 중요한 단서가 됩니다.`;
+adviceSuffix = ` 남겨주셨던 <em>"${careerInfo.question}"</em>라는 질문과 관련하여, 막연한 주변의 조언에 휩쓸리기보다는 본인의 전문성을 믿고 현실적인 데이터를 기반으로 판단을 내릴 때 가장 합리적인 돌파구를 마련하실 수 있을 것입니다.`;
+}
+} else {
+contextPrefix = `<strong>올 한 해 삶의 전반적인 방향성</strong>을 고려할 때, `;
+}
+
+let text = "";
+switch (index) {
+case 0:
+text = `첫 번째 자리에 놓인 카드는 <strong>'${cName}'</strong>입니다. 이 카드는 현재 ${userInfo.name}님이 직면하고 있는 핵심적인 상황이나 심리적 상태를 반영합니다. ${contextPrefix} 이 카드가 지시하는 바는 <strong>[${cCore}]</strong>입니다.${questionContext}<br/><br/>
+                      분석적 관점에서 살펴보면, ${userInfo.name}님은 현재 <em>${uCycle}</em>에 위치해 있습니다. 표면적인 현상들 이면에서, 이러한 주기의 변화가 당신에게 새로운 관점의 수용이나 행동의 변화를 필연적으로 요구하고 있는 시점입니다. 현 상황을 감정적으로 회피하기보다 직시하는 태도가 필요합니다.`;
+break;
+case 1:
+text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 당신이 현재 극복해야 할 내면의 갈등이나 외부의 제약 요인을 나타냅니다. 카드가 내포한 <strong>[${cCore}]</strong>의 의미가 현재의 고민을 촉발하는 원인일 수 있습니다.<br/><br/>
+                      이러한 제약에 직면했을 때, 당신이 선천적으로 지닌 <em>${uEnergy}</em>이 중요한 대처 기제로 작용할 수 있습니다. 당면한 문제를 외부의 탓으로 돌리기보다, 자신의 고유한 성향을 어떻게 실용적으로 발현할 것인지 고민해 보는 것이 문제 해결의 단초가 됩니다.`;
+break;
+case 2:
+text = `세 번째 <strong>'${cName}'</strong> 카드는 현재 상황을 형성한 과거의 배경 및 무의식적 패턴을 의미합니다. 지나온 시간 동안의 <strong>[${cCore}]</strong>와 관련된 경험들이 현재의 토대를 구축했습니다.<br/><br/>
+                      과거의 긍정적, 부정적 경험들은 결코 무의미하지 않습니다. 그 시간들이 모여 현재의 ${userInfo.name}님이 상황을 판단하고 대처하는 심리적 토대가 되었음을 시사합니다. 과거의 결정에 대한 후회보다는, 이를 통해 얻은 통찰을 현재에 어떻게 적용할 것인지에 집중해야 합니다.`;
+break;
+case 3:
+text = `네 번째 <strong>'${cName}'</strong> 카드는 현재의 조건들이 유지될 경우 전개될 가능성이 높은 가까운 미래의 상황을 예측합니다. ${contextPrefix} <strong>[${cCore}]</strong>의 양상이 구체화될 것으로 보입니다.<br/><br/>
+                      특히 올해 당신의 삶을 관통하는 거시적 리듬은 <em>${uYearly}</em>입니다. 이 흐름과 카드의 상징을 교차 분석해 볼 때, 다가올 미래는 억지로 통제하려 할 때보다 주변의 맥락을 객관적으로 파악하고 상황에 유연하게 대응할 때 리스크를 줄이고 성과를 낼 수 있음을 나타냅니다.`;
+break;
+case 4:
+text = `마지막 다섯 번째 <strong>'${cName}'</strong> 카드는 전체적인 상황을 조망하며 도출되는 궁극적인 조언입니다. 이 카드는 최종적으로 <strong>[${cCore}]</strong>의 방향성을 향해 나아가는 것이 합리적임을 지시하고 있습니다.<br/><br/>
+                      앞선 카드들의 맥락과 당신의 기질적 특성을 종합할 때, 당신은 직면한 문제를 충분히 해결할 수 있는 내적 자원을 지니고 있습니다. 막연한 기대나 과도한 불안을 경계하고, 현실적인 한계를 인정하되 자신이 할 수 있는 영역에서 최선을 다하는 담담한 태도를 유지하시기 바랍니다. 당신의 주체적인 선택이 올바른 궤적을 만들어낼 것입니다.${adviceSuffix}`;
+break;
+}
+return text;
+}
+}
+
+// 10. 결과 및 해석 화면 렌더링 로직 (AI + 폴백 하이브리드)
+async function showResultScreen() {
+showScreen('result-screen');
+
+const starContainer = document.getElementById('star-cards-container');
+const interpretationContent = document.getElementById('interpretation-content');
+const svgContainer = document.getElementById('spread-svg-container');
+
+starContainer.innerHTML = '';
+interpretationContent.innerHTML = `
+       <div id="ai-loading-indicator" class="flex flex-col items-center justify-center py-12 text-center">
+           <div class="w-12 h-12 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-4"></div>
+           <p class="text-amber-200 animate-pulse">타로술사가 당신의 기운을 읽으며<br/>별의 속삭임을 정리하고 있습니다...</p>
+       </div>
+   `;
+// 카드 배치 (기존 시각 효과 유지)
+if (maxDrawCount === 3) {
+svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /><circle cx="20" cy="50" r="1.5" fill="#fbbf24" /><circle cx="50" cy="50" r="1.5" fill="#fbbf24" /><circle cx="80" cy="50" r="1.5" fill="#fbbf24" /></svg>`;
+} else {
+svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100"><polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" /><polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" /></svg>`;
+}
+
+drawnCardsData.forEach((card, index) => {
+const cardEl = document.createElement('div');
+const posClass = maxDrawCount === 3 ? `pos-today-${index + 1}` : `pos-${index + 1}`;
+cardEl.className = `spread-card ${posClass} fade-in`;
+cardEl.style.animationDelay = `${index * 0.2}s`;
+cardEl.innerHTML = `
+       <div class="card-front">
+           <i data-lucide="${card.icon}" class="w-8 h-8 text-amber-600 mb-2"></i>
+           <span class="text-[0.65rem] font-bold leading-tight break-keep-all">${card.name[currentLang]}</span>
+       </div>
+   `;
+starContainer.appendChild(cardEl);
+});
+lucide.createIcons();
+
+// AI 해석 호출
+const contextInfo = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
+const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, contextInfo);
+
+// 로딩 인디케이터 제거
+interpretationContent.innerHTML = '';
+
+if (aiResult && aiResult.mainInterpretation) {
+// 결과 표시 (줄바꿈 및 가독성 강화)
+const formattedText = aiResult.mainInterpretation.replace(/\\n/g, '<br/>');
+interpretationContent.innerHTML = `
+       <div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in shadow-inner leading-relaxed text-slate-200 whitespace-pre-line text-lg">
+           ${formattedText}
+       </div>
+       ${aiResult.newInsights ? `
+           <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-sm text-amber-200 fade-in">
+               <i data-lucide="brain-circuit" class="w-4 h-4 inline mr-2"></i> AI Insight: ${aiResult.newInsights}
+           </div>
+       ` : ''}
+   `;
+
+// 성향 업데이트
+updateTendencyData(aiResult.newInsights);
+} else {
+// AI 실패 시 기존 로컬 해석(Fallback)으로 전환
+const spreadTitlesKO = maxDrawCount === 3 ? ["✦ 태초의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
+const spreadTitlesEN = maxDrawCount === 3 ? ["✦ Primeval Energy", "✦ Unfolding Flow", "✦ Celestial Revelation"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
+const activeTitles = currentLang === 'en' ? spreadTitlesEN : spreadTitlesKO;
+
+drawnCardsData.forEach((card, index) => {
+const textEl = document.createElement('div');
+textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 fade-in shadow-inner mb-4`;
+const deepInterpretationText = generateDeepInterpretation(card, index, userInfo, selectedTarotType, partnerInfo);
+textEl.innerHTML = `
+           <h4 class="text-amber-300 font-bold mb-4 flex items-center text-xl">
+               <span class="bg-amber-500/20 text-amber-200 w-8 h-8 flex items-center justify-center rounded-full text-sm mr-3 border border-amber-500/30">${index + 1}</span>
+               ${activeTitles[index]}
+           </h4>
+           <p class="text-slate-200 md:ml-11 ml-2 leading-loose">
+               ${deepInterpretationText}
+           </p>
+       `;
+interpretationContent.appendChild(textEl);
+});
+}
+lucide.createIcons();
+}
+
+// 11. 뒤로가기 / 처음으로 로직
+function goToSelection() {
+showScreen('selection-screen');
+}
+
+function goBack() {
+showScreen('auth-screen');
+}
+
 </script>
-</body>
-</html>
