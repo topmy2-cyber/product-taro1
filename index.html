@@ -1277,17 +1277,35 @@ setTimeout(() => toast.remove(), 300);
 
 // 4. 화면 전환 함수
 function showScreen(screenId) {
-const screens = ['auth-screen', 'profile-screen', 'selection-screen', 'partner-profile-screen', 'career-profile-screen', 'today-profile-screen', 'reading-screen', 'draw-screen', 'result-screen', 'contact-screen', 'privacy-screen', 'terms-screen'];
-screens.forEach(id => {
-document.getElementById(id).classList.add('hidden');
-document.getElementById(id).classList.remove('flex');
-});
-const targetScreen = document.getElementById(screenId);
-targetScreen.classList.remove('hidden');
-targetScreen.classList.add('flex');
-if (screenId === 'selection-screen') {
-document.getElementById('display-name').textContent = userInfo.name;
-}
+    // 모든 가능 화면 ID 목록 (누락 방지)
+    const screens = [
+        'auth-screen', 'profile-screen', 'selection-screen', 
+        'partner-profile-screen', 'career-profile-screen', 'today-profile-screen', 
+        'reading-screen', 'draw-screen', 'result-screen', 
+        'contact-screen', 'privacy-screen', 'terms-screen'
+    ];
+    
+    screens.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+    });
+
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.remove('hidden');
+        targetScreen.classList.add('flex');
+        
+        // 특정 화면 진입 시 추가 처리
+        if (screenId === 'selection-screen') {
+            document.getElementById('display-name').textContent = userInfo.name || '여행자';
+        }
+        window.scrollTo(0, 0); // 화면 전환 시 최상단으로 이동
+    } else {
+        console.error("Target screen not found:", screenId);
+    }
 }
 
 // 5. 로그인/회원가입 모드 전환
@@ -1313,18 +1331,22 @@ submitBtn.textContent = uiTranslations.btnSubmitSignup[currentLang];
 
 // 6. 폼 제출 이벤트 로직
 document.getElementById('auth-form').addEventListener('submit', function(e) {
-e.preventDefault(); 
-if (currentMode === 'signup' && !document.getElementById('consent-checkbox').checked) {
-showMessage(uiTranslations.errConsent);
-return;
-}
-
-// [개선] 로그인 시 기존 정보가 있다면 바로 선택 화면으로, 없다면 프로필 설정으로
-if (currentMode === 'login' && userInfo.name) {
-    showScreen('selection-screen');
-} else {
-    showScreen('profile-screen');
-}
+    e.preventDefault(); 
+    
+    if (currentMode === 'signup') {
+        if (!document.getElementById('consent-checkbox').checked) {
+            showMessage(uiTranslations.errConsent);
+            return;
+        }
+        showScreen('profile-screen');
+    } else {
+        // 로그인 모드
+        if (userInfo && userInfo.name) {
+            showScreen('selection-screen');
+        } else {
+            showScreen('profile-screen');
+        }
+    }
 });
 
 document.getElementById('profile-form').addEventListener('submit', function(e) {
