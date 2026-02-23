@@ -1225,9 +1225,10 @@ async function fetchAIInterpretation(cards, user, type, contextInfo) {
         
         규칙:
         1. '에너지', '궤적', '공명' 같은 추상적 단어 금지. "지금 당장 ~하세요" 식의 일상 언어만 사용.
-        2. 이전 리딩 내용을 기억하고 있다면, 그 흐름이 어떻게 변했는지 반드시 언급하며 '진화된 조언'을 줄 것.
-        3. '오늘운 타로'는 [문제의 근본] - [상황의 심화] - [해결책] 순서로 분석.
-        4. 마지막 줄에 반드시 [INSIGHT] 사용자 성향 한줄 요약 포함.
+        2. 가독성을 위해 문장 사이사이에 줄바꿈(엔터)을 자주 사용하고, 핵심 내용은 '✦' 기호를 앞에 붙여 강조할 것.
+        3. 이전 리딩 내용을 기억하고 있다면, 그 흐름이 어떻게 변했는지 반드시 언급하며 '진화된 조언'을 줄 것.
+        4. '오늘운 타로'는 [문제의 근본] - [상황의 심화] - [해결책] 순서로 분석.
+        5. 마지막 줄에 반드시 [INSIGHT] 사용자 성향 한줄 요약 포함.
     `;
 
     const payload = {
@@ -1778,13 +1779,12 @@ const interpretationContent = document.getElementById('interpretation-content');
 const svgContainer = document.getElementById('spread-svg-container');
 
 starContainer.innerHTML = '';
-interpretationContent.innerHTML = `
-    <div id="ai-loading-indicator" class="flex flex-col items-center justify-center py-12 text-center">
-        <div class="w-12 h-12 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-4"></div>
-        <p class="text-amber-200 animate-pulse">운명의 흐름을 AI가 정밀 분석 중입니다...</p>
-    </div>
-`;
-
+    interpretationContent.innerHTML = `
+        <div id="ai-loading-indicator" class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-12 h-12 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-4"></div>
+            <p class="text-amber-200 animate-pulse">타로술사가 당신의 기운을 읽으며<br/>별의 속삭임을 정리하고 있습니다...</p>
+        </div>
+    `;
 // 카드 배치 (기존 시각 효과 유지)
 if (maxDrawCount === 3) {
     svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /><circle cx="20" cy="50" r="1.5" fill="#fbbf24" /><circle cx="50" cy="50" r="1.5" fill="#fbbf24" /><circle cx="80" cy="50" r="1.5" fill="#fbbf24" /></svg>`;
