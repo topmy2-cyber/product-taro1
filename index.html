@@ -1207,6 +1207,7 @@ console.error("데이터를 불러오는 중 오류가 발생했습니다.", err
 }
 
 // AI 해석 엔진 (Gemini API) - 토큰 최적화 버전
+// AI 해석 엔진 (Gemini Interactions API Beta) - 상태 유지 및 토큰 최적화 버전
 async function fetchAIInterpretation(cards, user, type, contextInfo) {
     if (!GEMINI_API_KEY) return null;
 
@@ -1214,43 +1215,61 @@ async function fetchAIInterpretation(cards, user, type, contextInfo) {
     const cardNames = cards.map(c => c.name.ko).join(', ');
     const question = contextInfo.question || "전반적인 운세";
     
-    // 토큰 절약을 위해 프롬프트를 핵심 위주로 간소화 (직설적 버전)
+    // 서버측 상태 유지를 위한 이전 인터랙션 ID 가져오기
+    const previousId = localStorage.getItem('lastInteractionId');
+    
     const prompt = `
-        역할: 현실적인 타로/명리 상담사. 
-        사용자: ${user.name}, 사주특징: ${destiny.energyFlavor.ko}, 성향요약: ${userTendency.summary || "없음"}.
+        [필수지시] 현실적인 타로/명리 상담사로서 답변하라.
         상황: ${type} 리딩 (${question}), 카드: ${cardNames}.
-        지시: 
-        1. '에너지', '궤적', '공명' 같은 추상적/역학적 전문용어는 절대 쓰지 말 것.
-        2. 사용자가 오늘 당장 무엇을 해야 할지, 어떤 상황을 조심해야 할지 '일상적인 단어'로 직설적으로 말할 것.
-        3. '오늘운 타로'는 [문제의 근본] - [상황의 심화] - [해결책] 순서로 분석하되, 실제 벌어질 법한 일 위주로 답변할 것.
-        4. 과거 성향을 고려해 "평소와 달리 이번에는 이렇게 하라"는 식의 실질적 변화를 짚어줄 것.
-        5. 불필요한 인삿말 생략. 짧고 명확한 한글 문장 사용.
-        6. 마지막 줄에 [INSIGHT] 새 성향 요약(1문장) 필수.
+        사용자특징: ${user.name}, 사주기운: ${destiny.energyFlavor.ko}.
+        
+        규칙:
+        1. '에너지', '궤적', '공명' 같은 추상적 단어 금지. "지금 당장 ~하세요" 식의 일상 언어만 사용.
+        2. 이전 리딩 내용을 기억하고 있다면, 그 흐름이 어떻게 변했는지 반드시 언급하며 '진화된 조언'을 줄 것.
+        3. '오늘운 타로'는 [문제의 근본] - [상황의 심화] - [해결책] 순서로 분석.
+        4. 마지막 줄에 반드시 [INSIGHT] 사용자 성향 한줄 요약 포함.
     `;
 
+    const payload = {
+        model: "gemini-2.5-flash",
+        input: prompt,
+        generation_config: { 
+            max_output_tokens: 1000, 
+            temperature: 0.7,
+            thinking_level: "low"
+        }
+    };
+
+    if (previousId) {
+        payload.previous_interaction_id = previousId;
+    }
+
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/interactions?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { maxOutputTokens: 800, temperature: 0.7 } // 출력 토큰 제한으로 비용 절감
-            })
+            body: JSON.stringify(payload)
         });
         
-        if (!response.ok) throw new Error('API_LIMIT_OR_ERROR');
+        if (!response.ok) throw new Error('INTERACTIONS_API_ERROR');
 
         const data = await response.json();
-        const fullText = data.candidates[0].content.parts[0].text;
         
-        const insightMatch = fullText.match(/\\[INSIGHT\\](.*)/);
-        const mainInterpretation = fullText.replace(/\\[INSIGHT\\].*/, '').trim();
+        if (data.id) {
+            localStorage.setItem('lastInteractionId', data.id);
+        }
+
+        const outputs = data.outputs || [];
+        const fullText = outputs[outputs.length - 1]?.text || "";
+        
+        const insightMatch = fullText.match(/\[INSIGHT\](.*)/);
+        const mainInterpretation = fullText.replace(/\[INSIGHT\].*/, '').trim();
         const newInsights = insightMatch ? insightMatch[1].trim() : "";
 
         return { mainInterpretation, newInsights };
     } catch (error) {
-        console.warn("AI 리딩 실패, 로컬 해석으로 전환합니다:", error);
-        return null; // 폴백 트리거
+        console.warn("AI 리딩 실패, 로컬 엔진 전환:", error);
+        return null;
     }
 }
 
