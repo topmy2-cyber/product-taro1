@@ -216,6 +216,14 @@
     <!-- 토스트 메시지 컨테이너 -->
     <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- 전역 제휴 문의 고정 버튼 (우측 하단) -->
+    <div id="global-contact-btn" class="fixed bottom-6 right-6 z-50">
+        <button onclick="showScreen('contact-screen')" class="group flex items-center bg-slate-900/60 backdrop-blur-md border border-slate-700 hover:border-amber-500/50 text-slate-400 hover:text-amber-400 px-4 py-2.5 rounded-full shadow-lg transition-all duration-300">
+            <i data-lucide="mail" class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="text-xs md:text-sm font-medium" data-i18n="btnContact">제휴 및 협업 문의</span>
+        </button>
+    </div>
+
     <!-- 메인 컨텐츠 영역 -->
     <div class="relative z-10 w-full">
 
