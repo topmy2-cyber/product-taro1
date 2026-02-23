@@ -143,7 +143,9 @@ width: 3.5rem;
 height: 5.5rem;
 margin-left: -3.3rem; /* 78장 배치를 위한 간격 축소 */
 border-radius: 0.5rem;
-background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+background-image: url('card-back.png');
+background-size: cover;
+background-position: center;
 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
 cursor: pointer;
@@ -1567,7 +1569,9 @@ drawnCardsData.push(availableCards[randomIdx]);
 
 const slot = document.getElementById(`slot-${drawnCardsCount}`);
 slot.className = 'w-14 h-20 md:w-20 md:h-32 rounded-lg border border-amber-400 shadow-lg shadow-amber-900/50 transition-all duration-500 fade-in';
-slot.style.background = "linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%)";
+slot.style.backgroundImage = "url('card-back.png')";
+slot.style.backgroundSize = "cover";
+slot.style.backgroundPosition = "center";
 slot.innerHTML = ''; 
 
 const instruction = document.getElementById('draw-instruction');
