@@ -1221,9 +1221,10 @@ async function fetchAIInterpretation(cards, user, type, contextInfo) {
         상황: ${type} 리딩 (${question}), 카드: ${cardNames}.
         지시: 
         1. 사주와 타로를 결합해 '핵심 통찰' 위주로 간결하게 리딩할 것.
-        2. 과거 성향을 고려해 변화된 점을 짚어줄 것.
-        3. 불필요한 인삿말 생략. 전문적이고 담백한 어조.
-        4. 마지막 줄에 [INSIGHT] 새 성향 요약(1문장) 필수.
+        2. '오늘운 타로'의 경우 세 장의 카드를 순서대로 [문제의 근본] - [상황의 심화] - [해결책]의 흐름으로 분석할 것.
+        3. 과거 성향을 고려해 변화된 점을 짚어줄 것.
+        4. 불필요한 인삿말 생략. 전문적이고 담백한 어조.
+        5. 마지막 줄에 [INSIGHT] 새 성향 요약(1문장) 필수.
     `;
 
     try {
@@ -1597,21 +1598,21 @@ const uYearly = destiny.yearlyRhythm[currentLang];
 
 if (currentLang === 'en') {
 if (type === 'today') {
-let contextPrefix = `In the <strong>overall flow of your day</strong>, `;
+let contextPrefix = `In the <strong>analytical flow of your situation</strong>, `;
 let questionHint = todayInfo.question ? ` Especially regarding your concern <em>"${todayInfo.question}"</em>, ` : "";
 let text = "";
 switch (index) {
 case 0:
-text = `The first card is <strong>'${cName}'</strong>. It represents your psychological state or environment as you open your eyes and start the day. ${contextPrefix} ${questionHint} it implies <strong>[${cCore}]</strong>.<br/><br/>
-                           From a psychological perspective, this morning requires an attitude of observing the given energy as it is rather than trying to control the situation. Your inherent <em>${uEnergy}</em> will combine with the symbolism of this card to form a rational blueprint for today.`;
+text = `The first card, <strong>'${cName}'</strong>, points to the <strong>root cause</strong> of the energy you are facing today. ${contextPrefix} ${questionHint} it implies <strong>[${cCore}]</strong>.<br/><br/>
+                           This card suggests that today's flow originates from this fundamental energy. Understanding this root cause is the first step to navigating the day effectively.`;
 break;
 case 1:
-text = `The second card is <strong>'${cName}'</strong>. It symbolizes the main events or inner turmoil you will face during the active midday hours. ${questionHint} the aspect of <strong>[${cCore}]</strong> is highly likely to manifest concretely.<br/><br/>
-                           Do not lose your objective gaze even in a complex daily routine. As an extension of your life cycle, <em>${uCycle}</em>, today's daytime experiences will accumulate as empirical assets for your growth. Practical coping is required rather than an emotional response.`;
+text = `The second card, <strong>'${cName}'</strong>, represents the <strong>escalation or development</strong> of the current situation. ${questionHint} the aspect of <strong>[${cCore}]</strong> is manifesting more clearly as the day progresses.<br/><br/>
+                           Observe how the initial energy is evolving. This stage requires objective judgment rather than emotional reaction to keep the situation under control.`;
 break;
 case 2:
-text = `The third card is <strong>'${cName}'</strong>. It is the result you will face in the evening as you wrap up the day, and a point of reflection to look back on yourself. ${questionHint} I recommend organizing your day while reflecting on the meaning of <strong>[${cCore}]</strong>.<br/><br/>
-                           After finishing all routines, it is important to take a rest while looking back at yourself with an objective gaze. The series of processes you went through today will serve as an essential time of relaxation to prepare for the next step within the grand flow of this year, which is <em>${uYearly}</em>.`;
+text = `The third card, <strong>'${cName}'</strong>, provides the <strong>ultimate solution or advice</strong> for today. ${questionHint} I recommend taking action based on the meaning of <strong>[${cCore}]</strong>.<br/><br/>
+                           This is the key to resolving any turmoil or maximizing the day's potential. By following this advice, you can align yourself with a more harmonious trajectory.`;
 break;
 }
 return text;
@@ -1673,21 +1674,21 @@ return text;
 } else {
 // 기존 국문 해석 로직
 if (type === 'today') {
-let contextPrefix = `<strong>오늘 하루의 전반적인 흐름</strong> 속에서 `;
+let contextPrefix = `<strong>상황의 분석적 흐름</strong> 속에서 `;
 let questionHint = todayInfo.question ? ` 특히 고민하시는 <em>"${todayInfo.question}"</em>라는 사안과 관련하여, ` : "";
 let text = "";
 switch (index) {
 case 0:
-text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 아침에 눈을 뜨고 하루를 시작할 때 당신의 심리적 상태나 처한 환경을 나타냅니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>의 의미를 내포하고 있습니다.<br/><br/>
-                           심리적 관점에서 볼 때, 오늘 아침은 상황을 통제하려 하기보다는 주어진 기운을 있는 그대로 관찰하는 태도가 필요합니다. 당신이 지닌 <em>${uEnergy}</em>이 이 카드의 상징과 결합하여, 오늘 하루의 이성적인 밑그림을 형성하게 될 것입니다.`;
+text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 오늘 당신이 마주한 에너지의 <strong>근본적인 원인</strong>을 나타냅니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>의 의미를 내포하고 있습니다.<br/><br/>
+                           이 카드는 오늘 하루의 흐름이 이 본질적인 에너지에서 시작되었음을 시사합니다. 이 뿌리를 이해하는 것이 상황을 올바르게 헤쳐나가는 첫걸음이 될 것입니다.`;
 break;
 case 1:
-text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 하루가 전개되는 낮 시간 동안 마주하게 될 주요한 사건이나 내적 동요를 상징합니다. ${questionHint} <strong>[${cCore}]</strong>의 양상이 구체적으로 드러날 가능성이 높습니다.<br/><br/>
-                           복잡한 일상 속에서도 객관적인 시선을 잃지 마십시오. 당신의 삶의 주기인 <em>${uCycle}</em>의 연장선상에서, 오늘 낮의 경험들은 당신의 성장을 위한 경험적 자산으로 축적될 것입니다. 감정적 대응보다는 실용적인 대처가 요구됩니다.`;
+text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 현재 상황이 어떻게 <strong>심화되거나 전개</strong>되고 있는지를 상징합니다. ${questionHint} <strong>[${cCore}]</strong>의 양상이 시간이 흐를수록 더욱 명확하게 드러날 가능성이 높습니다.<br/><br/>
+                           초기 에너지가 어떻게 변화하고 있는지 관찰하십시오. 이 단계에서는 감정적인 대응보다 객관적인 판단을 유지하여 상황을 통제 하에 두는 것이 중요합니다.`;
 break;
 case 2:
-text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 하루를 마무리하는 저녁 시간에 직면하게 될 결과이자, 스스로를 돌아볼 수 있는 성찰의 지점입니다. ${questionHint} <strong>[${cCore}]</strong>의 의미를 되새기며 하루를 정리해 보시길 권장합니다.<br/><br/>
-                           모든 일과를 마친 후에는 객관적인 시선으로 자신을 돌아보며 휴식을 취하는 것이 중요합니다. 오늘 겪은 일련의 과정들은 <em>${uYearly}</em>이라는 올해의 큰 흐름 속에서, 다음 단계를 준비하기 위한 필수적인 이완의 시간으로 작용할 것입니다.`;
+text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 오늘을 위한 <strong>궁극적인 해결책이나 조언</strong>을 제시합니다. ${questionHint} <strong>[${cCore}]</strong>의 의미를 되새기며 구체적인 행동에 옮겨 보시길 권장합니다.<br/><br/>
+                           이것이 오늘 하루의 혼란을 잠재우거나 잠재력을 극대화할 수 있는 핵심 열쇠입니다. 이 조언을 따름으로써 당신은 더욱 조화로운 궤적 위에 서게 될 것입니다.`;
 break;
 }
 return text;
@@ -1808,10 +1809,10 @@ if (aiResult && aiResult.mainInterpretation) {
 
     // 성향 업데이트
     updateTendencyData(aiResult.newInsights);
-} else {
+    } else {
     // AI 실패 시 기존 로컬 해석(Fallback)으로 전환
-    const spreadTitlesKO = maxDrawCount === 3 ? ["아침의 기운", "낮의 흐름", "저녁의 조언"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
-    const spreadTitlesEN = maxDrawCount === 3 ? ["Morning Energy", "Midday Flow", "Evening Advice"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
+    const spreadTitlesKO = maxDrawCount === 3 ? ["문제의 근본", "상황의 심화", "해결책"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
+    const spreadTitlesEN = maxDrawCount === 3 ? ["Root Cause", "Escalation", "Solution"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
     const activeTitles = currentLang === 'en' ? spreadTitlesEN : spreadTitlesKO;
 
     drawnCardsData.forEach((card, index) => {
