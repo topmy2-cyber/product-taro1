@@ -237,41 +237,63 @@
                     <div class="absolute w-32 h-32 bg-indigo-600/30 rounded-full blur-3xl animate-pulse"></div>
                     <div class="absolute w-24 h-24 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
                     
-                    <!-- 세련된 미래적 별 로고 (SVG) -->
-                    <div class="relative group">
-                        <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_20px_rgba(168,85,247,0.6)]">
+                    <!-- 입체적인 미래적 보석 로고 (SVG) -->
+                    <div class="relative group scale-110">
+                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_30px_rgba(168,85,247,0.8)] filter drop-shadow-lg">
                             <defs>
-                                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#fbbf24" />
-                                    <stop offset="50%" stop-color="#a855f7" />
-                                    <stop offset="100%" stop-color="#6366f1" />
+                                <!-- 광원 효과용 그라데이션 -->
+                                <linearGradient id="gemLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#fef3c7" /> <!-- 빛나는 부분 -->
+                                    <stop offset="100%" stop-color="#fbbf24" />
                                 </linearGradient>
-                                <filter id="glow">
-                                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
+                                <linearGradient id="gemMedium" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#a855f7" />
+                                    <stop offset="100%" stop-color="#7e22ce" />
+                                </linearGradient>
+                                <linearGradient id="gemDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#6366f1" />
+                                    <stop offset="100%" stop-color="#4338ca" />
+                                </linearGradient>
+                                <filter id="innerGlow">
+                                    <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                                    <feComposite in="SourceGraphic" in2="blur" operator="arithmetic" k2="1" k3="0.5" />
                                 </filter>
                             </defs>
-                            <!-- 메인 심볼: 겹쳐진 다이아몬드/별 형태 -->
-                            <path d="M50 5L65 35L95 50L65 65L50 95L35 65L5 50L35 35L50 5Z" fill="url(#logoGrad)" fill-opacity="0.9">
-                                <animateTransform attributeName="transform" type="scale" values="1;1.05;1" dur="3s" repeatCount="indefinite" />
-                            </path>
-                            <!-- 내부 장식 선 -->
-                            <path d="M50 20L58 42L80 50L58 58L50 80L42 58L20 50L42 42L50 20Z" stroke="white" stroke-width="0.5" stroke-opacity="0.5" />
-                            <!-- 중앙 빛점 -->
-                            <circle cx="50" cy="50" r="3" fill="white" filter="url(#glow)">
-                                <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite" />
+                            
+                            <!-- 8면체 입체 보석 효과 -->
+                            <g filter="url(#innerGlow)">
+                                <!-- 상단 -->
+                                <path d="M50 5 L35 35 L50 50 Z" fill="url(#gemLight)" opacity="0.9" />
+                                <path d="M50 5 L65 35 L50 50 Z" fill="#fbbf24" opacity="0.7" />
+                                <!-- 우측 -->
+                                <path d="M95 50 L65 35 L50 50 Z" fill="url(#gemMedium)" opacity="0.9" />
+                                <path d="M95 50 L65 65 L50 50 Z" fill="#9333ea" opacity="0.7" />
+                                <!-- 하단 -->
+                                <path d="M50 95 L65 65 L50 50 Z" fill="url(#gemDark)" opacity="0.9" />
+                                <path d="M50 95 L35 65 L50 50 Z" fill="#4f46e5" opacity="0.7" />
+                                <!-- 좌측 -->
+                                <path d="M5 50 L35 65 L50 50 Z" fill="#a855f7" opacity="0.8" />
+                                <path d="M5 50 L35 35 L50 50 Z" fill="#fbbf24" opacity="0.5" />
+                            </g>
+
+                            <!-- 중앙 코어 -->
+                            <circle cx="50" cy="50" r="4" fill="white" filter="url(#glow)">
+                                <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" />
                             </circle>
                         </svg>
                         
-                        <!-- 회전하는 고리 (Futuristic Ring) -->
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div class="w-20 h-20 border border-purple-400/30 rounded-full border-t-transparent border-l-transparent animate-spin" style="animation-duration: 4s;"></div>
+                        <!-- 3D 회전 궤도 고리 (Futuristic 3D Rings) -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="perspective: 500px;">
+                            <div class="w-24 h-24 border-2 border-purple-400/40 rounded-full animate-spin" 
+                                 style="animation-duration: 4s; transform: rotateX(70deg) rotateY(10deg);"></div>
                         </div>
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div class="w-16 h-16 border border-amber-400/20 rounded-full border-b-transparent border-r-transparent animate-spin" style="animation-duration: 6s; animation-direction: reverse;"></div>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="perspective: 500px;">
+                            <div class="w-20 h-20 border-2 border-amber-400/30 rounded-full animate-spin" 
+                                 style="animation-duration: 7s; animation-direction: reverse; transform: rotateX(60deg) rotateY(-20deg);"></div>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="perspective: 500px;">
+                            <div class="w-28 h-28 border border-indigo-400/20 rounded-full animate-spin" 
+                                 style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div>
                         </div>
                     </div>
                 </div>
