@@ -973,12 +973,14 @@ errConsent: { ko: "개인정보 수집 및 이용에 동의해주세요.", en: "
 };
 
 // 1. 상태(State) 변수 관리
+const GEMINI_API_KEY = ""; // 여기에 Gemini API 키를 입력하세요.
 let currentLang = 'ko'; // 기본 언어 한글 설정
 let currentMode = 'login'; 
 let userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
 let partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
 let careerInfo = { question: '' };
 let todayInfo = { question: '' };
+let userTendency = { traits: [], keywords: [], summary: '' }; // 지속적 성향 데이터
 let drawnCardsCount = 0;
 let maxDrawCount = 5; 
 let drawnCardsData = [];
@@ -1183,9 +1185,88 @@ document.querySelectorAll('input[name="partner-gender"]').forEach(radio => {
 if (radio.value === partnerInfo.gender) radio.checked = true;
 });
 }
+
+// 성향 데이터 로드
+const savedTendency = localStorage.getItem('mungTarotTendency');
+if (savedTendency) {
+    userTendency = JSON.parse(savedTendency);
+}
+
 } catch (error) {
 console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
 }
+}
+
+// AI 해석 엔진 (Gemini API)
+async function fetchAIInterpretation(cards, user, type, contextInfo) {
+    if (!GEMINI_API_KEY) {
+        return {
+            mainInterpretation: "API 키가 설정되지 않았습니다. 개발자 도구에서 GEMINI_API_KEY를 설정해주세요.",
+            newInsights: ""
+        };
+    }
+
+    const destiny = calculateDestinyEnergy(user.birthDate);
+    const cardNames = cards.map(c => c.name.ko).join(', ');
+    const question = contextInfo.question || "전반적인 운세";
+    
+    // 프롬프트 구성 (성향 데이터 포함)
+    const prompt = `
+        당신은 타로 전문가이자 명리학(사주) 대가입니다. 다음 정보를 바탕으로 깊이 있고 개인화된 해석을 제공하십시오.
+        
+        [사용자 정보]
+        - 이름: \${user.name}
+        - 생년월일: \${user.birthDate} (\${user.calendarType})
+        - 사주 기운: \${destiny.energyFlavor.ko}
+        - 현재 생애 주기: \${destiny.cycleFlow.ko}
+        - 누적된 성향 기록: \${userTendency.summary || "첫 리딩입니다."}
+        
+        [리딩 상황]
+        - 종류: \${type}
+        - 질문: \${question}
+        - 선택된 카드: \${cardNames}
+        
+        [지시 사항]
+        1. 명리학적 기운과 타로 카드의 상징을 결합하여, 이 사용자의 고유한 성향과 현재 상황을 분석하십시오.
+        2. "단순히 카드가 이렇다"가 아니라, 사용자의 누적된 성향 데이터를 고려하여 "당신은 평소 ~한 경향이 있는데, 이번 카드는 ~을 의미하므로 ~하게 대응하는 것이 합리적입니다"라는 식으로 진화된 조언을 하십시오.
+        3. 답변은 한국어로 하되, 친절하면서도 전문적인 통찰력이 느껴지게 하십시오.
+        4. 마지막에는 이번 리딩을 통해 새롭게 발견된 사용자의 성향 키워드나 요약을 한 문장으로 적어주세요. (형식: [INSIGHT] 요약내용)
+    `;
+
+    try {
+        const response = await fetch(\`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=\${GEMINI_API_KEY}\`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
+        const data = await response.json();
+        const fullText = data.candidates[0].content.parts[0].text;
+        
+        const insightMatch = fullText.match(/\\[INSIGHT\\](.*)/);
+        const mainInterpretation = fullText.replace(/\\[INSIGHT\\].*/, '').trim();
+        const newInsights = insightMatch ? insightMatch[1].trim() : "";
+
+        return { mainInterpretation, newInsights };
+    } catch (error) {
+        console.error("AI 리딩 중 오류 발생:", error);
+        return { mainInterpretation: "별의 신호가 약해 해석을 가져오지 못했습니다. 다시 시도해주세요.", newInsights: "" };
+    }
+}
+
+// 성향 데이터 업데이트 로직
+function updateTendencyData(newInsight) {
+    if (!newInsight) return;
+    
+    // 기존 요약에 새로운 통찰 결합 (간단한 진화 로직)
+    if (!userTendency.summary) {
+        userTendency.summary = newInsight;
+    } else {
+        userTendency.summary = \`기존에 \${userTendency.summary} 성향이 있었으며, 최근에는 \${newInsight} 모습이 관찰됨.\`;
+    }
+    
+    localStorage.setItem('mungTarotTendency', JSON.stringify(userTendency));
 }
 
 // 3. 커스텀 토스트 메시지 함수
@@ -1642,8 +1723,8 @@ return text;
 }
 }
 
-// 10. 결과 및 해석 화면 렌더링 로직
-function showResultScreen() {
+// 10. 결과 및 해석 화면 렌더링 로직 (AI 버전)
+async function showResultScreen() {
 showScreen('result-screen');
 
 const starContainer = document.getElementById('star-cards-container');
@@ -1651,62 +1732,53 @@ const interpretationContent = document.getElementById('interpretation-content');
 const svgContainer = document.getElementById('spread-svg-container');
 
 starContainer.innerHTML = '';
-interpretationContent.innerHTML = '';
+interpretationContent.innerHTML = `
+    <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="w-12 h-12 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-4"></div>
+        <p class="text-amber-200 animate-pulse">사용자의 사주와 카드의 에너지를 분석하여<br/>AI 상담가가 맞춤형 해석을 생성 중입니다...</p>
+    </div>
+`;
 
+// 카드 배치 (기존 시각 효과 유지)
 if (maxDrawCount === 3) {
-svgContainer.innerHTML = `
-                   <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100">
-                       <line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" />
-                       <circle cx="20" cy="50" r="1.5" fill="#fbbf24" />
-                       <circle cx="50" cy="50" r="1.5" fill="#fbbf24" />
-                       <circle cx="80" cy="50" r="1.5" fill="#fbbf24" />
-                   </svg>
-               `;
+    svgContainer.innerHTML = \`<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /><circle cx="20" cy="50" r="1.5" fill="#fbbf24" /><circle cx="50" cy="50" r="1.5" fill="#fbbf24" /><circle cx="80" cy="50" r="1.5" fill="#fbbf24" /></svg>\`;
 } else {
-svgContainer.innerHTML = `
-                   <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100">
-                       <polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" />
-                       <polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" />
-                   </svg>
-               `;
+    svgContainer.innerHTML = \`<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" viewBox="0 0 100 100"><polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" /><polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" /></svg>\`;
 }
 
-const spreadTitlesKO = maxDrawCount === 3 ? ["아침의 기운", "낮의 흐름", "저녁의 조언"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
-const spreadTitlesEN = maxDrawCount === 3 ? ["Morning Energy", "Midday Flow", "Evening Advice"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
-const activeTitles = currentLang === 'en' ? spreadTitlesEN : spreadTitlesKO;
-
 drawnCardsData.forEach((card, index) => {
-const cardEl = document.createElement('div');
-const posClass = maxDrawCount === 3 ? `pos-today-${index + 1}` : `pos-${index + 1}`;
-cardEl.className = `spread-card ${posClass} fade-in`;
-cardEl.style.animationDelay = `${index * 0.2}s`;
-
-cardEl.innerHTML = `
-                   <div class="card-front">
-                       <i data-lucide="${card.icon}" class="w-8 h-8 text-amber-600 mb-2"></i>
-                       <span class="text-[0.65rem] font-bold leading-tight break-keep-all">${card.name[currentLang]}</span>
-                   </div>
-               `;
-starContainer.appendChild(cardEl);
-
-const textEl = document.createElement('div');
-textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 fade-in shadow-inner`;
-textEl.style.animationDelay = `${(index * 0.2) + 1}s`; 
-
-const deepInterpretationText = generateDeepInterpretation(card, index, userInfo, selectedTarotType, partnerInfo);
-
-textEl.innerHTML = `
-                   <h4 class="text-amber-300 font-bold mb-4 flex items-center text-xl">
-                       <span class="bg-amber-500/20 text-amber-200 w-8 h-8 flex items-center justify-center rounded-full text-sm mr-3 border border-amber-500/30">${index + 1}</span>
-                       ${activeTitles[index]}
-                   </h4>
-                   <p class="text-slate-200 md:ml-11 ml-2 leading-loose">
-                       ${deepInterpretationText}
-                   </p>
-               `;
-interpretationContent.appendChild(textEl);
+    const cardEl = document.createElement('div');
+    const posClass = maxDrawCount === 3 ? \`pos-today-\${index + 1}\` : \`pos-\${index + 1}\`;
+    cardEl.className = \`spread-card \${posClass} fade-in\`;
+    cardEl.style.animationDelay = \`\${index * 0.2}s\`;
+    cardEl.innerHTML = \`
+        <div class="card-front">
+            <i data-lucide="\${card.icon}" class="w-8 h-8 text-amber-600 mb-2"></i>
+            <span class="text-[0.65rem] font-bold leading-tight break-keep-all">\${card.name[currentLang]}</span>
+        </div>
+    \`;
+    starContainer.appendChild(cardEl);
 });
+lucide.createIcons();
 
+// AI 해석 호출
+const contextInfo = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
+const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, contextInfo);
+
+// 결과 표시
+interpretationContent.innerHTML = \`
+    <div class="bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 fade-in shadow-inner leading-relaxed text-slate-200">
+        \${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}
+    </div>
+    \${aiResult.newInsights ? \`
+        <div class="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-sm text-amber-200 fade-in">
+            <i data-lucide="brain-circuit" class="w-4 h-4 inline mr-2"></i> AI가 분석한 당신의 새로운 모습: \${aiResult.newInsights}
+        </div>
+    \` : ''}
+\`;
+
+// 성향 업데이트
+updateTendencyData(aiResult.newInsights);
 lucide.createIcons();
 }
 
