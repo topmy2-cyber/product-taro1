@@ -973,8 +973,9 @@ errConsent: { ko: "개인정보 수집 및 이용에 동의해주세요.", en: "
 };
 
 // 1. 상태(State) 변수 관리
-const GEMINI_API_KEY = ""; // 여기에 Gemini API 키를 입력하세요.
-let currentLang = 'ko'; // 기본 언어 한글 설정
+const GEMINI_API_KEY = "AIzaSyALJynX81Vc_iBa254B2aO8mTMddEkBsNo"; // 여기에 Gemini API 키를 입력하세요.
+let currentLang = 'ko'; 
+ // 기본 언어 한글 설정
 let currentMode = 'login'; 
 let userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
 let partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
@@ -1197,40 +1198,24 @@ console.error("데이터를 불러오는 중 오류가 발생했습니다.", err
 }
 }
 
-// AI 해석 엔진 (Gemini API)
+// AI 해석 엔진 (Gemini API) - 토큰 최적화 버전
 async function fetchAIInterpretation(cards, user, type, contextInfo) {
-    if (!GEMINI_API_KEY) {
-        return {
-            mainInterpretation: "API 키가 설정되지 않았습니다. 개발자 도구에서 GEMINI_API_KEY를 설정해주세요.",
-            newInsights: ""
-        };
-    }
+    if (!GEMINI_API_KEY) return null;
 
     const destiny = calculateDestinyEnergy(user.birthDate);
     const cardNames = cards.map(c => c.name.ko).join(', ');
     const question = contextInfo.question || "전반적인 운세";
     
-    // 프롬프트 구성 (성향 데이터 포함)
+    // 토큰 절약을 위해 프롬프트를 핵심 위주로 간소화
     const prompt = `
-        당신은 타로 전문가이자 명리학(사주) 대가입니다. 다음 정보를 바탕으로 깊이 있고 개인화된 해석을 제공하십시오.
-        
-        [사용자 정보]
-        - 이름: \${user.name}
-        - 생년월일: \${user.birthDate} (\${user.calendarType})
-        - 사주 기운: \${destiny.energyFlavor.ko}
-        - 현재 생애 주기: \${destiny.cycleFlow.ko}
-        - 누적된 성향 기록: \${userTendency.summary || "첫 리딩입니다."}
-        
-        [리딩 상황]
-        - 종류: \${type}
-        - 질문: \${question}
-        - 선택된 카드: \${cardNames}
-        
-        [지시 사항]
-        1. 명리학적 기운과 타로 카드의 상징을 결합하여, 이 사용자의 고유한 성향과 현재 상황을 분석하십시오.
-        2. "단순히 카드가 이렇다"가 아니라, 사용자의 누적된 성향 데이터를 고려하여 "당신은 평소 ~한 경향이 있는데, 이번 카드는 ~을 의미하므로 ~하게 대응하는 것이 합리적입니다"라는 식으로 진화된 조언을 하십시오.
-        3. 답변은 한국어로 하되, 친절하면서도 전문적인 통찰력이 느껴지게 하십시오.
-        4. 마지막에는 이번 리딩을 통해 새롭게 발견된 사용자의 성향 키워드나 요약을 한 문장으로 적어주세요. (형식: [INSIGHT] 요약내용)
+        역할: 타로/명리 전문가. 
+        사용자: \${user.name}, 사주기운: \${destiny.energyFlavor.ko}, 성향요약: \${userTendency.summary || "없음"}.
+        상황: \${type} 리딩 (\${question}), 카드: \${cardNames}.
+        지시: 
+        1. 사주와 타로를 결합해 '핵심 통찰' 위주로 간결하게 리딩할 것.
+        2. 과거 성향을 고려해 변화된 점을 짚어줄 것.
+        3. 불필요한 인삿말 생략. 전문적이고 담백한 어조.
+        4. 마지막 줄에 [INSIGHT] 새 성향 요약(1문장) 필수.
     `;
 
     try {
@@ -1238,9 +1223,13 @@ async function fetchAIInterpretation(cards, user, type, contextInfo) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { maxOutputTokens: 800, temperature: 0.7 } // 출력 토큰 제한으로 비용 절감
             })
         });
+        
+        if (!response.ok) throw new Error('API_LIMIT_OR_ERROR');
+
         const data = await response.json();
         const fullText = data.candidates[0].content.parts[0].text;
         
@@ -1250,8 +1239,8 @@ async function fetchAIInterpretation(cards, user, type, contextInfo) {
 
         return { mainInterpretation, newInsights };
     } catch (error) {
-        console.error("AI 리딩 중 오류 발생:", error);
-        return { mainInterpretation: "별의 신호가 약해 해석을 가져오지 못했습니다. 다시 시도해주세요.", newInsights: "" };
+        console.warn("AI 리딩 실패, 로컬 해석으로 전환합니다:", error);
+        return null; // 폴백 트리거
     }
 }
 
