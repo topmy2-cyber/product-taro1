@@ -1318,7 +1318,13 @@ if (currentMode === 'signup' && !document.getElementById('consent-checkbox').che
 showMessage(uiTranslations.errConsent);
 return;
 }
-showScreen('profile-screen');
+
+// [개선] 로그인 시 기존 정보가 있다면 바로 선택 화면으로, 없다면 프로필 설정으로
+if (currentMode === 'login' && userInfo.name) {
+    showScreen('selection-screen');
+} else {
+    showScreen('profile-screen');
+}
 });
 
 document.getElementById('profile-form').addEventListener('submit', function(e) {
