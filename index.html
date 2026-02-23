@@ -1227,7 +1227,10 @@ async function fetchAIInterpretation(cards, user, type, contextInfo) {
         1. '에너지', '궤적', '공명' 같은 추상적 단어 금지. "지금 당장 ~하세요" 식의 일상 언어만 사용.
         2. 가독성을 위해 문장 사이사이에 줄바꿈(엔터)을 자주 사용하고, 핵심 내용은 '✦' 기호를 앞에 붙여 강조할 것.
         3. 이전 리딩 내용을 기억하고 있다면, 그 흐름이 어떻게 변했는지 반드시 언급하며 '진화된 조언'을 줄 것.
-        4. '오늘운 타로'는 [문제의 근본] - [상황의 심화] - [해결책] 순서로 분석.
+        4. '오늘운 타로'는 반드시 다음 세 단락으로 나누고, 단락 사이에는 빈 줄을 두 번 넣어라:
+           - [운명의 뿌리] : 문제의 근본 원인 분석
+           - [피어나는 파동] : 현재 상황의 흐름과 심화
+           - [별의 인도] : 구체적인 해결책과 조언
         5. 마지막 줄에 반드시 [INSIGHT] 사용자 성향 한줄 요약 포함.
     `;
 
@@ -1619,21 +1622,21 @@ const uYearly = destiny.yearlyRhythm[currentLang];
 
 if (currentLang === 'en') {
 if (type === 'today') {
-let contextPrefix = `In your <strong>current situation</strong>, `;
+let contextPrefix = `In the <strong>mystical flow of your destiny</strong>, `;
 let questionHint = todayInfo.question ? ` Especially regarding your task <em>"${todayInfo.question}"</em>, ` : "";
 let text = "";
 switch (index) {
 case 0:
-text = `The first card, <strong>'${cName}'</strong>, points to the <strong>direct cause</strong> of what you're facing today. ${contextPrefix} ${questionHint} it shows that <strong>[${cCore}]</strong> is the main factor.<br/><br/>
-                           This means today's events started from this specific situation. Recognizing this cause is the first step to handling the day successfully.`;
+text = `The first card, <strong>'${cName}'</strong>, reveals the <strong>[Origin]</strong> of today's energy. ${contextPrefix} ${questionHint} it shows that <strong>[${cCore}]</strong> is the foundation.<br/><br/>
+                           Understanding this starting point is essential to navigating your path today.`;
 break;
 case 1:
-text = `The second card, <strong>'${cName}'</strong>, shows <strong>how things are actually developing</strong> right now. ${questionHint} the aspect of <strong>[${cCore}]</strong> will become more obvious as the day goes on.<br/><br/>
-                           Watch how things change. Instead of reacting emotionally, try to judge what is practically best for you to stay in control.`;
+text = `The second card, <strong>'${cName}'</strong>, describes the <strong>[Flow]</strong> of how things are currently manifesting. ${questionHint} the vibration of <strong>[${cCore}]</strong> is becoming more distinct.<br/><br/>
+                           Observe this movement calmly and maintain your center amidst the unfolding events.`;
 break;
 case 2:
-text = `The third card, <strong>'${cName}'</strong>, gives you a <strong>practical solution</strong> for today. ${questionHint} I suggest you take action by focusing on <strong>[${cCore}]</strong>.<br/><br/>
-                           This is the key to fixing any confusion and getting a good result. By following this direct advice, you will find yourself in a much better position by the end of the day.`;
+text = `The third card, <strong>'${cName}'</strong>, offers the <strong>[Solution]</strong> as guided by the stars. ${questionHint} I suggest you take action by focusing on <strong>[${cCore}]</strong>.<br/><br/>
+                           This is the divine key to transforming today's challenges into wisdom and growth.`;
 break;
 }
 return text;
@@ -1693,23 +1696,23 @@ break;
 return text;
 
 } else {
-// 기존 국문 해석 로직 (직설적 버전)
+// 기존 국문 해석 로직 (신비로운 버전)
 if (type === 'today') {
-let contextPrefix = `<strong>현재 상황</strong> 속에서 `;
+let contextPrefix = `<strong>운명의 신비로운 흐름</strong> 속에서 `;
 let questionHint = todayInfo.question ? ` 특히 고민하시는 <em>"${todayInfo.question}"</em>라는 일과 관련하여, ` : "";
 let text = "";
 switch (index) {
 case 0:
-text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 지금 겪고 계신 문제의 <strong>가장 직접적인 원인</strong>입니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>라는 상황이 바탕에 깔려 있습니다.<br/><br/>
-                           이 카드는 오늘 일어나는 일들이 이 구체적인 상황에서 시작되었음을 보여줍니다. 이 원인을 파악하고 인정하는 것이 문제를 해결하는 가장 빠른 길입니다.`;
+text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 오늘 당신이 마주한 에너지의 깊은 곳, <strong>[운명의 뿌리]</strong>를 드러냅니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>라는 상황이 근간을 이루고 있습니다.<br/><br/>
+                           이 뿌리를 이해하는 것이 오늘 하루를 지혜롭게 통과하는 시작점이 될 것입니다.`;
 break;
 case 1:
-text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 지금 상황이 <strong>실제로 어떻게 진행되고 있는지</strong>를 보여줍니다. ${questionHint} <strong>[${cCore}]</strong>라는 모습이 시간이 갈수록 더 뚜렷하게 나타날 것입니다.<br/><br/>
-                           지금 상황이 어떻게 변하고 있는지 잘 살펴보세요. 감정적으로 대처하기보다는 현실적으로 이득이 되는 방향이 무엇인지 냉정하게 판단해야 할 때입니다.`;
+text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 지금 당신의 삶에서 <strong>[피어나는 파동]</strong>이 어떻게 전개되고 있는지를 보여줍니다. ${questionHint} <strong>[${cCore}]</strong>라는 움직임이 더욱 선명한 울림으로 다가올 것입니다.<br/><br/>
+                           흐름에 몸을 맡기되, 중심을 잃지 말고 상황의 변화를 조용히 관찰하십시오.`;
 break;
 case 2:
-text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 오늘 바로 실천해야 할 <strong>실질적인 해결책</strong>입니다. ${questionHint} 고민하지 말고 <strong>[${cCore}]</strong>라는 방향으로 행동해 보시길 권합니다.<br/><br/>
-                           이것이 오늘 하루의 복잡한 일을 정리하고 좋은 결과를 낼 수 있는 가장 확실한 방법입니다. 이 조언대로 움직인다면 훨씬 더 마음 편한 결과를 얻게 될 것입니다.`;
+text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 밤하늘의 빛처럼 당신을 이끄는 <strong>[별의 인도]</strong>를 전합니다. ${questionHint} 주저하지 말고 <strong>[${cCore}]</strong>라는 방향으로 발걸음을 옮겨 보시길 권합니다.<br/><br/>
+                           이것이 오늘 하루의 혼란을 지혜로 바꾸고 평온을 되찾아줄 신성한 열쇠가 될 것입니다.`;
 break;
 }
 return text;
@@ -1831,8 +1834,8 @@ if (aiResult && aiResult.mainInterpretation) {
     updateTendencyData(aiResult.newInsights);
     } else {
     // AI 실패 시 기존 로컬 해석(Fallback)으로 전환
-    const spreadTitlesKO = maxDrawCount === 3 ? ["문제의 근본", "상황의 심화", "해결책"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
-    const spreadTitlesEN = maxDrawCount === 3 ? ["Root Cause", "Escalation", "Solution"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
+    const spreadTitlesKO = maxDrawCount === 3 ? ["운명의 뿌리", "피어나는 파동", "별의 인도"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
+    const spreadTitlesEN = maxDrawCount === 3 ? ["Origin", "Flow", "Solution"] : ["Current Coordinates", "Current Challenge", "Past Trajectory", "Approaching Scenery", "Destiny's Advice"];
     const activeTitles = currentLang === 'en' ? spreadTitlesEN : spreadTitlesKO;
 
     drawnCardsData.forEach((card, index) => {
