@@ -436,7 +436,6 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 <button onclick="goBack()" class="mt-8 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 px-6 rounded-lg transition-colors font-bold" data-i18n="btnClose">닫기 (뒤로가기)</button>
 </div>
 </div>
-</div>
 
 <!-- ========================================== -->
 <!-- 2단계: 개인정보 입력 화면 (profile-screen) -->
@@ -1104,6 +1103,26 @@ loadSavedData();
 // Supabase 세션 체크
 const { data: { session } } = await window.supabaseClient.auth.getSession();
 if (session) {
+    // 세션이 있으면 프로필 정보 가져오기 시도
+    if (!userInfo || !userInfo.name) {
+        const { data: profile, error } = await window.supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+        
+        if (profile && !error) {
+            userInfo = {
+                name: profile.name,
+                birthDate: profile.birth_date,
+                calendarType: profile.calendar_type,
+                gender: profile.gender,
+                maritalStatus: profile.marital_status
+            };
+            localStorage.setItem('mungTarotUser', JSON.stringify(userInfo));
+        }
+    }
+
     if (userInfo && userInfo.name) {
         showScreen('selection-screen');
     } else {
@@ -1995,4 +2014,4 @@ function goBack() {
 showScreen('auth-screen');
 }
 
-</script>
+</script></body></html>
