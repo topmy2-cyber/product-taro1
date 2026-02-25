@@ -1781,10 +1781,9 @@ svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full pointer-eve
 
 drawnCardsData.forEach((card, index) => {
 const cardEl = document.createElement('div');
-const posClass = maxDrawCount === 3 ? `pos-today-${index + 1}` : `pos-${index + 1}`;
-cardEl.className = `spread-card ${posClass} fade-in`;
-cardEl.style.animationDelay = `${index * 0.2}s`;
-cardEl.innerHTML = `
+        const posClass = maxDrawCount === 3 ? `pos-today-${index + 1}` : `pos-${index + 1}`;
+        cardEl.className = `spread-card ${posClass} fade-in-centered`;
+        cardEl.style.animationDelay = `${index * 0.2}s`;cardEl.innerHTML = `
        <div class="card-front">
            <i data-lucide="${card.icon}" class="w-8 h-8 text-amber-600 mb-2"></i>
            <span class="text-[0.65rem] font-bold leading-tight break-keep-all">${card.name[currentLang]}</span>
