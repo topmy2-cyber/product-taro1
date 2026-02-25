@@ -800,12 +800,7 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 // --- 0. 다국어 데이터 (i18n Dictionary) ---
 const uiTranslations = {
 appTitle: { ko: "꿈타로", en: "DreamTarot" },
-appSubtitle: { ko: "당신의 운명을 비춰보는 신비로운 거울", en: "A mystical mirror reflecting your destiny" },
-tabLogin: { ko: "로그인", en: "Log In" },
-tabSignup: { ko: "회원가입", en: "Sign Up" },
-labelEmail: { ko: "이메일", en: "Email" },
-labelPassword: { ko: "비밀번호", en: "Password" },
-consentText: { ko: "[필수] 개인정보 수집 및 이용에 동의합니다. <br/><span class='text-slate-500'>운세 제공을 위해 이름, 생년월일 등의 정보를 수집합니다.</span>", en: "[Required] I agree to the privacy policy. <br/><span class='text-slate-500'>We collect data like name and birthdate for readings.</span>" },
+appSubtitle: { ko: "당신의 운명을 비춰보는 신비로운 거울", en: "A mystical mirror reflecting your destiny" },consentText: { ko: "[필수] 개인정보 수집 및 이용에 동의합니다. <br/><span class='text-slate-500'>운세 제공을 위해 이름, 생년월일 등의 정보를 수집합니다.</span>", en: "[Required] I agree to the privacy policy. <br/><span class='text-slate-500'>We collect data like name and birthdate for readings.</span>" },
 btnSubmitLogin: { ko: "운명의 문 열기", en: "Open the Gate of Destiny" },
 btnSubmitSignup: { ko: "새로운 여정 시작하기", en: "Start a New Journey" },
 
@@ -937,15 +932,12 @@ errConsent: { ko: "개인정보 수집 및 이용에 동의해주세요.", en: "
 };
 
 // 1. 상태(State) 변수 관리
-const GEMINI_API_KEY = ""; // 여기에 Gemini API 키를 입력하세요.
 let currentLang = 'ko'; 
 // 기본 언어 한글 설정
-let currentMode = 'login'; 
 let userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
 let partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
 let careerInfo = { question: '' };
 let todayInfo = { question: '' };
-let userTendency = { traits: [], keywords: [], summary: '' }; // 지속적 성향 데이터
 let drawnCardsCount = 0;
 let maxDrawCount = 5; 
 let drawnCardsData = [];
@@ -1203,11 +1195,6 @@ if (radio.value === partnerInfo.gender) radio.checked = true;
 });
 }
 
-// 성향 데이터 로드
-const savedTendency = localStorage.getItem('mungTarotTendency');
-if (savedTendency) {
-userTendency = JSON.parse(savedTendency);
-}
 
 } catch (error) {
 console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
@@ -1281,19 +1268,7 @@ return null;
 }
 }
 
-// 성향 데이터 업데이트 로직
-function updateTendencyData(newInsight) {
-if (!newInsight) return;
 
-// 기존 요약에 새로운 통찰 결합 (간단한 진화 로직)
-if (!userTendency.summary) {
-userTendency.summary = newInsight;
-} else {
-userTendency.summary = `기존에 ${userTendency.summary} 성향이 있었으며, 최근에는 ${newInsight} 모습이 관찰됨.`;
-}
-
-localStorage.setItem('mungTarotTendency', JSON.stringify(userTendency));
-}
 
 // 3. 커스텀 토스트 메시지 함수
 function showMessage(msgObj, type = 'error') {
@@ -1316,7 +1291,7 @@ setTimeout(() => toast.remove(), 300);
 function showScreen(screenId) {
 // 모든 가능 화면 ID 목록 (누락 방지)
 const screens = [
-'auth-screen', 'profile-screen', 'selection-screen', 
+'profile-screen', 'selection-screen', 
 'partner-profile-screen', 'career-profile-screen', 'today-profile-screen', 
 'reading-screen', 'draw-screen', 'result-screen', 
 'contact-screen', 'privacy-screen', 'terms-screen'
@@ -1810,8 +1785,6 @@ interpretationContent.innerHTML = `
        </div>
    `;
 
-// 성향 업데이트
-updateTendencyData(aiResult.newInsights);
 } else {
 // AI 실패 시 기존 로컬 해석(Fallback)으로 전환
 const spreadTitlesKO = maxDrawCount === 3 ? ["✦ 태초의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
@@ -1848,11 +1821,9 @@ function handleLogout() {
         userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
         localStorage.removeItem('mungTarotUser');
         localStorage.removeItem('mungTarotPartner');
-        localStorage.removeItem('mungTarotTendency');
         localStorage.removeItem('lastInteractionId');
         
         partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
-        userTendency = { traits: [], keywords: [], summary: '' };
         lastAIResult = null;
         
         showScreen('profile-screen');
