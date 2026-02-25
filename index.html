@@ -1809,6 +1809,7 @@ lucide.createIcons();
 // AI 해석 호출
 const contextInfo = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
 const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, contextInfo);
+lastAIResult = aiResult;
 
 // 로딩 인디케이터 제거
 interpretationContent.innerHTML = '';
@@ -1859,6 +1860,14 @@ showScreen('selection-screen');
 function handleLogout() {
         userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
         localStorage.removeItem('mungTarotUser');
+        localStorage.removeItem('mungTarotPartner');
+        localStorage.removeItem('mungTarotTendency');
+        localStorage.removeItem('lastInteractionId');
+        
+        partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
+        userTendency = { traits: [], keywords: [], summary: '' };
+        lastAIResult = null;
+        
         showScreen('profile-screen');
         showMessage("로그아웃되었습니다.", "info");
     }
