@@ -193,7 +193,7 @@ margin-left: -4.2rem; /* 78장 배치를 위한 간격 축소 */
 .star-spread-container {
 position: relative;
 width: 100%;
-max-width: 400px;
+max-width: 500px;
 aspect-ratio: 1 / 1;
 margin: 0 auto;
 }
@@ -201,26 +201,39 @@ margin: 0 auto;
 .spread-card {
 position: absolute;
 transform: translate(-50%, -50%);
-width: 4.5rem;
-height: 7rem;
+width: 6rem;
+height: 9rem;
 transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+z-index: 10;
+}
+
+.spread-card:hover {
+transform: translate(-50%, -50%) scale(1.1);
+z-index: 20;
 }
 
 /* 타로 카드 앞면 디자인 */
 .card-front {
 width: 100%;
 height: 100%;
-background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-border: 2px solid #d4af37; /* 황금색 테두리 */
-border-radius: 0.5rem;
+background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+border: 2px solid rgba(251, 191, 36, 0.6); /* 반투명 황금색 테두리 */
+border-radius: 0.75rem;
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-color: #1e293b;
-padding: 0.25rem;
+box-shadow: 0 0 25px rgba(168, 85, 247, 0.5), inset 0 0 15px rgba(251, 191, 36, 0.2); /* 신비로운 보라/황금빛 글로우 */
+color: #fef3c7; /* 밝은 텍스트 */
+padding: 0.5rem;
 text-align: center;
+backdrop-filter: blur(8px);
+transition: all 0.3s ease;
+}
+
+.card-front:hover {
+box-shadow: 0 0 40px rgba(168, 85, 247, 0.8), inset 0 0 25px rgba(251, 191, 36, 0.4);
+border-color: rgba(251, 191, 36, 1);
 }
 
 /* 5각 별 배치의 좌표 (퍼센트 기반) */
