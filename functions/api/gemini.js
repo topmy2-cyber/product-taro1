@@ -13,8 +13,8 @@ export async function onRequestPost(context) {
             });
         }
 
-        // Gemini API 호출
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        // Gemini API 호출 (Interactions API)
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/interactions?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
