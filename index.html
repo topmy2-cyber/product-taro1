@@ -1044,6 +1044,7 @@ const tarotDatabase = [
 // 2. 초기화 및 언어 설정
 document.addEventListener('DOMContentLoaded', async () => {
 lucide.createIcons();
+createStars();
 const savedLang = localStorage.getItem('mungTarotLang');
 if (savedLang) {
 setLanguage(savedLang);
