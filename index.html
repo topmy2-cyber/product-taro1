@@ -94,9 +94,18 @@ border-bottom: 2px solid #fbbf24;
 animation: fadeIn 0.5s ease-in-out forwards;
 }
 
+.fade-in-centered {
+animation: fadeInCentered 0.5s ease-in-out forwards;
+}
+
 @keyframes fadeIn {
 from { opacity: 0; transform: translateY(10px); }
 to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInCentered {
+from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
+to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 /* 커스텀 스크롤바 (약관 화면용) */
