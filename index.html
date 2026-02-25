@@ -1124,11 +1124,6 @@ interpretationContent.innerHTML = `
 <div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in shadow-inner leading-relaxed text-slate-200 whitespace-pre-line text-lg">
 ${formattedText}
 </div>
-${lastAIResult.newInsights ? `
-<div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-sm text-amber-200 fade-in">
-<i data-lucide="brain-circuit" class="w-4 h-4 inline mr-2"></i> AI Insight: ${lastAIResult.newInsights}
-</div>
-` : ''}
 `;
 } else {
 const spreadTitlesKO = maxDrawCount === 3 ? ["✦ 태초의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
@@ -1825,11 +1820,6 @@ interpretationContent.innerHTML = `
        <div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in shadow-inner leading-relaxed text-slate-200 whitespace-pre-line text-lg">
            ${formattedText}
        </div>
-       ${aiResult.newInsights ? `
-           <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-sm text-amber-200 fade-in">
-               <i data-lucide="brain-circuit" class="w-4 h-4 inline mr-2"></i> AI Insight: ${aiResult.newInsights}
-           </div>
-       ` : ''}
    `;
 
 // 성향 업데이트
