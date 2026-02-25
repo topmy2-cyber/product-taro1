@@ -1336,27 +1336,6 @@ console.error("Target screen not found:", screenId);
 }
 }
 
-// 5. 로그인/회원가입 모드 전환
-function setAuthMode(mode) {
-currentMode = mode;
-const tabLogin = document.getElementById('tab-login');
-const tabSignup = document.getElementById('tab-signup');
-const consentGroup = document.getElementById('consent-group');
-const submitBtn = document.getElementById('auth-submit-btn');
-
-if (mode === 'login') {
-tabLogin.className = "flex-1 pb-3 font-medium transition-colors text-amber-400 border-b-2 border-amber-400";
-tabSignup.className = "flex-1 pb-3 font-medium transition-colors text-slate-400 hover:text-purple-300";
-consentGroup.classList.add('hidden');
-submitBtn.textContent = uiTranslations.btnSubmitLogin[currentLang];
-} else {
-tabSignup.className = "flex-1 pb-3 font-medium transition-colors text-amber-400 border-b-2 border-amber-400";
-tabLogin.className = "flex-1 pb-3 font-medium transition-colors text-slate-400 hover:text-purple-300";
-consentGroup.classList.remove('hidden');
-submitBtn.textContent = uiTranslations.btnSubmitSignup[currentLang];
-}
-}
-
 // 6. 폼 제출 이벤트 로직
 
 document.getElementById('profile-form').addEventListener('submit', async function(e) {
