@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>길을 잃으셨나요? - 꿈타로</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #020617; color: #f1f5f9; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
+    <div class="z-10 text-center">
+        <h1 class="text-6xl font-bold text-amber-400 mb-4">404</h1>
+        <p class="text-xl text-purple-300 mb-8">현재 우주의 좌표를 찾을 수 없습니다.</p>
+        <p class="text-slate-400 mb-8">별의 궤적이 잠시 엇갈린 것 같네요.<br>다시 운명의 시작점으로 돌아가 볼까요?</p>
+        <a href="/" class="bg-gradient-to-r from-amber-600 to-amber-500 text-slate-900 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-amber-500/50 transition-all">
+            시작 페이지로 돌아가기
+        </a>
+    </div>
+    <!-- 배경 별 장식 -->
+    <script>
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 2 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(star);
+        }
+    </script>
+</body>
+</html>
