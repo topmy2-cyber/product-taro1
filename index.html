@@ -17,6 +17,16 @@
 <!-- SEO 및 메타 데이터 최적화 (Google & Naver 가이드라인 적용) -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://product-taro1.pages.dev/">
+<link rel="alternate" hreflang="ko" href="https://product-taro1.pages.dev/">
+<link rel="alternate" hreflang="en" href="https://product-taro1.pages.dev/">
+<link rel="alternate" hreflang="x-default" href="https://product-taro1.pages.dev/">
+
+<!-- 지리적 최적화 (GEO Tags) -->
+<meta name="geo.region" content="KR">
+<meta name="geo.placename" content="Seoul">
+<meta name="geo.position" content="37.5665;126.9780">
+<meta name="ICBM" content="37.5665, 126.9780">
+
 <meta name="description" content="신비로운 AI 꿈타로에서 무료 타로 운세, 연애운, 올해의 운세, 직업운을 확인하세요. 정교한 타로 알고리즘과 사주 명리학 기운 분석이 결합된 고품질 리딩을 제공합니다.">
 <meta name="keywords" content="타로, 타로운세, 무료타로, 오늘운세, 궁합, 직업운, 연애운, 꿈타로, AI타로, 사주타로, 신년운세, 2026운세">
 
@@ -28,6 +38,7 @@
 <meta property="og:url" content="https://product-taro1.pages.dev/">
 <meta property="og:image" content="https://product-taro1.pages.dev/card-back.png">
 <meta property="og:locale" content="ko_KR">
+<meta property="og:locale:alternate" content="en_US">
 
 <!-- Twitter Card (트위터 최적화) -->
 <meta name="twitter:card" content="summary_large_image">
@@ -35,7 +46,7 @@
 <meta name="twitter:description" content="별의 궤적이 그리는 당신의 운명, 정교한 AI 타로와 사주 기운의 교차 분석으로 지금 확인해보세요.">
 <meta name="twitter:image" content="https://product-taro1.pages.dev/card-back.png">
 
-<!-- 구조화된 데이터 (JSON-LD) 추가: 검색엔진 리치 결과 최적화 -->
+<!-- 구조화된 데이터 (JSON-LD) 보강: GEO 및 AI 최적화 -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,6 +56,11 @@
   "description": "AI 기반 타로 운세 및 사주 분석 서비스",
   "applicationCategory": "EntertainmentApplication",
   "operatingSystem": "All",
+  "inLanguage": ["ko", "en"],
+  "contentLocation": {
+    "@type": "Place",
+    "name": "South Korea"
+  },
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -52,7 +68,8 @@
   },
   "author": {
     "@type": "Organization",
-    "name": "DreamTarot Team"
+    "name": "DreamTarot Team",
+    "areaServed": "Global"
   }
 }
 </script>
