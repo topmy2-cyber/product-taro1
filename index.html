@@ -845,7 +845,25 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 
 <div id="interpretation-content" class="space-y-6 text-purple-100 leading-relaxed text-base md:text-lg"></div>
 
-<div class="mt-10 pt-6 border-t border-purple-500/30 text-center">
+<div class="mt-10 pt-8 border-t border-purple-500/30 flex flex-col items-center gap-6">
+    <p class="text-amber-200/70 text-sm font-medium" data-i18n="btnShare">운명 공유하기</p>
+    <div class="flex gap-4">
+        <!-- URL 복사 -->
+        <button onclick="shareURL()" class="w-12 h-12 rounded-full bg-slate-800 border border-purple-500/30 flex items-center justify-center hover:bg-purple-900/50 hover:border-purple-400 transition-all text-purple-300" title="Copy Link">
+            <i data-lucide="link" class="w-5 h-5"></i>
+        </button>
+        <!-- 트위터 공유 -->
+        <button onclick="shareTwitter()" class="w-12 h-12 rounded-full bg-slate-800 border border-purple-500/30 flex items-center justify-center hover:bg-sky-900/50 hover:border-sky-400 transition-all text-sky-400" title="Share on Twitter">
+            <i data-lucide="twitter" class="w-5 h-5"></i>
+        </button>
+        <!-- 카카오톡 공유 (이미지 아이콘 활용) -->
+        <button onclick="shareKakao()" class="w-12 h-12 rounded-full bg-[#FEE500] border border-transparent flex items-center justify-center hover:brightness-95 transition-all text-[#3C1E1E]" title="Share on KakaoTalk">
+            <i data-lucide="message-circle" class="w-5 h-5 fill-current"></i>
+        </button>
+    </div>
+</div>
+
+<div class="mt-8 text-center">
 <button onclick="goToSelection()" class="bg-slate-800 hover:bg-slate-700 text-amber-100 border border-amber-500/50 font-bold py-3 px-8 rounded-lg transition-all flex items-center justify-center mx-auto">
 <i data-lucide="rotate-ccw" class="mr-2 w-5 h-5"></i> <span data-i18n="btnRestart">새로운 질문하기</span>
 </button>
@@ -856,7 +874,60 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 </div>
 
 <!-- JavaScript 로직 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l6S7Ad97pq9vSXPAdSbcSTbtfSbh8SPrsdScFBfP7SCDlsIn6ayS9ToSIdofZ60n" crossorigin="anonymous"></script>
 <script>
+// 카카오 초기화 (사용자 앱 키로 변경 권장)
+try {
+    if (typeof Kakao !== 'undefined') {
+        Kakao.init('YOUR_KAKAO_APP_KEY'); // 실제 사용 시 발급받은 JS 키를 넣어야 함
+    }
+} catch (e) {
+    console.warn("Kakao SDK load error");
+}
+
+// --- 공유 기능 함수들 ---
+function shareURL() {
+    const url = "https://product-taro1.pages.dev/";
+    navigator.clipboard.writeText(url).then(() => {
+        showMessage(uiTranslations.msgCopySuccess, "info");
+    });
+}
+
+function shareTwitter() {
+    const text = uiTranslations.msgShareTitle[currentLang];
+    const url = "https://product-taro1.pages.dev/";
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+}
+
+function shareKakao() {
+    if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
+        Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+                title: uiTranslations.msgShareTitle['ko'],
+                description: uiTranslations.msgShareText['ko'],
+                imageUrl: 'https://product-taro1.pages.dev/card-back.png',
+                link: {
+                    mobileWebUrl: 'https://product-taro1.pages.dev/',
+                    webUrl: 'https://product-taro1.pages.dev/',
+                },
+            },
+            buttons: [
+                {
+                    title: '운명 확인하기',
+                    link: {
+                        mobileWebUrl: 'https://product-taro1.pages.dev/',
+                        webUrl: 'https://product-taro1.pages.dev/',
+                    },
+                },
+            ],
+        });
+    } else {
+        // SDK 미설정 시 URL 복사로 대체 안내
+        shareURL();
+    }
+}
+
 // --- 0. 다국어 데이터 (i18n Dictionary) ---
 const uiTranslations = {
 appTitle: { ko: "꿈타로", en: "DreamTarot" },
@@ -941,6 +1012,11 @@ resSubtitle: { ko: "당신이 선택한 카드가 전하는 다정한 메시지�
 resHeader: { ko: "상세 해석", en: "Detailed Analysis" },
 btnRestart: { ko: "새로운 질문하기", en: "Ask a New Question" },
 btnLogout: { ko: "로그아웃", en: "Log Out" },
+
+btnShare: { ko: "운명 공유하기", en: "Share Your Destiny" },
+msgCopySuccess: { ko: "링크가 클립보드에 복사되었습니다.", en: "Link copied to clipboard." },
+msgShareTitle: { ko: "별의 궤적이 그리는 나의 운명 - 꿈타로", en: "My destiny drawn by the stars - DreamTarot" },
+msgShareText: { ko: "당신의 운명도 확인해보세요.", en: "Check your destiny too." },
 
 privacyTitle: { ko: "개인정보처리방침", en: "Privacy Policy" },
 linkPrivacy: { ko: "개인정보처리방침", en: "Privacy Policy" },
