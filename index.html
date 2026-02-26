@@ -1561,13 +1561,15 @@ return;
 const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 userInfo = { name, birthDate, calendarType, gender, maritalStatus };
 
-// Supabase에 프로필 정보 저장
-const saveProfile = async () => {
+localStorage.setItem('mungTarotUser', JSON.stringify(userInfo));
+
+// Supabase에 프로필 정보 저장 (화면 전환을 방해하지 않도록 독립적으로 실행)
+const saveProfileToDB = async () => {
     if (window.supabaseClient) {
         try {
             const { data: { user } } = await window.supabaseClient.auth.getUser();
             if (user) {
-                const { error } = await window.supabaseClient.from('profiles').upsert({
+                await window.supabaseClient.from('profiles').upsert({
                     id: user.id,
                     name,
                     birth_date: birthDate,
@@ -1576,16 +1578,15 @@ const saveProfile = async () => {
                     marital_status: maritalStatus,
                     updated_at: new Date()
                 });
-                if (error) console.warn("Profile upsert failed:", error.message);
             }
-        } catch (e) {
-            console.warn("Supabase operation skipped:", e.message);
+        } catch (err) {
+            console.warn("Background DB save failed:", err);
         }
     }
 };
-await saveProfile();
+saveProfileToDB(); // await를 생략하여 즉시 다음 코드로 진행
 
-localStorage.setItem('mungTarotUser', JSON.stringify(userInfo));
+// 즉시 다음 화면으로 전환
 showScreen('selection-screen');
 });
 
