@@ -13,13 +13,18 @@ export async function onRequestPost(context) {
             });
         }
 
-        // Gemini API 호출 (Interactions API)
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/interactions?key=${apiKey}`, {
+        const model = body.model || "gemini-2.0-flash";
+        
+        // 표준 Gemini generateContent 엔드포인트 호출
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify({
+                contents: body.contents,
+                generationConfig: body.generationConfig
+            })
         });
 
         if (!response.ok) {
@@ -29,7 +34,7 @@ export async function onRequestPost(context) {
 
         const data = await response.json();
 
-        // 성공 응답 반환
+        // 성공 응답 반환 (표준 Gemini 응답 구조 그대로 전달)
         return new Response(JSON.stringify(data), {
             status: 200,
             headers: { 
