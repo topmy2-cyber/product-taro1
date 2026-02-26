@@ -1837,160 +1837,47 @@ function generateDeepInterpretation(card, index, userInfo, type, partnerInfo) {
 const destiny = calculateDestinyEnergy(userInfo.birthDate);
 const cName = card.name[currentLang];
 const cCore = card.baseCore[currentLang];
+const uName = userInfo.name;
 const uEnergy = destiny.energyFlavor[currentLang];
 const uCycle = destiny.cycleFlow[currentLang];
 const uYearly = destiny.yearlyRhythm[currentLang];
 
 if (currentLang === 'en') {
-if (type === 'today') {
-let contextPrefix = `In the <strong>mystical flow of your destiny</strong>, `;
-let questionHint = todayInfo.question ? ` Especially regarding your task <em>"${todayInfo.question}"</em>, ` : "";
-let text = "";
-switch (index) {
-case 0:
-text = `The first card, <strong>'${cName}'</strong>, reveals the direct cause of today's energy. ${contextPrefix} ${questionHint} it shows that <strong>[${cCore}]</strong> is the foundation.<br/><br/>
-                          <span class="text-amber-400 font-bold">Understanding this starting point is essential to navigating your path today.</span>`;
-break;
-case 1:
-text = `The second card, <strong>'${cName}'</strong>, describes how things are currently manifesting. ${questionHint} the vibration of <strong>[${cCore}]</strong> is becoming more distinct.<br/><br/>
-                          <span class="text-amber-400 font-bold">Observe this movement calmly and maintain your center amidst the unfolding events.</span>`;
-break;
-case 2:
-text = `The third card, <strong>'${cName}'</strong>, offers the guidance as revealed by the stars. ${questionHint} I suggest you take action by focusing on <strong>[${cCore}]</strong>.<br/><br/>
-                          <span class="text-amber-400 font-bold">This is the divine key to transforming today's challenges into wisdom and growth.</span>`;
-break;
-}
-return text;
-}
+    const energyIntro = `Considering your innate nature, which is "${uEnergy}", `;
+    const cardSymbol = `the star reveals <strong>'${cName}'</strong>. `;
+    
+    if (type === 'today') {
+        const phases = ["The energy of your morning", "The flow of your afternoon", "The vibration of your evening"];
+        return `${phases[index]} is deeply connected to <strong>[${cCore}]</strong>. ${uName}, focus on this frequency to navigate your day with wisdom.`;
+    }
 
-let contextPrefix = "";
-let questionContext = "";
-let adviceSuffix = "";
-
-if (type === 'love' && partnerInfo.name) {
-const maritalStatusHint = userInfo.maritalStatus === 'married' ? '(within the trajectory of your current married life) ' : '';
-contextPrefix = `In the <strong>relationship dynamics with ${partnerInfo.name}</strong>, ${maritalStatusHint}`;
-
-const partnerDestiny = calculateDestinyEnergy(partnerInfo.birthDate);
-const userEnergyKeyword = uEnergy.split(',')[0].replace('Like the energy of ', '');
-const partnerEnergyKeyword = partnerDestiny.energyFlavor['en'].split(',')[0].replace('Like the energy of ', '');
-
-if (partnerInfo.question) {
-questionContext = ` Specifically, regarding the issue you asked about: <em>"${partnerInfo.question}"</em>, the symbolism of the card is closely related.`;
-adviceSuffix = ` Regarding your question <em>"${partnerInfo.question}"</em>, it implies that recognizing your inherent '${userEnergyKeyword}' and the other person's '${partnerEnergyKeyword}' may be fundamentally different, and the most rational solution will be derived when you coordinate each other's trajectories.`;
-} else {
-adviceSuffix = ` For the relationship to progress, a mature attitude of objectively understanding and complementing the inherent differences between your '${userEnergyKeyword}' and the other person's '${partnerEnergyKeyword}' will be paramount.`;
-}
-} else if (type === 'career') {
-contextPrefix = `In the <strong>realistic flow related to career and wealth</strong>, `;
-if (careerInfo.question) {
-questionContext = ` Specifically, regarding your professional concern: <em>"${careerInfo.question}"</em>, the meaning of this card provides an important clue.`;
-adviceSuffix = ` Regarding your question <em>"${careerInfo.question}"</em>, rather than being swayed by vague advice from others, you will find the most rational breakthrough when you trust your expertise and make judgments based on realistic data.`;
-}
-} else {
-contextPrefix = `Considering the <strong>overall direction of your life this year</strong>, `;
-}
-
-let text = "";
-switch (index) {
-case 0:
-text = `The card placed in the first position is <strong>'${cName}'</strong>. This card reflects the core situation or psychological state you are currently facing. ${contextPrefix} what this card indicates is <strong>[${cCore}]</strong>.${questionContext}<br/><br/>
-                      Looking from an analytical perspective, you are currently positioned in <em>${uCycle}</em>. Behind superficial phenomena, this is a point where this cyclical change inevitably demands your acceptance of new perspectives or a change in action. An attitude of facing the current situation rather than emotionally avoiding it is necessary.`;
-break;
-case 1:
-text = `The second card is <strong>'${cName}'</strong>. It represents the inner conflict or external constraints you must currently overcome. The meaning of <strong>[${cCore}]</strong> implied by the card may be the cause triggering your current concerns.<br/><br/>
-                      When faced with these constraints, your innate <em>${uEnergy}</em> can act as an important coping mechanism. Rather than blaming external factors for the problem at hand, pondering how to practically manifest your unique disposition is the starting point for problem-solving.`;
-break;
-case 2:
-text = `The third card, <strong>'${cName}'</strong>, signifies the past background and unconscious patterns that formed your current situation. Experiences related to <strong>[${cCore}]</strong> during the past times have built your current foundation.<br/><br/>
-                      Positive and negative experiences from the past are never meaningless. It implies that those times have gathered to become the psychological foundation upon which you judge and cope with situations. Rather than regretting past decisions, you should focus on how to apply the insights gained from them to the present.`;
-break;
-case 3:
-text = `The fourth card, <strong>'${cName}'</strong>, predicts the near-future situation that is highly likely to unfold if current conditions are maintained. ${contextPrefix} the aspect of <strong>[${cCore}]</strong> is expected to materialize.<br/><br/>
-                      In particular, the macro rhythm running through your life this year is <em>${uYearly}</em>. Cross-analyzing this flow and the card's symbolism indicates that the approaching future will reduce risks and yield results when you objectively grasp the surrounding context and flexibly respond to the situation, rather than trying to force control.`;
-break;
-case 4:
-text = `The final fifth card, <strong>'${cName}'</strong>, is the ultimate advice derived by observing the overall situation. This card ultimately directs that it is rational to move towards the direction of <strong>[${cCore}]</strong>.<br/><br/>
-                      Synthesizing the context of the previous cards and your temperamental traits, you possess sufficient internal resources to solve the problems you face. Guard against vague expectations or excessive anxiety, acknowledge realistic limits, but maintain a calm attitude of doing your best in the areas you can. Your independent choices will create the right trajectory.${adviceSuffix}`;
-break;
-}
-return text;
+    const spreadMeanings = [
+        `This represents your <strong>current foundation</strong>. ${energyIntro}${cardSymbol} It suggests that <strong>[${cCore}]</strong> is the starting point of your current journey.`,
+        `This card points to your <strong>immediate challenge</strong>. Interacting with <em>${uCycle}</em>, the lesson of <strong>[${cCore}]</strong> appears as a hurdle you must overcome.`,
+        `This is the <strong>hidden potential</strong> within you. Your past experiences have culminated in <strong>[${cCore}]</strong>, which now serves as a silent guide for your future choices.`,
+        `This reveals the <strong>unfolding path</strong> ahead. In the rhythm of <em>${uYearly}</em>, the manifestation of <strong>[${cCore}]</strong> will become increasingly evident.`,
+        `The <strong>ultimate celestial advice</strong>. To harmonize your life, embrace <strong>[${cCore}]</strong>. This is the key to aligning with the universe's flow.`
+    ];
+    return spreadMeanings[index] || `The card <strong>'${cName}'</strong> whispers the essence of <strong>[${cCore}]</strong> into your destiny.`;
 
 } else {
-// 기존 국문 해석 로직 (신비로운 버전 - 라벨 제거 및 강조 추가)
-if (type === 'today') {
-let contextPrefix = `<strong>운명의 신비로운 흐름</strong> 속에서 `;
-let questionHint = todayInfo.question ? ` 특히 고민하시는 <em>"${todayInfo.question}"</em>라는 일과 관련하여, ` : "";
-let text = "";
-switch (index) {
-case 0:
-text = `첫 번째 카드는 <strong>'${cName}'</strong>입니다. 오늘 당신이 마주한 에너지의 깊은 뿌리를 드러냅니다. ${contextPrefix} ${questionHint} <strong>[${cCore}]</strong>라는 상황이 근간을 이루고 있습니다.<br/><br/>
-                          <span class="text-amber-400 font-bold">이 근본 원인을 이해하는 것이 오늘 하루를 지혜롭게 통과하는 시작점이 될 것입니다.</span>`;
-break;
-case 1:
-text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 지금 당신의 삶에서 일어나는 파동이 어떻게 전개되고 있는지를 보여줍니다. ${questionHint} <strong>[${cCore}]</strong>라는 움직임이 더욱 선명한 울림으로 다가올 것입니다.<br/><br/>
-                          <span class="text-amber-400 font-bold">흐름에 몸을 맡기되, 중심을 잃지 말고 상황의 변화를 조용히 관찰하십시오.</span>`;
-break;
-case 2:
-text = `세 번째 카드는 <strong>'${cName}'</strong>입니다. 밤하늘의 빛처럼 당신을 이끄는 별의 인도를 전합니다. ${questionHint} 주저하지 말고 <strong>[${cCore}]</strong>라는 방향으로 발걸음을 옮겨 보시길 권합니다.<br/><br/>
-                          <span class="text-amber-400 font-bold">이것이 오늘 하루의 혼란을 지혜로 바꾸고 평온을 되찾아줄 신성한 열쇠가 될 것입니다.</span>`;
-break;
-}
-return text;
-}
+    // 국문 해석 강화 (더 신비롭고 풍성한 스토리텔링)
+    const energyIntro = `${uName}님이 타고나신 '${uEnergy}'와 현재의 기운을 대조해볼 때, `;
+    const cardSymbol = `하늘의 계시는 <strong>'${cName}'</strong> 카드로 나타났습니다. `;
+    
+    if (type === 'today') {
+        const phases = ["오늘 아침의 기운은", "오늘 낮의 흐름은", "오늘 저녁의 잔상은"];
+        return `${phases[index]} <strong>[${cCore}]</strong>의 에너지와 맞닿아 있습니다. ${uName}님, 이 파동을 기억하며 오늘 하루를 지혜롭게 통과하시기 바랍니다.`;
+    }
 
-let contextPrefix = "";
-let questionContext = "";
-let adviceSuffix = "";
-
-if (type === 'love' && partnerInfo.name) {
-const maritalStatusHint = userInfo.maritalStatus === 'married' ? '(현재 가정을 꾸리고 계신 삶의 궤적 안에서) ' : '';
-contextPrefix = `<strong>${partnerInfo.name}님과의 관계 역학</strong> 속에서 ${maritalStatusHint}`;
-
-const partnerDestiny = calculateDestinyEnergy(partnerInfo.birthDate);
-const userEnergyKeyword = uEnergy.split('처럼')[0];
-const partnerEnergyKeyword = partnerDestiny.energyFlavor['ko'].split('처럼')[0];
-
-if (partnerInfo.question) {
-questionContext = ` 특히, 질문해주신 <em>"${partnerInfo.question}"</em>라는 사안에 대하여 카드의 상징성이 밀접하게 연관되어 있습니다.`;
-adviceSuffix = ` 남겨주셨던 <em>"${partnerInfo.question}"</em>라는 질문에 대해서는, 당신이 지닌 '${userEnergyKeyword}'과 상대방의 '${partnerEnergyKeyword}'이 본질적으로 다를 수 있음을 인지하고, 서로의 궤적을 조율해 나갈 때 가장 합리적인 해결책이 도출될 것임을 시사합니다.`;
-} else {
-adviceSuffix = ` 관계의 진전을 위해서는 당신이 지닌 '${userEnergyKeyword}'과 상대방의 '${partnerEnergyKeyword}'이 지니는 고유한 차이를 객관적으로 이해하고, 상호 보완하려는 성숙한 태도가 무엇보다 중요할 것입니다.`;
-}
-} else if (type === 'career') {
-contextPrefix = `<strong>직업 및 재물과 관련된 현실적 흐름</strong> 속에서 `;
-if (careerInfo.question) {
-questionContext = ` 특히, 작성해주신 <em>"${careerInfo.question}"</em>라는 직업적 고민과 관련하여 이 카드의 의미가 중요한 단서가 됩니다.`;
-adviceSuffix = ` 남겨주셨던 <em>"${careerInfo.question}"</em>라는 질문과 관련하여, 막연한 주변의 조언에 휩쓸리기보다는 본인의 전문성을 믿고 현실적인 데이터를 기반으로 판단을 내릴 때 가장 합리적인 돌파구를 마련하실 수 있을 것입니다.`;
-}
-} else {
-contextPrefix = `<strong>올 한 해 삶의 전반적인 방향성</strong>을 고려할 때, `;
-}
-
-let text = "";
-switch (index) {
-case 0:
-text = `첫 번째 자리에 놓인 카드는 <strong>'${cName}'</strong>입니다. 이 카드는 현재 ${userInfo.name}님이 직면하고 있는 핵심적인 상황이나 심리적 상태를 반영합니다. ${contextPrefix} 이 카드가 지시하는 바는 <strong>[${cCore}]</strong>입니다.${questionContext}<br/><br/>
-                      분석적 관점에서 살펴보면, ${userInfo.name}님은 현재 <em>${uCycle}</em>에 위치해 있습니다. 표면적인 현상들 이면에서, 이러한 주기의 변화가 당신에게 새로운 관점의 수용이나 행동의 변화를 필연적으로 요구하고 있는 시점입니다. 현 상황을 감정적으로 회피하기보다 직시하는 태도가 필요합니다.`;
-break;
-case 1:
-text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 당신이 현재 극복해야 할 내면의 갈등이나 외부의 제약 요인을 나타냅니다. 카드가 내포한 <strong>[${cCore}]</strong>의 의미가 현재의 고민을 촉발하는 원인일 수 있습니다.<br/><br/>
-                      이러한 제약에 직면했을 때, 당신이 지닌 <em>${uEnergy}</em>을 실용적으로 발현하는 것이 문제 해결의 단초가 됩니다. 외부의 상황에 휩쓸리기보다 현재 본인이 할 수 있는 구체적인 행동에 집중해 보시기 바랍니다.`;
-break;
-case 2:
-text = `세 번째 <strong>'${cName}'</strong> 카드는 현재 상황을 형성한 과거의 배경 및 무의식적 패턴을 의미합니다. 지나온 시간 동안의 <strong>[${cCore}]</strong>와 관련된 경험들이 현재의 토대를 구축했습니다.<br/><br/>
-                      과거의 긍정적, 부정적 경험들은 결코 무의미하지 않습니다. 그 시간들이 모여 현재의 ${userInfo.name}님이 상황을 판단하고 대처하는 심리적 토대가 되었음을 시사합니다. 과거의 결정에 대한 후회보다는, 이를 통해 얻은 통찰을 현재에 어떻게 적용할 것인지에 집중해야 합니다.`;
-break;
-case 3:
-text = `네 번째 <strong>'${cName}'</strong> 카드는 현재의 조건들이 유지될 경우 전개될 가능성이 높은 가까운 미래의 상황을 예측합니다. ${contextPrefix} <strong>[${cCore}]</strong>의 양상이 구체화될 것으로 보입니다.<br/><br/>
-                      특히 올해 당신의 삶을 관통하는 거시적 리듬은 <em>${uYearly}</em>입니다. 이 흐름과 카드의 상징을 교차 분석해 볼 때, 다가올 미래는 억지로 통제하려 할 때보다 주변의 맥락을 객관적으로 파악하고 상황에 유연하게 대응할 때 리스크를 줄이고 성과를 낼 수 있음을 나타냅니다.`;
-break;
-case 4:
-text = `마지막 다섯 번째 <strong>'${cName}'</strong> 카드는 전체적인 상황을 조망하며 도출되는 궁극적인 조언입니다. 이 카드는 최종적으로 <strong>[${cCore}]</strong>의 방향성을 향해 나아가는 것이 합리적임을 지시하고 있습니다.<br/><br/>
-                      앞선 카드들의 맥락과 현재의 흐름을 종합할 때, 당신은 직면한 문제를 충분히 해결할 수 있는 내적 자원을 지니고 있습니다. 막연한 기대나 과도한 불안을 경계하고, 현실적인 한계를 인정하되 자신이 할 수 있는 영역에서 최선을 다하는 담담한 태도를 유지하시기 바랍니다. 당신의 주체적인 선택이 올바른 궤적을 만들어낼 것입니다.${adviceSuffix}`;
-break;
-}
-return text;
+    const spreadMeanings = [
+        `현재 ${uName}님이 딛고 서 있는 <strong>운명의 좌표</strong>입니다. ${energyIntro}${cardSymbol} 이는 지금 상황의 근간에 <strong>[${cCore}]</strong>라는 핵심적인 흐름이 흐르고 있음을 의미합니다.`,
+        `지금 마주한 <strong>영혼의 과제</strong>를 상징합니다. 현재 <em>${uCycle}</em>의 주기와 맞물려, <strong>[${cCore}]</strong>라는 화두가 당신의 인내와 선택을 시험하고 있습니다.`,
+        `무의식 속에 숨겨진 <strong>잠재적 동력</strong>입니다. 지나온 삶의 궤적이 <strong>[${cCore}]</strong>의 상징과 공명하며, 보이지 않는 곳에서 당신의 다음 발걸음을 인도하고 있습니다.`,
+        `곧 펼쳐질 <strong>미래의 풍경</strong>을 예견합니다. 올해의 큰 흐름인 <em>${uYearly}</em> 속에서, <strong>[${cCore}]</strong>의 양상이 더욱 선명하게 삶의 전면에 드러날 것입니다.`,
+        `별들이 전하는 <strong>궁극적인 조언</strong>입니다. 현재의 혼란을 가라앉히고 평온을 찾기 위해서는 <strong>[${cCore}]</strong>의 방향으로 마음을 모아야 합니다. 이것이 운명의 수레바퀴를 긍정적으로 돌릴 신성한 열쇠입니다.`
+    ];
+    return spreadMeanings[index] || `<strong>'${cName}'</strong> 카드가 당신의 삶에 <strong>[${cCore}]</strong>라는 깊은 울림을 전하고 있습니다.`;
 }
 }
 
