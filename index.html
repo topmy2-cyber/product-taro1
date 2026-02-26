@@ -1814,41 +1814,46 @@ const uCycle = destiny.cycleFlow[currentLang];
 const uYearly = destiny.yearlyRhythm[currentLang];
 
 if (currentLang === 'en') {
-    const energyIntro = `Considering your innate nature, which is "${uEnergy}", `;
-    const cardSymbol = `the star reveals <strong>'${cName}'</strong>. `;
-    
+    const energyContext = `As one who carries the spirit of "${uEnergy}", `;
     if (type === 'today') {
-        const phases = ["The energy of your morning", "The flow of your afternoon", "The vibration of your evening"];
-        return `${phases[index]} is deeply connected to <strong>[${cCore}]</strong>. ${uName}, focus on this frequency to navigate your day with wisdom.`;
+        const dailyFlows = [
+            `The morning sun reflects <strong>'${cName}'</strong>. It whispers that your dawn is paved with <strong>[${cCore}]</strong>. Walk softly, for the seeds of your day are being sown in this very vibration.`,
+            `The mid-day zenith brings the shadow of <strong>'${cName}'</strong>. Amidst the busyness, the core of <strong>[${cCore}]</strong> will manifest as your guiding light. Observe the signs around you.`,
+            `As the stars emerge, <strong>'${cName}'</strong> settles into your spirit. The resonance of <strong>[${cCore}]</strong> will be the final note of your day, offering peace and a chance for silent reflection.`
+        ];
+        return dailyFlows[index];
     }
 
-    const spreadMeanings = [
-        `This represents your <strong>current foundation</strong>. ${energyIntro}${cardSymbol} It suggests that <strong>[${cCore}]</strong> is the starting point of your current journey.`,
-        `This card points to your <strong>immediate challenge</strong>. Interacting with <em>${uCycle}</em>, the lesson of <strong>[${cCore}]</strong> appears as a hurdle you must overcome.`,
-        `This is the <strong>hidden potential</strong> within you. Your past experiences have culminated in <strong>[${cCore}]</strong>, which now serves as a silent guide for your future choices.`,
-        `This reveals the <strong>unfolding path</strong> ahead. In the rhythm of <em>${uYearly}</em>, the manifestation of <strong>[${cCore}]</strong> will become increasingly evident.`,
-        `The <strong>ultimate celestial advice</strong>. To harmonize your life, embrace <strong>[${cCore}]</strong>. This is the key to aligning with the universe's flow.`
+    const cosmicReadings = [
+        `<strong>The Foundation of Fate:</strong> ${energyContext} the appearance of <strong>'${cName}'</strong> in the first house signifies that <strong>[${cCore}]</strong> is the sacred soil upon which your current life is built. Do not ignore the whispers of the ground beneath your feet.`,
+        `<strong>The Trial of the Soul:</strong> Your immediate hurdle is mirrored in <strong>'${cName}'</strong>. Intertwined with your current cycle of <em>${uCycle}</em>, you are being asked to master the art of <strong>[${cCore}]</strong>. Only through this fire will your gold be purified.`,
+        `<strong>The Echo of the Ancestors:</strong> Behind the veil of the present lies the ghost of <strong>'${cName}'</strong>. Your past mastery or struggle with <strong>[${cCore}]</strong> is the invisible wind pushing your sail. Acknowledge this debt to move forward.`,
+        `<strong>The Horizon of Tomorrow:</strong> The stars are weaving <strong>'${cName}'</strong> into your path. Under the cosmic rhythm of <em>${uYearly}</em>, you shall soon witness the blossoming of <strong>[${cCore}]</strong>. Prepare your heart for this unfolding revelation.`,
+        `<strong>The Divine Decree:</strong> Take the wisdom of <strong>'${cName}'</strong> as your ultimate compass. The universe commands you to seek <strong>[${cCore}]</strong>. This is not merely an option, but the true trajectory intended for your spirit's evolution.`
     ];
-    return spreadMeanings[index] || `The card <strong>'${cName}'</strong> whispers the essence of <strong>[${cCore}]</strong> into your destiny.`;
+    return cosmicReadings[index] || `The card <strong>'${cName}'</strong> holds the key to <strong>[${cCore}]</strong> within your destiny.`;
 
 } else {
-    // 국문 해석 강화 (더 신비롭고 풍성한 스토리텔링)
-    const energyIntro = `${uName}님이 타고나신 '${uEnergy}'와 현재의 기운을 대조해볼 때, `;
-    const cardSymbol = `하늘의 계시는 <strong>'${cName}'</strong> 카드로 나타났습니다. `;
+    // 국문: 고전적이고 문학적인 서사형 리딩 (AI와 차별화된 묵직한 문체)
+    const energyContext = `'${uEnergy}'의 기운을 품고 태어난 ${uName}님께, `;
     
     if (type === 'today') {
-        const phases = ["오늘 아침의 기운은", "오늘 낮의 흐름은", "오늘 저녁의 잔상은"];
-        return `${phases[index]} <strong>[${cCore}]</strong>의 에너지와 맞닿아 있습니다. ${uName}님, 이 파동을 기억하며 오늘 하루를 지혜롭게 통과하시기 바랍니다.`;
+        const dailyFlows = [
+            `새벽의 정적을 깨고 나타난 <strong>'${cName}'</strong> 카드는 오늘 당신의 시작이 <strong>[${cCore}]</strong>와 깊이 공명하고 있음을 암시합니다. 첫 발자국에 깃든 이 운율을 조용히 따라가 보십시오.`,
+            `태양이 머리 위에 머무는 시간, <strong>'${cName}'</strong>의 형상이 더욱 선명해집니다. 삶의 번잡함 속에서도 <strong>[${cCore}]</strong>라는 핵심을 놓치지 않는다면, 당신은 길을 잃지 않을 것입니다.`,
+            `별빛이 내려앉는 저녁, <strong>'${cName}'</strong>의 에너지가 당신의 하루를 갈무리합니다. 오늘 얻은 <strong>[${cCore}]</strong>라는 배움은 밤사이 당신의 영혼을 살찌우는 소중한 자양분이 될 것입니다.`
+        ];
+        return dailyFlows[index];
     }
 
-    const spreadMeanings = [
-        `현재 ${uName}님이 딛고 서 있는 <strong>운명의 좌표</strong>입니다. ${energyIntro}${cardSymbol} 이는 지금 상황의 근간에 <strong>[${cCore}]</strong>라는 핵심적인 흐름이 흐르고 있음을 의미합니다.`,
-        `지금 마주한 <strong>영혼의 과제</strong>를 상징합니다. 현재 <em>${uCycle}</em>의 주기와 맞물려, <strong>[${cCore}]</strong>라는 화두가 당신의 인내와 선택을 시험하고 있습니다.`,
-        `무의식 속에 숨겨진 <strong>잠재적 동력</strong>입니다. 지나온 삶의 궤적이 <strong>[${cCore}]</strong>의 상징과 공명하며, 보이지 않는 곳에서 당신의 다음 발걸음을 인도하고 있습니다.`,
-        `곧 펼쳐질 <strong>미래의 풍경</strong>을 예견합니다. 올해의 큰 흐름인 <em>${uYearly}</em> 속에서, <strong>[${cCore}]</strong>의 양상이 더욱 선명하게 삶의 전면에 드러날 것입니다.`,
-        `별들이 전하는 <strong>궁극적인 조언</strong>입니다. 현재의 혼란을 가라앉히고 평온을 찾기 위해서는 <strong>[${cCore}]</strong>의 방향으로 마음을 모아야 합니다. 이것이 운명의 수레바퀴를 긍정적으로 돌릴 신성한 열쇠입니다.`
+    const cosmicReadings = [
+        `<strong>운명의 주춧돌</strong>: ${energyContext} 첫 번째 자리에 놓인 <strong>'${cName}'</strong>은 현재 당신이 딛고 선 대지에 <strong>[${cCore}]</strong>라는 강한 맥박이 흐르고 있음을 말해줍니다. 이 근간을 인정할 때 비로소 다음 문이 열릴 것입니다.`,
+        `<strong>영혼의 시험대</strong>: 당신의 앞길을 가로막은 보이지 않는 벽은 <strong>'${cName}'</strong>의 모습으로 나타났습니다. 현재 <em>${uCycle}</em>의 흐름 속에서, <strong>[${cCore}]</strong>라는 과제를 어떻게 다루느냐에 따라 당신의 그릇이 결정될 것입니다.`,
+        `<strong>기억의 메아리</strong>: 현재의 당신을 만든 것은 과거의 <strong>'${cName}'</strong>이 남긴 흔적입니다. 지나온 시간 속에서 겪은 <strong>[${cCore}]</strong>의 경험들이 이제는 지혜라는 이름의 나침반이 되어 당신의 무의식을 인도하고 있습니다.`,
+        `<strong>다가올 계시</strong>: 머지않아 당신의 삶에는 <strong>'${cName}'</strong>의 풍경이 펼쳐질 것입니다. 올해의 천기인 <em>${uYearly}</em>와 맞물려, <strong>[${cCore}]</strong>의 현상이 예기치 못한 순간에 당신의 일상을 찾아올 것을 예견합니다.`,
+        `<strong>하늘의 전언</strong>: 마지막으로 별들이 전하는 웅장한 조언에 귀를 기울이십시오. <strong>'${cName}'</strong> 카드는 당신이 나아갈 궁극의 방향이 <strong>[${cCore}]</strong>에 있음을 명시합니다. 이 부름에 응답하는 것이 당신의 운명을 완성하는 길입니다.`
     ];
-    return spreadMeanings[index] || `<strong>'${cName}'</strong> 카드가 당신의 삶에 <strong>[${cCore}]</strong>라는 깊은 울림을 전하고 있습니다.`;
+    return cosmicReadings[index] || `<strong>'${cName}'</strong> 카드가 당신의 삶에 <strong>[${cCore}]</strong>라는 묵직한 화두를 던지고 있습니다.`;
 }
 }
 
