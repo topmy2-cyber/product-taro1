@@ -1443,46 +1443,6 @@ console.warn("AI 리딩 실패, 로컬 엔진 전환:", error);
 return null;
 }
 }
-    }],
-    generationConfig: { 
-        maxOutputTokens: 3000, 
-        temperature: 0.7,
-        topP: 0.95,
-        topK: 40
-    }
-};
-
-try {
-const response = await fetch(`/api/gemini`, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(payload)
-});
-
-const data = await response.json();
-
-if (!response.ok) {
-    if (response.status === 429) {
-        console.warn("Gemini API 할당량 초과 (HTTP 429)");
-        return { isQuotaExceeded: true };
-    }
-    console.error("Gemini API 상세 에러:", data);
-    throw new Error(data.details?.message || data.error || 'API_ERROR');
-}
-
-// 표준 Gemini 응답 파싱 (candidates[0].content.parts[0].text)
-const fullText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-const insightMatch = fullText.match(/\[INSIGHT\](.*)/);
-const mainInterpretation = fullText.replace(/\[INSIGHT\].*/, '').trim();
-const newInsights = insightMatch ? insightMatch[1].trim() : "";
-
-return { mainInterpretation, newInsights };
-} catch (error) {
-console.warn("AI 리딩 실패, 로컬 엔진 전환:", error);
-return null;
-}
-}
 
 
 
