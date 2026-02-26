@@ -1,0 +1,9 @@
+node_modules/
+firebase-debug.log
+check_divs.py
+check_js.js
+check_syntax.js
+modify_index.py
+명리학&타로.text
+.idx/
+.vscode/
