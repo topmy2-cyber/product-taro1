@@ -149,6 +149,24 @@ from { opacity: 1; }
 to { opacity: 0; }
 }
 
+/* 별똥별 스타일 */
+.shooting-star {
+position: absolute;
+width: 2px;
+height: 2px;
+background: linear-gradient(90deg, #fff, transparent);
+animation: shooting 4s linear infinite;
+pointer-events: none;
+z-index: 5;
+opacity: 0;
+}
+
+@keyframes shooting {
+0% { transform: translateX(0) translateY(0) rotate(-45deg) scale(1); opacity: 1; }
+70% { opacity: 1; }
+100% { transform: translateX(-1000px) translateY(1000px) rotate(-45deg) scale(0); opacity: 0; }
+}
+
 /* 카드 덱 전개 및 뽑기 애니메이션을 위한 스타일 */
 .tarot-card-deck {
 display: flex;
