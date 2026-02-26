@@ -1395,19 +1395,21 @@ const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 userInfo = { name, birthDate, calendarType, gender, maritalStatus };
 
 // Supabase에 프로필 정보 저장
-const { data: { user } } = await window.supabaseClient.auth.getUser();
-if (user) {
-    const { error } = await window.supabaseClient.from('profiles').upsert({
-        id: user.id,
-        name,
-        birth_date: birthDate,
-        calendar_type: calendarType,
-        gender,
-        marital_status: maritalStatus,
-        updated_at: new Date()
-    });
-    if (error) {
-        console.warn("프로필 저장 실패 (테이블이 없을 수 있음):", error.message);
+if (window.supabaseClient) {
+    const { data: { user } } = await window.supabaseClient.auth.getUser();
+    if (user) {
+        const { error } = await window.supabaseClient.from('profiles').upsert({
+            id: user.id,
+            name,
+            birth_date: birthDate,
+            calendar_type: calendarType,
+            gender,
+            marital_status: maritalStatus,
+            updated_at: new Date()
+        });
+        if (error) {
+            console.warn("프로필 저장 실패 (테이블이 없을 수 있음):", error.message);
+        }
     }
 }
 
