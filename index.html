@@ -914,12 +914,16 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l6S7Ad97pq9vSXPAdSbcSTbtfSbh8SPrsdScFBfP7SCDlsIn6ayS9ToSIdofZ60n" crossorigin="anonymous"></script>
 <script>
 // 카카오 초기화 (사용자 앱 키로 변경 권장)
+// 주의: 실제 작동을 위해서는 카카오 개발자 콘솔에서 발급받은 'JavaScript 키'를 아래에 넣어야 합니다.
 try {
     if (typeof Kakao !== 'undefined') {
-        Kakao.init('YOUR_KAKAO_APP_KEY'); // 실제 사용 시 발급받은 JS 키를 넣어야 함
+        const KAKAO_KEY = 'YOUR_KAKAO_APP_KEY'; 
+        if (KAKAO_KEY !== 'YOUR_KAKAO_APP_KEY') {
+            Kakao.init(KAKAO_KEY);
+        }
     }
 } catch (e) {
-    console.warn("Kakao SDK load error");
+    console.warn("Kakao SDK initialization failed:", e);
 }
 
 // --- 공유 기능 함수들 ---
@@ -968,7 +972,8 @@ function shareKakao() {
 // --- 0. 다국어 데이터 (i18n Dictionary) ---
 const uiTranslations = {
 appTitle: { ko: "꿈타로", en: "DreamTarot" },
-appSubtitle: { ko: "당신의 운명을 비춰보는 신비로운 거울", en: "A mystical mirror reflecting your destiny" },consentText: { ko: "[필수] 개인정보 수집 및 이용에 동의합니다. <br/><span class='text-slate-500'>운세 제공을 위해 이름, 생년월일 등의 정보를 수집합니다.</span>", en: "[Required] I agree to the privacy policy. <br/><span class='text-slate-500'>We collect data like name and birthdate for readings.</span>" },
+appSubtitle: { ko: "당신의 운명을 비춰보는 신비로운 거울", en: "A mystical mirror reflecting your destiny" },
+consentText: { ko: "[필수] 개인정보 수집 및 이용에 동의합니다. <br/><span class='text-slate-500'>운세 제공을 위해 이름, 생년월일 등의 정보를 수집합니다.</span>", en: "[Required] I agree to the privacy policy. <br/><span class='text-slate-500'>We collect data like name and birthdate for readings.</span>" },
 btnSubmitLogin: { ko: "운명의 문 열기", en: "Open the Gate of Destiny" },
 btnSubmitSignup: { ko: "새로운 여정 시작하기", en: "Start a New Journey" },
 
@@ -1557,23 +1562,28 @@ const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 userInfo = { name, birthDate, calendarType, gender, maritalStatus };
 
 // Supabase에 프로필 정보 저장
-if (window.supabaseClient) {
-    const { data: { user } } = await window.supabaseClient.auth.getUser();
-    if (user) {
-        const { error } = await window.supabaseClient.from('profiles').upsert({
-            id: user.id,
-            name,
-            birth_date: birthDate,
-            calendar_type: calendarType,
-            gender,
-            marital_status: maritalStatus,
-            updated_at: new Date()
-        });
-        if (error) {
-            console.warn("프로필 저장 실패 (테이블이 없을 수 있음):", error.message);
+const saveProfile = async () => {
+    if (window.supabaseClient) {
+        try {
+            const { data: { user } } = await window.supabaseClient.auth.getUser();
+            if (user) {
+                const { error } = await window.supabaseClient.from('profiles').upsert({
+                    id: user.id,
+                    name,
+                    birth_date: birthDate,
+                    calendar_type: calendarType,
+                    gender,
+                    marital_status: maritalStatus,
+                    updated_at: new Date()
+                });
+                if (error) console.warn("Profile upsert failed:", error.message);
+            }
+        } catch (e) {
+            console.warn("Supabase operation skipped:", e.message);
         }
     }
-}
+};
+await saveProfile();
 
 localStorage.setItem('mungTarotUser', JSON.stringify(userInfo));
 showScreen('selection-screen');
