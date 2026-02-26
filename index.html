@@ -1534,26 +1534,26 @@ let energyFlavor = {};
 if (birthMonth >= 2 && birthMonth <= 4) {
 innateEnergy = "spring";
 energyFlavor = {
-ko: "만물이 소생하는 봄의 기운처럼, 새로운 가능성을 탐색하고 유연하게 상황에 적응하는 잠재력",
-en: "Like the energy of spring where all things revive, the potential to explore new possibilities and flexibly adapt"
+ko: "새로운 가능성을 탐색하고 유연하게 상황에 적응하는 잠재력",
+en: "The potential to explore new possibilities and flexibly adapt to situations"
 };
 } else if (birthMonth >= 5 && birthMonth <= 7) {
 innateEnergy = "summer";
 energyFlavor = {
-ko: "여름의 태양처럼 강한 확산의 기운을 지니며, 자신의 목표를 향해 열정적으로 에너지를 발산하는 성향",
-en: "Having a strong energy of expansion like the summer sun, a tendency to passionately radiate energy towards goals"
+ko: "목표를 향해 열정적으로 에너지를 발산하고 주도적으로 이끄는 성향",
+en: "A tendency to passionately radiate energy towards goals and take the lead"
 };
 } else if (birthMonth >= 8 && birthMonth <= 10) {
 innateEnergy = "autumn";
 energyFlavor = {
-ko: "가을의 결실을 맺는 기운처럼, 불필요한 것을 정리하고 현실적이며 구조적인 안정을 추구하는 성향",
-en: "Like the energy of autumn bearing fruit, a tendency to clear the unnecessary and pursue realistic structural stability"
+ko: "현실적이며 구조적인 안정을 추구하고 불필요한 것을 정리하는 성향",
+en: "A tendency to pursue realistic structural stability and organize unnecessary elements"
 };
 } else {
 innateEnergy = "winter";
 energyFlavor = {
-ko: "겨울의 응축된 기운처럼, 겉으로 드러나기보다 내면의 사유를 깊이 하고 통찰력을 축적하는 성향",
-en: "Like the condensed energy of winter, a tendency to deepen inner thought and accumulate insight rather than revealing outward"
+ko: "내면의 사유를 깊이 하고 통찰력을 축적하며 신중하게 판단하는 성향",
+en: "A tendency to deepen inner thought, accumulate insight, and make careful judgments"
 };
 }
 
@@ -1561,18 +1561,18 @@ const lifePhase = age % 10;
 let cycleFlow = {};
 if (lifePhase <= 2) {
 cycleFlow = {
-ko: "기존의 익숙한 환경에서 벗어나 새로운 삶의 방향성을 모색하게 되는 생애 주기의 전환점",
-en: "A turning point in the life cycle where one seeks a new direction, breaking away from the familiar environment"
+ko: "기존의 틀에서 벗어나 새로운 삶의 방향성을 모색하게 되는 시점",
+en: "A time to break away from existing frameworks and seek new directions in life"
 };
 } else if (lifePhase <= 6) {
 cycleFlow = {
-ko: "축적된 에너지를 외부로 발산하며, 사회적 역할이나 개인적 역량을 활발히 확장해 나가는 시기",
-en: "A period of actively expanding social roles or personal capabilities by radiating accumulated energy outward"
+ko: "사회적 역할이나 개인적 역량을 활발히 확장해 나가는 왕성한 시기",
+en: "An active period of expanding social roles or personal capabilities"
 };
 } else {
 cycleFlow = {
-ko: "외적인 확장보다는 내실을 다지고, 지나온 경험들을 통합하여 심리적 안정감을 구축해야 하는 시기",
-en: "A period to build psychological stability by consolidating inner strength and integrating past experiences rather than outward expansion"
+ko: "내실을 다지고 지나온 경험들을 통합하여 안정감을 구축해야 하는 시기",
+en: "A period to build stability by consolidating inner strength and integrating experiences"
 };
 }
 
@@ -1580,18 +1580,18 @@ const yearlyPhase = (currentYear - birthYear) % 12;
 let yearlyRhythm = {};
 if (yearlyPhase < 4) {
 yearlyRhythm = {
-ko: "새로운 계획을 세우거나 기초를 다지기에 적합한, 장기적 관점에서의 시작을 의미하는 흐름",
-en: "A flow signifying a start from a long-term perspective, suitable for making new plans or laying foundations"
+ko: "새로운 계획을 세우거나 기초를 다지기에 적합한 시작의 흐름",
+en: "A flow of beginnings suitable for making new plans or laying foundations"
 };
 } else if (yearlyPhase < 8) {
 yearlyRhythm = {
-ko: "그간의 노력이 구체적인 결과물로 드러나며, 외부 활동성과 성과가 극대화되는 절정의 흐름",
-en: "A peak flow where past efforts manifest as concrete results, maximizing external activity and achievements"
+ko: "노력이 구체적인 결과물로 드러나며 성과가 극대화되는 절정의 흐름",
+en: "A peak flow where efforts manifest as concrete results and achievements are maximized"
 };
 } else {
 yearlyRhythm = {
-ko: "현상 유지를 목표로 하며, 에너지를 재충전하고 내면의 균형을 회복하는 데 집중해야 할 휴식의 흐름",
-en: "A resting flow aimed at maintaining the status quo, focusing on recharging energy and restoring inner balance"
+ko: "현상을 유지하며 에너지를 재충전하고 내면의 균형을 회복하는 휴식의 흐름",
+en: "A resting flow focused on maintaining the status quo and recharging energy"
 };
 }
 
@@ -1790,7 +1790,7 @@ text = `첫 번째 자리에 놓인 카드는 <strong>'${cName}'</strong>입니�
 break;
 case 1:
 text = `두 번째 카드는 <strong>'${cName}'</strong>입니다. 당신이 현재 극복해야 할 내면의 갈등이나 외부의 제약 요인을 나타냅니다. 카드가 내포한 <strong>[${cCore}]</strong>의 의미가 현재의 고민을 촉발하는 원인일 수 있습니다.<br/><br/>
-                      이러한 제약에 직면했을 때, 당신이 선천적으로 지닌 <em>${uEnergy}</em>이 중요한 대처 기제로 작용할 수 있습니다. 당면한 문제를 외부의 탓으로 돌리기보다, 자신의 고유한 성향을 어떻게 실용적으로 발현할 것인지 고민해 보는 것이 문제 해결의 단초가 됩니다.`;
+                      이러한 제약에 직면했을 때, 당신이 지닌 <em>${uEnergy}</em>을 실용적으로 발현하는 것이 문제 해결의 단초가 됩니다. 외부의 상황에 휩쓸리기보다 현재 본인이 할 수 있는 구체적인 행동에 집중해 보시기 바랍니다.`;
 break;
 case 2:
 text = `세 번째 <strong>'${cName}'</strong> 카드는 현재 상황을 형성한 과거의 배경 및 무의식적 패턴을 의미합니다. 지나온 시간 동안의 <strong>[${cCore}]</strong>와 관련된 경험들이 현재의 토대를 구축했습니다.<br/><br/>
@@ -1802,7 +1802,7 @@ text = `네 번째 <strong>'${cName}'</strong> 카드는 현재의 조건들이 
 break;
 case 4:
 text = `마지막 다섯 번째 <strong>'${cName}'</strong> 카드는 전체적인 상황을 조망하며 도출되는 궁극적인 조언입니다. 이 카드는 최종적으로 <strong>[${cCore}]</strong>의 방향성을 향해 나아가는 것이 합리적임을 지시하고 있습니다.<br/><br/>
-                      앞선 카드들의 맥락과 당신의 기질적 특성을 종합할 때, 당신은 직면한 문제를 충분히 해결할 수 있는 내적 자원을 지니고 있습니다. 막연한 기대나 과도한 불안을 경계하고, 현실적인 한계를 인정하되 자신이 할 수 있는 영역에서 최선을 다하는 담담한 태도를 유지하시기 바랍니다. 당신의 주체적인 선택이 올바른 궤적을 만들어낼 것입니다.${adviceSuffix}`;
+                      앞선 카드들의 맥락과 현재의 흐름을 종합할 때, 당신은 직면한 문제를 충분히 해결할 수 있는 내적 자원을 지니고 있습니다. 막연한 기대나 과도한 불안을 경계하고, 현실적인 한계를 인정하되 자신이 할 수 있는 영역에서 최선을 다하는 담담한 태도를 유지하시기 바랍니다. 당신의 주체적인 선택이 올바른 궤적을 만들어낼 것입니다.${adviceSuffix}`;
 break;
 }
 return text;
