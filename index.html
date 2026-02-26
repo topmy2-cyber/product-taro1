@@ -1304,6 +1304,10 @@ body: JSON.stringify(payload)
 const data = await response.json();
 
 if (!response.ok) {
+    if (response.status === 429) {
+        console.warn("Gemini API 할당량 초과 (HTTP 429)");
+        return { isQuotaExceeded: true };
+    }
     console.error("Gemini API 상세 에러:", data);
     throw new Error(data.details?.message || data.error || 'API_ERROR');
 }
@@ -1877,6 +1881,10 @@ lucide.createIcons();
 const contextInfo = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
 const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, contextInfo);
 lastAIResult = aiResult;
+
+if (aiResult && aiResult.isQuotaExceeded) {
+    showMessage({ ko: "AI 접속이 원활하지 않아(사용량 초과) 기본 해석으로 대체합니다.", en: "AI Quota exceeded. Switching to basic interpretation." }, "info");
+}
 
 // 로딩 인디케이터 제거
 interpretationContent.innerHTML = '';
