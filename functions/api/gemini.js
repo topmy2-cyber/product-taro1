@@ -28,8 +28,14 @@ export async function onRequestPost(context) {
         });
 
         if (!response.ok) {
-            const errorData = await response.text();
-            throw new Error(`Gemini API Error: ${errorData}`);
+            const errorData = await response.json();
+            return new Response(JSON.stringify({ 
+                error: "Gemini API Error", 
+                details: errorData.error || errorData 
+            }), { 
+                status: response.status,
+                headers: { "Content-Type": "application/json" }
+            });
         }
 
         const data = await response.json();

@@ -1299,9 +1299,12 @@ headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(payload)
 });
 
-if (!response.ok) throw new Error('API_ERROR');
-
 const data = await response.json();
+
+if (!response.ok) {
+    console.error("Gemini API 상세 에러:", data);
+    throw new Error(data.details?.message || data.error || 'API_ERROR');
+}
 
 // 표준 Gemini 응답 파싱 (candidates[0].content.parts[0].text)
 const fullText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
