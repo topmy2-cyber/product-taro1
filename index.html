@@ -169,8 +169,8 @@ input[type="radio"]:checked + div { background-color: rgba(147, 51, 234, 0.5); b
 <div class="text-center mb-8">
 <div class="relative flex justify-center items-center mb-8 h-24">
 <!-- 몽환적인 배경 오로라 효과 -->
-<div class="absolute w-32 h-32 bg-indigo-600/30 rounded-full blur-3xl animate-pulse"></div>
-<div class="absolute w-24 h-24 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+<div id="logo-aurora-1" class="absolute w-32 h-32 bg-indigo-600/30 rounded-full blur-3xl animate-pulse"></div>
+<div id="logo-aurora-2" class="absolute w-24 h-24 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
 
 <!-- 입체적인 미래적 보석 로고 (SVG) -->
 <div class="relative group scale-110">
@@ -219,7 +219,7 @@ input[type="radio"]:checked + div { background-color: rgba(147, 51, 234, 0.5); b
 </g>
 
 <!-- 중앙 코어 -->
-<circle cx="50" cy="50" r="4" fill="white" filter="url(#glow)">
+<circle id="logo-core" cx="50" cy="50" r="4" fill="white" filter="url(#glow)">
 <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" />
 </circle>
 </svg>
@@ -783,6 +783,50 @@ style="animation-duration: 10s; transform: rotateX(45deg) rotateY(45deg);"></div
 
 <!-- JavaScript 로직 -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l6S7Ad97pq9vSXPAdSbcSTbtfSbh8SPrsdScFBfP7SCDlsIn6ayS9ToSIdofZ60n" crossorigin="anonymous"></script>
+
+<!-- Motion 애니메이션 적용 -->
+<script type="module">
+    import { animate } from "https://cdn.jsdelivr.net/npm/motion@12.34.0/+esm"
+
+    // 로고 중앙 코어 색상 애니메이션
+    animate(
+        "#logo-core",
+        {
+            fill: ["#ffffff", "#ff0088", "#0d63f8", "#ffffff"],
+        },
+        {
+            duration: 8,
+            repeat: Infinity,
+            easing: "ease-in-out",
+        }
+    )
+
+    // 배경 오로라 색상 애니메이션
+    animate(
+        "#logo-aurora-1",
+        {
+            backgroundColor: ["#4f46e5", "#ff0088", "#0d63f8", "#4f46e5"],
+        },
+        {
+            duration: 12,
+            repeat: Infinity,
+            easing: "linear",
+        }
+    )
+
+    animate(
+        "#logo-aurora-2",
+        {
+            backgroundColor: ["#a855f7", "#0d63f8", "#ff0088", "#a855f7"],
+        },
+        {
+            duration: 10,
+            repeat: Infinity,
+            easing: "linear",
+        }
+    )
+</script>
+
 <script>
 // 카카오 초기화 (사용자 앱 키로 변경 권장)
 // 주의: 실제 작동을 위해서는 카카오 개발자 콘솔에서 발급받은 'JavaScript 키'를 아래에 넣어야 합니다.
