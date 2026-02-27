@@ -1848,35 +1848,12 @@ async function showResultScreen() {
         cardEl.className = `spread-card ${maxDrawCount === 3 ? 'pos-today-' : 'pos-'}${index + 1} fade-in-centered`;
         cardEl.style.animationDelay = `${index * 0.2}s`;
         
-        let bgImg = "";
-        let cols = 8; 
-        let rows = 4;
-        let relativeId = 0;
-
-        if (card.id <= 21) {
-            bgImg = "22card.jpg";
-            relativeId = card.id;
-            cols = 6; // Major Arcana is 6x4
-        } else if (card.id <= 49) {
-            bgImg = "wand,cup.jpg";
-            relativeId = card.id - 22;
-            cols = 8; // Minor Arcana is 8x4
-        } else {
-            bgImg = "sword,pn.jpg";
-            relativeId = card.id - 50;
-            cols = 8;
-        }
-
-        // 정밀한 퍼센트 계산
-        const percentX = (relativeId % cols) * (100 / (cols - 1));
-        const percentY = Math.floor(relativeId / cols) * (100 / (rows - 1));
-
         const cardFront = document.createElement('div');
-        cardFront.className = 'card-front';
-        cardFront.style.backgroundImage = `url('${bgImg}')`;
-        cardFront.style.backgroundPosition = `${percentX.toFixed(4)}% ${percentY.toFixed(4)}%`;
-        cardFront.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
-        cardFront.innerHTML = `<span class="font-bold">${card.name[currentLang]}</span>`;
+        cardFront.className = 'card-front bg-slate-800/90 border-2 border-amber-400/60 flex flex-col items-center justify-center';
+        cardFront.innerHTML = `
+            <i data-lucide="${card.icon}" class="w-10 h-10 text-amber-200 mb-2"></i>
+            <span class="font-bold text-xs text-amber-100">${card.name[currentLang]}</span>
+        `;
         
         cardEl.appendChild(cardFront);
         starContainer.appendChild(cardEl);
