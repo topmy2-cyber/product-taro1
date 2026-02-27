@@ -1360,6 +1360,7 @@ const prompt = currentLang === 'ko' ? `
        - 세속의 점술 용어('별자리', '명리학', '사주', '기운')는 철저히 배제하고, 신화적이고 고풍스러운 주술사의 언어를 사용하십시오.
        - 문장과 문장 사이에 여백(줄바꿈)을 두어 예언의 무게감을 더하십시오.
        - **운명을 바꿀 가장 중요한 계시와 지침은 반드시 <span class="text-amber-400 font-bold">...</span> 태그로 새겨 넣으십시오.**
+       - 답변의 마지막에 [INSIGHT] 태그를 붙이고, 그 뒤에 질문자의 현재 상황에 대한 짧은 한 줄 통찰을 덧붙이십시오.
    ` : `
        [System Persona] You are an 'Ancient High Shaman and Prophet' who parts the veil of time to read cosmic providence. 
        Weave the symbols of the drawn Tarot cards with the user's inherent stellar trajectory to deliver a profound prophecy filled with mystical authority. 
@@ -1385,6 +1386,7 @@ const prompt = currentLang === 'ko' ? `
        - Use frequent line breaks to add weight and breathing space to the prophecy.
        - **You must engrave the most critical revelation and action steps within <span class="text-amber-400 font-bold">...</span> tags.**
        - Answer in English.
+       - At the very end of your response, add [INSIGHT] followed by a single, short sentence of mystical insight about the user's path.
    `;
 
 const payload = {
@@ -1515,7 +1517,8 @@ localStorage.setItem('mungTarotUser', JSON.stringify(userInfo));
 const saveProfileToDB = async () => {
     if (window.supabaseClient) {
         try {
-            const { data: { user } } = await window.supabaseClient.auth.getUser();
+            const { data, error } = await window.supabaseClient.auth.getUser();
+            const user = data?.user;
             if (user) {
                 await window.supabaseClient.from('profiles').upsert({
                     id: user.id,
@@ -1846,32 +1849,33 @@ async function showResultScreen() {
         cardEl.style.animationDelay = `${index * 0.2}s`;
         
         let bgImg = "";
-        let posX = 0, posY = 0;
-        let cols = 7;
+        let cols = 8; 
+        let rows = 4;
         let relativeId = 0;
 
         if (card.id <= 21) {
             bgImg = "22card.jpg";
-            cols = 6;
             relativeId = card.id;
+            cols = 6; // Major Arcana is 6x4
         } else if (card.id <= 49) {
             bgImg = "wand,cup.jpg";
-            cols = 7;
             relativeId = card.id - 22;
+            cols = 8; // Minor Arcana is 8x4
         } else {
             bgImg = "sword,pn.jpg";
-            cols = 7;
             relativeId = card.id - 50;
+            cols = 8;
         }
 
-        posX = (relativeId % cols) * (100 / (cols - 1));
-        posY = Math.floor(relativeId / cols) * (100 / 3); // 4행이므로 3으로 나눔 (0%, 33.3%, 66.6%, 100%)
+        // 정밀한 퍼센트 계산
+        const percentX = (relativeId % cols) * (100 / (cols - 1));
+        const percentY = Math.floor(relativeId / cols) * (100 / (rows - 1));
 
         const cardFront = document.createElement('div');
         cardFront.className = 'card-front';
         cardFront.style.backgroundImage = `url('${bgImg}')`;
-        cardFront.style.backgroundPosition = `${posX}% ${posY}%`;
-        cardFront.style.backgroundSize = `${cols * 100}% 400%`;
+        cardFront.style.backgroundPosition = `${percentX.toFixed(4)}% ${percentY.toFixed(4)}%`;
+        cardFront.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
         cardFront.innerHTML = `<span class="font-bold">${card.name[currentLang]}</span>`;
         
         cardEl.appendChild(cardFront);
