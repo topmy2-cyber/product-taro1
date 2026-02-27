@@ -150,9 +150,9 @@ input[type="radio"]:checked + div { background-color: rgba(147, 51, 234, 0.5); b
 
 <!-- 다국어 언어 전환 토글 버튼 (우측 상단 고정) -->
 <div class="absolute top-6 right-6 z-50 flex gap-3 text-sm font-medium text-slate-300">
-<button id="lang-ko" onclick="setLanguage('ko')" class="lang-btn active pb-1">KR</button>
+<button id="lang-ko" onclick="setLanguage('ko')" class="lang-btn pb-1">KR</button>
 <span class="text-slate-600">|</span>
-<button id="lang-en" onclick="setLanguage('en')" class="lang-btn pb-1">EN</button>
+<button id="lang-en" onclick="setLanguage('en')" class="lang-btn active pb-1">EN</button>
 </div>
 
 <!-- 토스트 메시지 컨테이너 -->
@@ -939,12 +939,57 @@ linkPrivacy: { ko: "개인정보처리방침", en: "Privacy Policy" },
 linkTerms: { ko: "이용약관", en: "Terms" },
 btnClose: { ko: "돌아가기", en: "Close" },
 btnContact: { ko: "제휴 및 협업 문의", en: "Partnership Inquiry" },
-errDate: { ko: "올바른 정보를 입력해주세요.", en: "Please enter valid info." }
+errDate: { ko: "올바른 정보를 입력해주세요.", en: "Please enter valid info." },
+
+// 추가된 누락 키
+btnGoToAboutShort: { ko: "서비스 소개", en: "About Service" },
+btnSubmitContact: { ko: "문의 보내기", en: "Send Inquiry" },
+contactSubtitle: { ko: "꿈타로와 함께할 비즈니스 파트너를 기다립니다.", en: "Waiting for business partners to join DreamTarot." },
+contactTitle: { ko: "함께 꿈을 그리다", en: "Dreaming Together" },
+labelContactEmail: { ko: "회신 이메일", en: "Reply Email" },
+labelContactMessage: { ko: "상세 내용", en: "Detailed Content" },
+labelContactName: { ko: "업체명/성함", en: "Company/Name" },
+labelContactSubject: { ko: "문의 제목", en: "Inquiry Subject" },
+privacyContent: { 
+    ko: `<p>꿈타로(이하 '회사')는 이용자의 개인정보를 중요시하며, '개인정보 보호법' 등 관련 법령을 준수합니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">1. 수집하는 개인정보 항목</h4>
+<p>- 필수항목: 이메일, 이름, 생년월일, 성별, 결혼 여부<br/>- 수집방법: 서비스 이용 단계에서의 직접 입력</p>
+<h4 class="text-amber-200 font-bold mt-4">2. 개인정보의 수집 및 이용목적</h4>
+<p>- 타로 리딩 및 운세 서비스 결과 제공<br/>- 회원 관리 및 본인 확인<br/>- 서비스 개선 및 통계 분석</p>
+<h4 class="text-amber-200 font-bold mt-4">3. 개인정보의 보유 및 이용기간</h4>
+<p>이용자의 개인정보는 원칙적으로 회원 탈퇴 시까지 보유하며, 법령에서 정한 기간 동안 안전하게 보관 후 파기합니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">4. 개인정보의 파기절차 및 방법</h4>
+<p>전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용하여 삭제합니다.</p>`,
+    en: `<p>DreamTarot (hereinafter 'the Company') values users' personal information and complies with relevant laws such as the 'Personal Information Protection Act'.</p>
+<h4 class="text-amber-200 font-bold mt-4">1. Collected Personal Information Items</h4>
+<p>- Required: Email, Name, Date of Birth, Gender, Marital Status<br/>- Collection Method: Direct input during service use</p>
+<h4 class="text-amber-200 font-bold mt-4">2. Purpose of Collection and Use</h4>
+<p>- Providing tarot readings and fortune-telling results<br/>- Member management and identity verification<br/>- Service improvement and statistical analysis</p>
+<h4 class="text-amber-200 font-bold mt-4">3. Retention and Use Period</h4>
+<p>In principle, personal information is retained until membership withdrawal and is safely stored and destroyed for the period specified by law.</p>
+<h4 class="text-amber-200 font-bold mt-4">4. Destruction Procedures and Methods</h4>
+<p>Electronic file information is deleted using technical methods that prevent record reproduction.</p>`
+},
+termsContent: {
+    ko: `<h4 class="text-amber-200 font-bold">제 1 조 (목적)</h4>
+<p>본 약관은 꿈타로가 제공하는 운세 서비스의 이용 조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">제 2 조 (서비스의 성격)</h4>
+<p>본 서비스가 제공하는 타로 리딩 결과는 오락 및 참고용이며, 이용자의 중대한 결정에 대한 법적 책임을 지지 않습니다.</p>
+<h4 class="text-amber-200 font-bold mt-4">제 3 조 (이용자의 의무)</h4>
+<p>이용자는 본인의 정보를 정확히 입력해야 하며, 타인의 정보를 도용하여 발생하는 문제에 대한 책임은 이용자에게 있습니다.</p>`,
+    en: `<h4 class="text-amber-200 font-bold">Article 1 (Purpose)</h4>
+<p>These terms aim to regulate the conditions and procedures for using the fortune-telling service provided by DreamTarot.</p>
+<h4 class="text-amber-200 font-bold mt-4">Article 2 (Nature of Service)</h4>
+<p>Tarot reading results provided by this service are for entertainment and reference only, and we are not legally responsible for users' major decisions.</p>
+<h4 class="text-amber-200 font-bold mt-4">Article 3 (User Obligations)</h4>
+<p>Users must enter their information accurately, and the user is responsible for problems caused by stealing others' information.</p>`
+},
+termsTitle: { ko: "이용약관", en: "Terms of Use" }
 };
 
 // 1. 상태(State) 변수 관리
-let currentLang = 'ko'; 
-// 기본 언어 한글 설정
+let currentLang = 'en'; 
+// 기본 언어 영어 설정
 let userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
 let partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
 let careerInfo = { question: '' };
@@ -1054,7 +1099,7 @@ const savedLang = localStorage.getItem('mungTarotLang');
 if (savedLang) {
 setLanguage(savedLang);
 } else {
-applyLanguage(); // 기본(ko) 적용
+applyLanguage(); // Apply default (en)
 }
 loadSavedData();
 
@@ -1216,10 +1261,10 @@ console.error("데이터를 불러오는 중 오류가 발생했습니다.", err
 // AI 해석 엔진 (Cloudflare Pages Function 연동)
 async function fetchAIInterpretation(cards, user, type, contextInfo) {
 const destiny = calculateDestinyEnergy(user.birthDate);
-const cardNames = cards.map(c => c.name.ko).join(', ');
-const question = contextInfo.question || "전반적인 운세";
+const cardNames = cards.map(c => c.name[currentLang]).join(', ');
+const question = contextInfo.question || (currentLang === 'ko' ? "전반적인 운세" : "overall fortune");
 
-const prompt = `
+const prompt = currentLang === 'ko' ? `
        [필수지시] 명리학(거시적 생애 주기)과 타로(미시적 심리 및 현재 상황)를 융합하여, 사용자에게 가장 '명확하고 실질적인' 조언을 제공하는 전문가로서 답변하라.
        상황: ${type} 리딩 (${question}), 카드: ${cardNames}.
        사용자특징: ${user.name}, 사주기운(참고용): ${destiny.energyFlavor.ko}.
@@ -1230,6 +1275,18 @@ const prompt = `
        3. 가독성을 위해 문장 사이사이에 줄바꿈을 자주 사용하라.
        4. **핵심 조언은 반드시 <span class="text-amber-400 font-bold">...</span> 태그로 강조하라.**
        5. '오늘운 타로'는 아침, 낮, 저녁의 흐름을 세 단락으로 명확히 구분하라.
+   ` : `
+       [Mandatory Instruction] Act as an expert who provides the most 'clear and practical' advice by merging Saju (macroscopic life cycles) and Tarot (microscopic psychology and current situations).
+       Situation: ${type} reading (${question}), Cards: ${cardNames}.
+       User Features: ${user.name}, Saju Energy (for reference): ${destiny.energyFlavor.en}.
+       
+       Rules:
+       1. **Focus on 'clear diagnosis of the current situation' and 'specific action guidelines' rather than abstract descriptions.**
+       2. Use everyday, realistic language that anyone can understand.
+       3. Use frequent line breaks between sentences for readability.
+       4. **Core advice must be highlighted with <span class="text-amber-400 font-bold">...</span> tags.**
+       5. For 'Daily Tarot', clearly distinguish the flow of morning, afternoon, and evening in three paragraphs.
+       6. Answer in English.
    `;
 
 const payload = {
@@ -1702,7 +1759,7 @@ async function showResultScreen() {
     interpretationContent.innerHTML = `
         <div id="ai-loading-indicator" class="flex flex-col items-center justify-center py-12 text-center">
             <div class="w-12 h-12 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-4"></div>
-            <p class="text-amber-200 animate-pulse">타로술사가 별의 속삭임을 읽는 중입니다...</p>
+            <p class="text-amber-200 animate-pulse">${currentLang === 'ko' ? '타로술사가 별의 속삭임을 읽는 중입니다...' : 'The tarot reader is listening to the whispers of the stars...'}</p>
         </div>
     `;
 
@@ -1732,7 +1789,9 @@ async function showResultScreen() {
         interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg">${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}</div>`;
     } else {
         // Fallback: 로컬 엔진 리딩
-        const titles = maxDrawCount === 3 ? ["✦ 태초", "✦ 흐름", "✦ 계시"] : ["현재", "과제", "과거", "미래", "조언"];
+        const titlesKO = maxDrawCount === 3 ? ["✦ 태초", "✦ 흐름", "✦ 계시"] : ["현재", "과제", "과거", "미래", "조언"];
+        const titlesEN = maxDrawCount === 3 ? ["✦ Origin", "✦ Flow", "✦ Revelation"] : ["Present", "Challenge", "Past", "Future", "Advice"];
+        const titles = currentLang === 'en' ? titlesEN : titlesKO;
         drawnCardsData.forEach((card, index) => {
             const textEl = document.createElement('div');
             textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 mb-4`;
@@ -1750,7 +1809,7 @@ function handleLogout() {
     localStorage.removeItem('mungTarotPartner');
     lastAIResult = null;
     showScreen('profile-screen');
-    showMessage("로그아웃되었습니다.", "info");
+    showMessage(currentLang === 'ko' ? "로그아웃되었습니다." : "Logged out.", "info");
 }
 
 function goBack() {
