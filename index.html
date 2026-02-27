@@ -36,7 +36,7 @@
 <meta property="og:description" content="별의 궤적이 그리는 당신의 운명, 정교한 AI 타로와 사주 기운의 교차 분석으로 지금 확인해보세요.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://product-taro1.pages.dev/">
-<meta property="og:image" content="https://product-taro1.pages.dev/card-back.png">
+<meta property="og:image" content="https://product-taro1.pages.dev/card-back.png?v=2">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:locale:alternate" content="en_US">
 
@@ -44,7 +44,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="꿈타로 - AI 타로 운세 및 사주 분석">
 <meta name="twitter:description" content="별의 궤적이 그리는 당신의 운명, 정교한 AI 타로와 사주 기운의 교차 분석으로 지금 확인해보세요.">
-<meta name="twitter:image" content="https://product-taro1.pages.dev/card-back.png">
+<meta name="twitter:image" content="https://product-taro1.pages.dev/card-back.png?v=2">
 
 <!-- 구조화된 데이터 (JSON-LD) 보강: GEO 및 AI 최적화 -->
 <script type="application/ld+json">
@@ -118,7 +118,7 @@ input[type="radio"]:checked + div { background-color: rgba(147, 51, 234, 0.5); b
 
 /* 타로 카드 관련 */
 .tarot-card-deck { display: flex; justify-content: center; flex-wrap: wrap; padding: 1rem; max-width: 800px; margin: 0 auto; }
-.tarot-card-item { width: 3.5rem; height: 5.5rem; margin-left: -3.3rem; border-radius: 0.5rem; background: url('card-back.png') center/cover; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: all 0.3s; cursor: pointer; border: 1px solid #fbbf24; }
+.tarot-card-item { width: 3.5rem; height: 5.5rem; margin-left: -3.3rem; border-radius: 0.5rem; background: url('card-back.png?v=2') center/cover; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: all 0.3s; cursor: pointer; border: 1px solid #fbbf24; }
 .tarot-card-item:first-child { margin-left: 0; }
 .tarot-card-item:hover { transform: translateY(-1rem); box-shadow: 0 10px 15px rgba(251, 191, 36, 0.5); z-index: 10; }
 .tarot-card-item.drawn { opacity: 0; pointer-events: none; transform: translateY(2rem) scale(0.8); }
@@ -818,7 +818,7 @@ function shareKakao() {
             content: {
                 title: uiTranslations.msgShareTitle['ko'],
                 description: uiTranslations.msgShareText['ko'],
-                imageUrl: 'https://product-taro1.pages.dev/card-back.png',
+                imageUrl: 'https://product-taro1.pages.dev/card-back.png?v=2',
                 link: {
                     mobileWebUrl: 'https://product-taro1.pages.dev/',
                     webUrl: 'https://product-taro1.pages.dev/',
@@ -1569,7 +1569,7 @@ drawnCardsData.push(availableCards[randomIdx]);
 
 const slot = document.getElementById(`slot-${drawnCardsCount}`);
 slot.className = 'w-14 h-20 md:w-20 md:h-32 rounded-lg border border-amber-400 shadow-lg shadow-amber-900/50 transition-all duration-500 fade-in';
-slot.style.backgroundImage = "url('card-back.png')";
+slot.style.backgroundImage = "url('card-back.png?v=2')";
 slot.style.backgroundSize = "cover";
 slot.style.backgroundPosition = "center";
 slot.innerHTML = ''; 
@@ -1800,6 +1800,19 @@ async function showResultScreen() {
     // AI 해석 호출
     const context = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
     const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, context);
+    
+    if (aiResult && aiResult.isQuotaExceeded) {
+        interpretationContent.innerHTML = `
+            <div class="bg-rose-900/50 p-6 rounded-xl border border-rose-500/50 text-rose-100 text-center fade-in">
+                <i data-lucide="alert-triangle" class="w-12 h-12 mx-auto mb-4 text-rose-400"></i>
+                <p class="font-bold text-lg mb-2">${currentLang === 'ko' ? '현재 무료 서비스 이용량이 많습니다.' : 'Free tier quota exceeded.'}</p>
+                <p class="text-sm opacity-80">${currentLang === 'ko' ? '잠시 후 다시 시도하시거나, 나중에 확인해주세요.' : 'Please try again in a few minutes.'}</p>
+            </div>
+        `;
+        lucide.createIcons({ root: interpretationContent });
+        return;
+    }
+
     lastAIResult = aiResult;
 
     interpretationContent.innerHTML = '';
@@ -1819,13 +1832,17 @@ async function showResultScreen() {
     }
 }
 
-function goToSelection() { showScreen('selection-screen'); }
+function goToSelection() { 
+    lastAIResult = null;
+    showScreen('selection-screen'); 
+}
 
 function handleLogout() {
     userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
+    partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
+    lastAIResult = null;
     localStorage.removeItem('mungTarotUser');
     localStorage.removeItem('mungTarotPartner');
-    lastAIResult = null;
     showScreen('profile-screen');
     showMessage(currentLang === 'ko' ? "로그아웃되었습니다." : "Logged out.", "info");
 }
