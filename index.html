@@ -1777,7 +1777,13 @@ async function showResultScreen() {
 
     // AI 해석 호출
     const context = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
-    const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, context);
+    let aiResult = null;
+    
+    try {
+        aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, context);
+    } catch (e) {
+        console.error("AI 호출 중 에러 발생:", e);
+    }
     
     if (aiResult && aiResult.isQuotaExceeded) {
         interpretationContent.innerHTML = `
@@ -1792,21 +1798,30 @@ async function showResultScreen() {
     }
 
     lastAIResult = aiResult;
-
     interpretationContent.innerHTML = '';
-    if (aiResult?.mainInterpretation) {
-        interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg">${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}</div>`;
+
+    if (aiResult && aiResult.mainInterpretation && aiResult.mainInterpretation.trim().length > 0) {
+        // AI 해석이 정상적으로 존재할 때
+        interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg text-slate-200 leading-relaxed">${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}</div>`;
     } else {
-        // Fallback: 로컬 엔진 리딩
-        const titlesKO = maxDrawCount === 3 ? ["✦ 태초", "✦ 흐름", "✦ 계시"] : ["현재", "과제", "과거", "미래", "조언"];
+        // AI 해석이 없거나 실패했을 때 (Fallback: 로컬 엔진 작동)
+        const titlesKO = maxDrawCount === 3 ? ["✦ 시작의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
         const titlesEN = maxDrawCount === 3 ? ["✦ Origin", "✦ Flow", "✦ Revelation"] : ["Present", "Challenge", "Past", "Future", "Advice"];
         const titles = currentLang === 'en' ? titlesEN : titlesKO;
+        
+        const fallbackContainer = document.createElement('div');
+        fallbackContainer.className = 'space-y-4 fade-in';
+        
         drawnCardsData.forEach((card, index) => {
             const textEl = document.createElement('div');
-            textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 mb-4`;
-            textEl.innerHTML = `<h4 class="text-amber-300 font-bold mb-2">${titles[index]}</h4><p class="text-slate-200">${generateDeepInterpretation(card, index, userInfo, selectedTarotType, context)}</p>`;
-            interpretationContent.appendChild(textEl);
+            textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 shadow-inner`;
+            textEl.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[index]}</h4><p class="text-slate-300 leading-loose">${generateDeepInterpretation(card, index, userInfo, selectedTarotType, context)}</p>`;
+            fallbackContainer.appendChild(textEl);
         });
+        interpretationContent.appendChild(fallbackContainer);
+        
+        // 안내 메시지 살짝 표시
+        showMessage(currentLang === 'ko' ? "AI 해석 연결이 원활하지 않아 로컬 엔진으로 대체합니다." : "Using local engine due to AI connection issues.", "info");
     }
 }
 
