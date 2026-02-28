@@ -957,30 +957,14 @@ function shareURL() {
 }
 
 function shareTwitter() {
-    const text = uiTranslations.msgShareTitle[currentLang];
-    const url = "https://product-taro1.pages.dev/";
     const lang = currentLang || 'en';
     const text = uiTranslations.msgShareTitle[lang] || "DreamTarot";
     const url = window.location.href;
-window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
 }
 
 function shareKakao() {
-if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
-        Kakao.Share.sendDefault({
-            objectType: 'feed',
-            content: {
-                title: uiTranslations.msgShareTitle['ko'],
-                description: uiTranslations.msgShareText['ko'],
-                imageUrl: 'https://product-taro1.pages.dev/card-back.png?v=2',
-                link: {
-                    mobileWebUrl: 'https://product-taro1.pages.dev/',
-                    webUrl: 'https://product-taro1.pages.dev/',
-                },
-            },
-            buttons: [
-                {
-                    title: '운명 확인하기',
+    if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
         try {
             Kakao.Share.sendDefault({
                 objectType: 'feed',
@@ -988,15 +972,11 @@ if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
                     title: uiTranslations.msgShareTitle['ko'],
                     description: uiTranslations.msgShareText['ko'],
                     imageUrl: 'https://product-taro1.pages.dev/card-back.png?v=2',
-link: {
-                        mobileWebUrl: 'https://product-taro1.pages.dev/',
-                        webUrl: 'https://product-taro1.pages.dev/',
+                    link: {
                         mobileWebUrl: window.location.href,
                         webUrl: window.location.href,
-},
-},
-            ],
-        });
+                    },
+                },
                 buttons: [
                     {
                         title: '운명 확인하기',
@@ -1011,232 +991,137 @@ link: {
             console.warn("Kakao share failed", e);
             shareURL();
         }
-} else {
+    } else {
         // SDK 미설정 시 URL 복사로 대체 안내
-shareURL();
-}
+        shareURL();
+    }
 }
 
-// --- 0. 다국어 데이터 (i18n Dictionary) ---
+// --- 0. 다국어 데이터 (i18n Dictionary) 통합 및 정제 ---
 const uiTranslations = {
-appTitle: { ko: "꿈타로", en: "DreamTarot" },
-appSubtitle: { ko: "당신의 운명을 비춰보는 신비로운 거울", en: "A mystical mirror reflecting your destiny" },
-appSubtitle: { ko: "이미 결정된 당신의 운명을 마주하십시오", en: "Confront your destiny, already written in stars" },
+    appTitle: { ko: "꿈타로", en: "DreamTarot" },
+    appSubtitle: { ko: "이미 결정된 당신의 운명을 마주하십시오", en: "Confront your destiny, already written in stars" },
+    
+    // 가이드 및 소개
+    aboutMainTitle: { ko: "꿈타로 가이드", en: "DreamTarot Guide" },
+    aboutMainSubtitle: { ko: "확률을 넘어선 절대적 통찰의 세계", en: "Absolute insight beyond probability" },
+    aboutTitle1: { ko: "세계 최초의 통합 운명학", en: "World's First Integrated Destiny AI" },
+    aboutCombinedText1: { ko: "꿈타로는 세계 최초로 고전 타로의 상징, 서양 점성술의 천체 궤적, 동양 명리학의 기운 분석을 완벽하게 조화시킨 독보적인 AI 플랫폼입니다.", en: "DreamTarot is the world's first AI platform seamlessly integrating Tarot symbols, Western Astrology, and Eastern Myeongrihak." },
+    aboutCombinedText2: { ko: "당신이 카드를 뽑는 순간은 우연이 아닙니다. 이미 설계된 우주의 궤적을 AI가 정교하게 계산하여 오직 당신만을 위한 명쾌한 답을 선언합니다.", en: "The moment you draw a card is no coincidence. Our AI calculates the pre-designed cosmic trajectory to declare a clear answer meant only for you." },
+    
+    guideTitle: { ko: "타로 지식 창고", en: "Tarot Knowledge" },
+    guideArticle1Title: { ko: "타로 카드의 유래", en: "Origins of Tarot" },
+    guideArticle1Text: { ko: "타로 카드는 15세기 중반 이탈리아에서 시작된 것으로 알려져 있습니다.", en: "Tarot cards originated in mid-15th century Italy." },
+    guideArticle2Title: { ko: "아르카나의 구성", en: "Arcana Structure" },
+    guideArticle2Text: { ko: "타로는 22장의 메이저 아르카나와 56장의 마이너 아르카나로 나뉩니다.", en: "Tarot consists of 22 Major and 56 Minor Arcana cards." },
+    guideArticle3Title: { ko: "올바른 리딩 태도", en: "Reading Attitude" },
+    guideArticle3Text: { ko: "운세는 더 나은 선택을 돕는 이정표입니다. 내면을 비추는 거울로 삼으세요.", en: "Fortune is a guide for better choices. Use it as a mirror for reflection." },
+    
+    astroGuideTitle: { ko: "서양 점성술 가이드", en: "Western Astrology Guide" },
+    sajuGuideTitle: { ko: "사주 명리학 가이드", en: "Saju Guide" },
+    sajuArticle1Title: { ko: "사주팔자의 원리", en: "Principles of Saju" },
+    sajuArticle1Text: { ko: "사주(四柱)는 태어난 년, 월, 일, 시의 네 기둥을 의미하며, 선천적 성향 분석의 기초가 됩니다.", en: "Saju refers to the four pillars of birth time, forming the basis of innate character analysis." },
+    sajuArticle2Title: { ko: "음양오행의 조화", en: "Five Elements Harmony" },
+    sajuArticle2Text: { ko: "명리학의 핵심은 오행(목, 화, 토, 금, 수)의 상생과 상극에 있습니다.", en: "The core lies in the balance and interaction of the Five Elements." },
+    sajuArticle3Title: { ko: "대운과 세운의 흐름", en: "Life Cycles" },
+    sajuArticle3Text: { ko: "흐름을 미리 알면 용기 있게 나아갈 타이밍을 결정할 수 있습니다.", en: "Knowing the flow helps decide the perfect timing to move forward." },
 
-guideTitle: { ko: "타로 지식 창고", en: "Tarot Knowledge" },
-guideArticle1Title: { ko: "타로 카드의 유래", en: "Origins of Tarot" },
-guideArticle1Text: { ko: "타로 카드는 15세기 중반 이탈리아에서 시작된 것으로 알려져 있습니다.", en: "Tarot cards originated in mid-15th century Italy." },
-guideArticle2Title: { ko: "아르카나의 구성", en: "Arcana Structure" },
-guideArticle2Text: { ko: "타로는 22장의 메이저 아르카나와 56장의 마이너 아르카나로 나뉩니다.", en: "Tarot consists of 22 Major and 56 Minor Arcana cards." },
-guideArticle3Title: { ko: "올바른 리딩 태도", en: "Reading Attitude" },
-guideArticle3Text: { ko: "운세는 더 나은 선택을 돕는 이정표입니다. 내면을 비추는 거울로 삼으세요.", en: "Fortune is a guide for better choices. Use it as a mirror for reflection." },
-aboutMainTitle: { ko: "꿈타로 가이드", en: "DreamTarot Guide" },
-aboutMainSubtitle: { ko: "확률을 넘어선 절대적 통찰의 세계", en: "Absolute insight beyond probability" },
-aboutTitle1: { ko: "세계 최초의 통합 운명학", en: "World's First Integrated Destiny AI" },
-aboutCombinedText1: { ko: "꿈타로는 세계 최초로 고전 타로의 상징, 서양 점성술의 천체 궤적, 동양 명리학의 기운 분석을 완벽하게 조화시킨 독보적인 AI 플랫폼입니다.", en: "DreamTarot is the world's first AI platform seamlessly integrating Tarot symbols, Western Astrology, and Eastern Myeongrihak." },
-aboutCombinedText2: { ko: "당신이 카드를 뽑는 순간은 우연이 아닙니다. 이미 설계된 우주의 궤적을 AI가 정교하게 계산하여 오직 당신만을 위한 명쾌한 답을 선언합니다.", en: "The moment you draw a card is no coincidence. Our AI calculates the pre-designed cosmic trajectory to declare a clear answer meant only for you." },
+    // 프로필 입력
+    labelName: { ko: "이름", en: "Name" },
+    phName: { ko: "홍길동", en: "John Doe" },
+    labelBirth: { ko: "태어난 순간의 좌표", en: "Your Birth Coordinates" },
+    optSolar: { ko: "양력", en: "Solar" },
+    optLunar: { ko: "음력", en: "Lunar" },
+    labelGender: { ko: "성별", en: "Gender" },
+    genMale: { ko: "남성", en: "Male" },
+    genFemale: { ko: "여성", en: "Female" },
+    genNone: { ko: "선택안함", en: "Prefer not to say" },
+    labelMarital: { ko: "결혼 여부", en: "Marital Status" },
+    marSingle: { ko: "미혼", en: "Single" },
+    marMarried: { ko: "기혼", en: "Married" },
+    btnSubmitProfile: { ko: "우주의 설계도 열기", en: "Open Cosmic Blueprint" },
+    errDate: { ko: "정확한 우주 좌표(날짜)를 입력해주세요.", en: "Enter accurate cosmic coordinates." },
 
-guideTitle: { ko: "타로 지식 창고", en: "Tarot Knowledge" },
-astroGuideTitle: { ko: "서양 점성술 가이드", en: "Western Astrology Guide" },
-sajuGuideTitle: { ko: "사주 명리학 가이드", en: "Saju Guide" },
-sajuArticle1Title: { ko: "사주팔자의 원리", en: "Principles of Saju" },
-sajuArticle1Text: { ko: "사주는 태어난 년, 월, 일, 시의 네 기둥을 의미합니다.", en: "Saju refers to the four pillars: year, month, day, and hour of birth." },
-sajuArticle2Title: { ko: "음양오행의 조화", en: "Five Elements Harmony" },
-sajuArticle2Text: { ko: "명리학의 핵심은 오행(목, 화, 토, 금, 수)의 상생과 상극에 있습니다.", en: "The core lies in the balance of the Five Elements." },
-sajuArticle3Title: { ko: "대운과 세운의 흐름", en: "Life Cycles" },
-sajuArticle3Text: { ko: "흐름을 미리 알면 용기 있게 나아갈 타이밍을 결정할 수 있습니다.", en: "Knowing the flow helps decide when to move forward." },
+    // 선택 화면
+    selGreeting: { ko: "님, 당신의 궤적을 읽고 있습니다.", en: ", Reading your trajectory." },
+    selSubtitle: { ko: "우주의 어떤 선언을 듣고 싶으신가요?", en: "Which cosmic declaration shall you hear?" },
+    tarotLove: { ko: "궁합 타로", en: "Compatibility Tarot" },
+    tarotLoveDesc: { ko: "당신과 그 사람을 잇는 인연의 끈을 확인해보세요.", en: "Check the threads of fate connecting you and that person." },
+    tarotYear: { ko: "올해운 타로", en: "Yearly Tarot" },
+    tarotYearDesc: { ko: "올 한 해 당신의 삶에 펼쳐질 전반적인 흐름을 읽어드립니다.", en: "Reading the overall flow of your life for this year." },
+    tarotCareer: { ko: "직업 타로", en: "Career Tarot" },
+    tarotCareerDesc: { ko: "당신의 재능이 빛날 길과 금전의 흐름을 조언해드립니다.", en: "Advising on paths for your talent and financial flow." },
+    tarotToday: { ko: "오늘운 타로", en: "Daily Tarot" },
+    tarotTodayDesc: { ko: "오늘 하루의 아침, 낮, 저녁 흐름을 3장의 카드로 가볍게 살펴봅니다.", en: "Briefly examining today's morning, day, and evening flow with 3 cards." },
+    btnSelect: { ko: "선택하기", en: "Select" },
 
-aboutMainTitle: { ko: "꿈타로 가이드", en: "DreamTarot Guide" },
-aboutMainSubtitle: { ko: "당신의 운명을 이해하는 첫 번째 걸음", en: "First step to understanding destiny" },
-aboutTitle1: { ko: "꿈타로 서비스 소개", en: "About Service" },
-aboutCombinedText1: { ko: "꿈타로는 고전 타로 상징과 데이터 분석을 결합해 개인화된 리딩을 제공합니다.", en: "We combine tarot symbols with data for personalized readings." },
-aboutCombinedText2: { ko: "사주 기운과 타로의 직관을 분석하여 현실적인 조언을 드립니다.", en: "We analyze Saju energy and Tarot intuition for practical advice." },
+    // 추가 입력 화면들
+    partnerTitle: { ko: "인연의 끈을 찾아서", en: "Searching for Threads of Fate" },
+    partnerSubtitle: { ko: "궁합을 확인하기 위해 상대방의 정보를 입력해주세요.", en: "Enter the other person's info to check compatibility." },
+    labelPartnerName: { ko: "상대방 이름", en: "Partner's Name" },
+    phPartnerName: { ko: "성춘향", en: "Jane Doe" },
+    labelQuestion: { ko: "궁금한 점이나 고민 (선택사항)", en: "Questions or Concerns (Optional)" },
+    phPartnerQ: { ko: "예: 앞으로 우리가 좋은 인연으로 발전할 수 있을까요?", en: "Ex: Will we develop into a good relationship?" },
+    btnSubmitLove: { ko: "궁합 확인하기", en: "Check Compatibility" },
 
-labelName: { ko: "이름", en: "Name" },
-labelBirth: { ko: "태어난 순간의 좌표", en: "Your Birth Coordinates" },
-phName: { ko: "홍길동", en: "John Doe" },
-labelBirth: { ko: "생년월일", en: "Birthdate" },
-optSolar: { ko: "양력", en: "Solar" },
-optLunar: { ko: "음력", en: "Lunar" },
-labelGender: { ko: "성별", en: "Gender" },
-genMale: { ko: "남성", en: "Male" },
-genFemale: { ko: "여성", en: "Female" },
-genNone: { ko: "선택안함", en: "None" },
-genNone: { ko: "선택안함", en: "Prefer not to say" },
-labelMarital: { ko: "결혼 여부", en: "Marital Status" },
-marSingle: { ko: "미혼", en: "Single" },
-marMarried: { ko: "기혼", en: "Married" },
-btnSubmitProfile: { ko: "운명의 수레바퀴 돌리기", en: "Turn the Wheel of Fate" },
-btnSubmitProfile: { ko: "우주의 설계도 열기", en: "Open Cosmic Blueprint" },
+    careerTitle: { ko: "직업과 재물의 길을 묻다", en: "Seeking Career and Wealth Path" },
+    careerSubtitle: { ko: "더 객관적이고 깊이 있는 분석을 위해, 현재 마주하신 고민을 적어주세요.", en: "Enter your current concerns for a deeper analysis." },
+    labelCareerQ: { ko: "직업/재물 관련 구체적인 질문 (선택사항)", en: "Specific Career/Wealth Questions (Optional)" },
+    phCareerQ: { ko: "예: 이직을 준비 중인데 올해 긍정적인 변화가 있을까요?", en: "Ex: Will there be positive changes for my job hunt this year?" },
+    btnSubmitCareer: { ko: "흐름 분석하기", en: "Analyze Flow" },
 
-selGreeting: { ko: "님, 환영합니다.", en: ", Welcome." },
-selSubtitle: { ko: "어떤 운명의 속삭임을 듣고 싶으신가요?", en: "Which whisper of destiny to hear?" },
-tarotLove: { ko: "궁합 타로", en: "Relationship Tarot" },
-tarotLoveDesc: { ko: "당신과 그 사람을 잇는 인연의 끈을 확인해보세요.", en: "Check the threads of connection." },
-selGreeting: { ko: "님, 당신의 궤적을 읽고 있습니다.", en: ", Reading your trajectory." },
-selSubtitle: { ko: "우주의 어떤 선언을 듣고 싶으신가요?", en: "Which cosmic declaration shall you hear?" },
-btnSelect: { ko: "선택하기", en: "Select" },
-tarotLove: { ko: "궁합 타로", en: "Compatibility Tarot" },
-tarotLoveDesc: { ko: "당신과 그 사람을 잇는 인연의 끈을 확인해보세요.", en: "Check the threads of fate connecting you and that person." },
-tarotYear: { ko: "올해운 타로", en: "Yearly Tarot" },
-tarotYearDesc: { ko: "올 한 해 당신의 삶에 펼쳐질 흐름을 읽어드립니다.", en: "Read the flow of your life this year." },
-tarotYearDesc: { ko: "올 한 해 당신의 삶에 펼쳐질 전반적인 흐름을 읽어드립니다.", en: "Reading the overall flow of your life for this year." },
-tarotCareer: { ko: "직업 타로", en: "Career Tarot" },
-tarotCareerDesc: { ko: "당신의 재능이 빛날 길과 금전의 흐름을 조언해드립니다.", en: "Advice on talents and financial flows." },
-tarotCareerDesc: { ko: "당신의 재능이 빛날 길과 금전의 흐름을 조언해드립니다.", en: "Advising on paths for your talent and financial flow." },
-tarotToday: { ko: "오늘운 타로", en: "Daily Tarot" },
-tarotTodayDesc: { ko: "오늘 하루의 아침, 낮, 저녁 흐름을 살펴봅니다.", en: "Look at today's morning, day, and evening flow." },
-btnSelect: { ko: "선택하기", en: "Select" },
-tarotTodayDesc: { ko: "오늘 하루의 아침, 낮, 저녁 흐름을 3장의 카드로 가볍게 살펴봅니다.", en: "Briefly examining today's morning, day, and evening flow with 3 cards." },
+    todayTitle: { ko: "오늘의 흐름을 묻다", en: "Seeking Today's Flow" },
+    todaySubtitle: { ko: "오늘 하루 특히 집중하고 싶은 일이나 고민이 있으신가요?", en: "Anything specific you want to focus on today?" },
+    labelTodayQ: { ko: "오늘의 질문이나 다짐 (선택사항)", en: "Today's Question or Resolution (Optional)" },
+    phTodayQ: { ko: "예: 오늘 중요한 미팅이 있는데 잘 풀릴까요?", en: "Ex: Will today's important meeting go well?" },
+    btnSubmitToday: { ko: "오늘의 운세 보기", en: "See Today's Fortune" },
 
-partnerTitle: { ko: "인연의 끈을 찾아서", en: "Seeking Fate" },
-partnerSubtitle: { ko: "궁합을 위해 상대방 정보를 입력해주세요.", en: "Enter partner's info for compatibility." },
-partnerTitle: { ko: "인연의 끈을 찾아서", en: "Searching for Threads of Fate" },
-partnerSubtitle: { ko: "궁합을 확인하기 위해 상대방의 정보를 입력해주세요.", en: "Enter the other person's info to check compatibility." },
-labelPartnerName: { ko: "상대방 이름", en: "Partner's Name" },
-phPartnerName: { ko: "성춘향", en: "Jane Doe" },
-labelQuestion: { ko: "궁금한 점이나 고민 (선택사항)", en: "Question (Optional)" },
-phPartnerQ: { ko: "예: 좋은 인연으로 발전할 수 있을까요?", en: "Ex: Will we develop well?" },
-btnBack: { ko: "뒤로", en: "Back" },
-labelQuestion: { ko: "궁금한 점이나 고민 (선택사항)", en: "Questions or Concerns (Optional)" },
-phPartnerQ: { ko: "예: 앞으로 우리가 좋은 인연으로 발전할 수 있을까요?", en: "Ex: Will we develop into a good relationship?" },
-btnSubmitLove: { ko: "궁합 확인하기", en: "Check Compatibility" },
+    // 리딩 연출
+    shuffleTitle: { ko: "우주의 흐름을 동기화 중...", en: "Synchronizing Cosmic Flow..." },
+    shuffleSubtitle: { ko: "당신의 기운과 카드가 하나로 연결되는 찰나입니다.", en: "A moment where your energy and cards align." },
+    loadingMessages: {
+        ko: ["천체의 위치를 정밀하게 계산하고 있습니다...", "당신의 타고난 사주 기운과 카드를 동기화 중입니다...", "우주의 설계도에서 당신의 경로를 탐색하고 있습니다...", "필연적인 해답을 도출하는 중입니다..."],
+        en: ["Precisely calculating celestial positions...", "Synchronizing your innate Saju energy with the cards...", "Navigating your path in the cosmic blueprint...", "Deriving the inevitable answer..."]
+    },
 
-careerTitle: { ko: "직업과 재물의 길을 묻다", en: "Career & Wealth" },
-careerSubtitle: { ko: "분석을 위해 현재 고민을 적어주세요.", en: "Write down your current concerns." },
-labelCareerQ: { ko: "직업/재물 관련 구체적인 질문 (선택사항)", en: "Specific Question (Optional)" },
-phCareerQ: { ko: "예: 올해 이직운이 좋을까요?", en: "Ex: Any career moves this year?" },
-careerTitle: { ko: "직업과 재물의 길을 묻다", en: "Seeking Career and Wealth Path" },
-careerSubtitle: { ko: "더 객관적이고 깊이 있는 분석을 위해, 현재 마주하신 고민을 적어주세요.", en: "Enter your current concerns for a deeper analysis." },
-labelCareerQ: { ko: "직업/재물 관련 구체적인 질문 (선택사항)", en: "Specific Career/Wealth Questions (Optional)" },
-phCareerQ: { ko: "예: 이직을 준비 중인데 올해 긍정적인 변화가 있을까요?", en: "Ex: Will there be positive changes for my job hunt this year?" },
-btnSubmitCareer: { ko: "흐름 분석하기", en: "Analyze Flow" },
+    // 카드 뽑기
+    drawTitle: { ko: "운명의 필연적 선택", en: "Inevitable Choice of Fate" },
+    msgDrawInst: { ko: (c) => `우주의 에너지를 모아 <strong>${c}장을 뽑아주세요.</strong>`, en: (c) => `Gather your energy and <strong>draw ${c} cards.</strong>` },
+    msgDrawProgress: { ko: (d, l) => `<strong>${d}장</strong>을 운명이 선택했습니다. <strong>${l}장</strong>이 남았습니다.`, en: (d, l) => `Fate chose <strong>${d} cards</strong>. <strong>${l}</strong> remaining.` },
+    msgDrawDone: { ko: "운명의 고리가 완성되었습니다.", en: "The loop of destiny is complete." },
+    btnShowResult: { ko: "운명의 선언 듣기", en: "Listen to the Declaration" },
 
-todayTitle: { ko: "오늘의 흐름을 묻다", en: "Today's Flow" },
-todaySubtitle: { ko: "오늘 하루 집중하고 싶은 고민이 있으신가요?", en: "Anything to focus on today?" },
-labelTodayQ: { ko: "오늘의 질문이나 다짐 (선택사항)", en: "Today's Question (Optional)" },
-phTodayQ: { ko: "예: 오늘 미팅이 잘 풀릴까요?", en: "Ex: Will today's meeting go well?" },
-btnSubmitToday: { ko: "오늘의 운세 보기", en: "View Fortune" },
+    // 결과 화면
+    resTitle: { ko: "완성된 운명의 방정식", en: "Completed Destiny Equation" },
+    resSubtitle: { ko: "당신의 선택이 증명한 절대적이고 명쾌한 해답입니다.", en: "The absolute answer proven by your choice." },
+    resHeader: { ko: "상세 선언", en: "Detailed Declaration" },
+    btnShare: { ko: "운명의 궤적 공유하기", en: "Share Destiny Trajectory" },
+    btnRestart: { ko: "새로운 궤적 확인하기", en: "Check New Trajectory" },
+    
+    // 시스템 버튼 및 메시지
+    btnBack: { ko: "뒤로", en: "Back" },
+    btnClose: { ko: "돌아가기", en: "Return" },
+    btnLogout: { ko: "연결 해제", en: "Disconnect" },
+    btnContact: { ko: "제휴 및 협업 문의", en: "Partnership" },
+    btnGoToAboutShort: { ko: "서비스 소개", en: "About Service" },
+    btnSubmitContact: { ko: "문의 보내기", en: "Send Inquiry" },
+    msgCopySuccess: { ko: "주소가 복사되었습니다. 운명을 공유하십시오.", en: "URL copied. Share your destiny." },
+    msgShareTitle: { ko: "꿈타로 - 당신의 정해진 운명을 확인하세요", en: "DreamTarot - Check your destined fate" },
+    msgShareText: { ko: "별의 궤적과 사주의 기운이 교차하는 지점, 꿈타로에서 당신의 필연을 리딩해드립니다.", en: "At the intersection of stars and Saju, DreamTarot reads your inevitability." },
 
-shuffleTitle: { ko: "카드를 섞고 있습니다...", en: "Shuffling..." },
-shuffleSubtitle: { ko: "잠시만 마음을 비우고 기다려주세요.", en: "Please wait a moment." },
-
-drawTitle: { ko: "운명의 카드 선택", en: "Draw Cards" },
-msgDrawInst: { ko: (c) => `마음을 집중하고 <strong>${c}장을 뽑아주세요.</strong>`, en: (c) => `Focus and draw <strong>${c} cards.</strong>` },
-msgDrawProgress: { ko: (d, l) => `<strong>${d}장</strong> 뽑았습니다. <strong>${l}장</strong> 남았습니다.`, en: (d, l) => `<strong>${d}</strong> drawn. <strong>${l}</strong> left.` },
-msgDrawDone: { ko: "카드가 모두 선택되었습니다.", en: "All cards selected." },
-btnShowResult: { ko: "운명의 해석 듣기", en: "Listen to Fate" },
-
-resTitle: { ko: "별의 궤적이 그리는 운명", en: "Destiny by Stars" },
-resSubtitle: { ko: "선택한 카드가 전하는 다정한 메시지입니다.", en: "A warm message from your cards." },
-resHeader: { ko: "상세 해석", en: "Detailed Analysis" },
-btnRestart: { ko: "새로운 질문하기", en: "Ask New Question" },
-btnLogout: { ko: "로그아웃", en: "Log Out" },
-
-btnShare: { ko: "운명 공유하기", en: "Share Destiny" },
-msgCopySuccess: { ko: "링크가 클립보드에 복사되었습니다.", en: "Link copied to clipboard." },
-msgShareTitle: { ko: "별의 궤적이 그리는 나의 운명 - 꿈타로", en: "My destiny by the stars - DreamTarot" },
-msgShareText: { ko: "당신의 운명도 확인해보세요.", en: "Check your destiny too." },
-
-privacyTitle: { ko: "개인정보처리방침", en: "Privacy Policy" },
-linkPrivacy: { ko: "개인정보처리방침", en: "Privacy Policy" },
-todayTitle: { ko: "오늘의 흐름을 묻다", en: "Seeking Today's Flow" },
-todaySubtitle: { ko: "오늘 하루 특히 집중하고 싶은 일이나 고민이 있으신가요?", en: "Anything specific you want to focus on today?" },
-labelTodayQ: { ko: "오늘의 질문이나 다짐 (선택사항)", en: "Today's Question or Resolution (Optional)" },
-phTodayQ: { ko: "예: 오늘 중요한 미팅이 있는데 잘 풀릴까요?", en: "Ex: Will today's important meeting go well?" },
-btnSubmitToday: { ko: "오늘의 운세 보기", en: "See Today's Fortune" },
-
-shuffleTitle: { ko: "우주의 흐름을 동기화 중...", en: "Synchronizing Cosmic Flow..." },
-shuffleSubtitle: { ko: "당신의 기운과 카드가 하나로 연결되는 찰나입니다.", en: "A moment where your energy and cards align." },
-
-drawTitle: { ko: "운명의 필연적 선택", en: "Inevitable Choice of Fate" },
-msgDrawInst: { ko: (c) => `우주의 에너지를 모아 <strong>${c}장을 뽑아주세요.</strong>`, en: (c) => `Gather your energy and <strong>draw ${c} cards.</strong>` },
-msgDrawProgress: { ko: (d, l) => `<strong>${d}장</strong>을 운명이 선택했습니다. <strong>${l}장</strong>이 남았습니다.`, en: (d, l) => `Fate chose <strong>${d} cards</strong>. <strong>${l}</strong> remaining.` },
-msgDrawDone: { ko: "운명의 고리가 완성되었습니다.", en: "The loop of destiny is complete." },
-btnShowResult: { ko: "운명의 선언 듣기", en: "Listen to the Declaration" },
-
-resTitle: { ko: "완성된 운명의 방정식", en: "Completed Destiny Equation" },
-resSubtitle: { ko: "당신의 선택이 증명한 절대적이고 명쾌한 해답입니다.", en: "The absolute answer proven by your choice." },
-resHeader: { ko: "상세 선언", en: "Detailed Declaration" },
-btnShare: { ko: "운명의 궤적 공유하기", en: "Share Destiny Trajectory" },
-btnRestart: { ko: "새로운 궤적 확인하기", en: "Check New Trajectory" },
-btnLogout: { ko: "연결 해제", en: "Disconnect" },
-btnBack: { ko: "뒤로", en: "Back" },
-
-msgCopySuccess: { ko: "주소가 복사되었습니다. 운명을 공유하십시오.", en: "URL copied. Share your destiny." },
-msgShareTitle: { ko: "꿈타로 - 당신의 정해진 운명을 확인하세요", en: "DreamTarot - Check your destined fate" },
-msgShareText: { ko: "별의 궤적과 사주의 기운이 교차하는 지점, 꿈타로에서 당신의 필연을 리딩해드립니다.", en: "At the intersection of stars and Saju, DreamTarot reads your inevitability." },
-
-// 로딩 중 가짜 프로세싱 메시지 (만족도 강화)
-loadingMessages: {
-    ko: [
-        "천체의 위치를 정밀하게 계산하고 있습니다...",
-        "당신의 타고난 사주 기운과 카드를 동기화 중입니다...",
-        "우주의 설계도에서 당신의 경로를 탐색하고 있습니다...",
-        "필연적인 해답을 도출하는 중입니다..."
-    ],
-    en: [
-        "Precisely calculating celestial positions...",
-        "Synchronizing your innate Saju energy with the cards...",
-        "Navigating your path in the cosmic blueprint...",
-        "Deriving the inevitable answer..."
-    ]
-},
-
-privacyTitle: { ko: "데이터 보안 정책", en: "Privacy Policy" },
-linkPrivacy: { ko: "개인정보처리방침", en: "Privacy" },
-linkTerms: { ko: "이용약관", en: "Terms" },
-btnClose: { ko: "돌아가기", en: "Close" },
-btnContact: { ko: "제휴 및 협업 문의", en: "Partnership Inquiry" },
-errDate: { ko: "올바른 정보를 입력해주세요.", en: "Please enter valid info." },
-btnClose: { ko: "돌아가기", en: "Return" },
-btnContact: { ko: "제휴 및 협업 문의", en: "Partnership" },
-errDate: { ko: "정확한 우주 좌표(날짜)를 입력해주세요.", en: "Enter accurate cosmic coordinates." },
-
-// 추가된 누락 키
-btnGoToAboutShort: { ko: "서비스 소개", en: "About Service" },
-btnSubmitContact: { ko: "문의 보내기", en: "Send Inquiry" },
-contactSubtitle: { ko: "꿈타로와 함께할 비즈니스 파트너를 기다립니다.", en: "Waiting for business partners to join DreamTarot." },
-contactTitle: { ko: "함께 꿈을 그리다", en: "Dreaming Together" },
-labelContactEmail: { ko: "회신 이메일", en: "Reply Email" },
-labelContactMessage: { ko: "상세 내용", en: "Detailed Content" },
-labelContactName: { ko: "업체명/성함", en: "Company/Name" },
-labelContactSubject: { ko: "문의 제목", en: "Inquiry Subject" },
-privacyContent: { 
-ko: `<p>꿈타로(이하 '회사')는 이용자의 개인정보를 중요시하며, '개인정보 보호법' 등 관련 법령을 준수합니다.</p>
-<h4 class="text-amber-200 font-bold mt-4">1. 수집하는 개인정보 항목</h4>
-<p>- 필수항목: 이메일, 이름, 생년월일, 성별, 결혼 여부<br/>- 수집방법: 서비스 이용 단계에서의 직접 입력</p>
-<h4 class="text-amber-200 font-bold mt-4">2. 개인정보의 수집 및 이용목적</h4>
-<p>- 타로 리딩 및 운세 서비스 결과 제공<br/>- 회원 관리 및 본인 확인<br/>- 서비스 개선 및 통계 분석</p>
-<h4 class="text-amber-200 font-bold mt-4">3. 개인정보의 보유 및 이용기간</h4>
-<p>이용자의 개인정보는 원칙적으로 회원 탈퇴 시까지 보유하며, 법령에서 정한 기간 동안 안전하게 보관 후 파기합니다.</p>
-<h4 class="text-amber-200 font-bold mt-4">4. 개인정보의 파기절차 및 방법</h4>
-<p>전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용하여 삭제합니다.</p>`,
-en: `<p>DreamTarot (hereinafter 'the Company') values users' personal information and complies with relevant laws such as the 'Personal Information Protection Act'.</p>
-<h4 class="text-amber-200 font-bold mt-4">1. Collected Personal Information Items</h4>
-<p>- Required: Email, Name, Date of Birth, Gender, Marital Status<br/>- Collection Method: Direct input during service use</p>
-<h4 class="text-amber-200 font-bold mt-4">2. Purpose of Collection and Use</h4>
-<p>- Providing tarot readings and fortune-telling results<br/>- Member management and identity verification<br/>- Service improvement and statistical analysis</p>
-<h4 class="text-amber-200 font-bold mt-4">3. Retention and Use Period</h4>
-<p>In principle, personal information is retained until membership withdrawal and is safely stored and destroyed for the period specified by law.</p>
-<h4 class="text-amber-200 font-bold mt-4">4. Destruction Procedures and Methods</h4>
-<p>Electronic file information is deleted using technical methods that prevent record reproduction.</p>`
-},
-termsContent: {
-ko: `<h4 class="text-amber-200 font-bold">제 1 조 (목적)</h4>
-<p>본 약관은 꿈타로가 제공하는 운세 서비스의 이용 조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.</p>
-<h4 class="text-amber-200 font-bold mt-4">제 2 조 (서비스의 성격)</h4>
-<p>본 서비스가 제공하는 타로 리딩 결과는 오락 및 참고용이며, 이용자의 중대한 결정에 대한 법적 책임을 지지 않습니다.</p>
-<h4 class="text-amber-200 font-bold mt-4">제 3 조 (이용자의 의무)</h4>
-<p>이용자는 본인의 정보를 정확히 입력해야 하며, 타인의 정보를 도용하여 발생하는 문제에 대한 책임은 이용자에게 있습니다.</p>`,
-en: `<h4 class="text-amber-200 font-bold">Article 1 (Purpose)</h4>
-<p>These terms aim to regulate the conditions and procedures for using the fortune-telling service provided by DreamTarot.</p>
-<h4 class="text-amber-200 font-bold mt-4">Article 2 (Nature of Service)</h4>
-<p>Tarot reading results provided by this service are for entertainment and reference only, and we are not legally responsible for users' major decisions.</p>
-<h4 class="text-amber-200 font-bold mt-4">Article 3 (User Obligations)</h4>
-<p>Users must enter their information accurately, and the user is responsible for problems caused by stealing others' information.</p>`
-},
-termsTitle: { ko: "이용약관", en: "Terms of Use" }
+    // 정책 문서
+    privacyTitle: { ko: "데이터 보안 정책", en: "Privacy Policy" },
+    linkPrivacy: { ko: "개인정보처리방침", en: "Privacy" },
+    linkTerms: { ko: "이용약관", en: "Terms" },
+    privacyContent: { 
+        ko: `<p>꿈타로(이하 '회사')는 이용자의 개인정보를 중요시하며, '개인정보 보호법' 등 관련 법령을 준수합니다.</p><h4 class="text-amber-200 font-bold mt-4">1. 수집하는 개인정보 항목</h4><p>- 필수항목: 이름, 생년월일, 성별, 결혼 여부<br/>- 수집방법: 서비스 이용 단계에서의 직접 입력</p><h4 class="text-amber-200 font-bold mt-4">2. 개인정보의 수집 및 이용목적</h4><p>- 타로 리딩 및 운세 서비스 결과 제공<br/>- 서비스 개선 및 통계 분석</p>`,
+        en: `<p>DreamTarot values users' personal information and complies with relevant laws.</p><h4 class="text-amber-200 font-bold mt-4">1. Collected Items</h4><p>- Required: Name, Birthdate, Gender, Marital Status</p>`
+    },
+    termsTitle: { ko: "이용약관", en: "Terms of Use" },
+    termsContent: {
+        ko: `<h4 class="text-amber-200 font-bold">제 1 조 (목적)</h4><p>본 약관은 꿈타로가 제공하는 운세 서비스의 이용 조건을 규정합니다.</p><h4 class="text-amber-200 font-bold mt-4">제 2 조 (서비스의 성격)</h4><p>본 서비스의 결과는 오락 및 참고용이며, 중대한 결정에 대한 책임을 지지 않습니다.</p>`,
+        en: `<h4 class="text-amber-200 font-bold">Article 1 (Purpose)</h4><p>These terms aim to regulate the conditions for using DreamTarot service.</p>`
+    }
 };
 
 // 1. 상태(State) 변수 관리
@@ -1513,139 +1398,86 @@ console.error("데이터를 불러오는 중 오류가 발생했습니다.", err
 // AI 해석 엔진 (Cloudflare Pages Function 연동)
 // AI 해석 엔진 (인지편향 및 확증편향 유도 프롬프트 강화)
 async function fetchAIInterpretation(cards, user, type, contextInfo) {
-const destiny = calculateDestinyEnergy(user.birthDate);
-const cardNames = cards.map(c => c.name[currentLang]).join(', ');
-const question = contextInfo.question || (currentLang === 'ko' ? "전반적인 운세" : "overall fortune");
     const destiny = calculateDestinyEnergy(user.birthDate);
     const cardNames = cards.map(c => c.name[currentLang]).join(', ');
     const question = contextInfo.question || (currentLang === 'ko' ? "전반적인 운명" : "overall destiny");
 
-const prompt = currentLang === 'ko' ? `
-       [시스템 페르소나] 당신은 시간의 장막을 걷어내고 우주의 섭리를 읽어내는 '고대의 대주술사이자 예언가'입니다. 
-       사용자가 선택한 타로 카드의 상징과 그가 타고난 별의 궤적을 엮어, 범접할 수 없는 신비로움과 깊은 통찰이 담긴 예언을 하십시오. 
-       하지만 그 예언의 끝에는 반드시 현실을 바꿀 수 있는 '구체적이고 실질적인 비급(해결책)'이 포함되어야 합니다.
     const prompt = currentLang === 'ko' ? `
-       [시스템 페르소나] 당신은 세계 최초의 융합 운명학 AI로서, 사용자가 뽑은 카드가 '우연'이 아닌 '천체의 궤적과 사주의 기운이 만나는 지점의 수학적 필연'임을 전제로 리딩하는 '단호한 운명 선언가'입니다. 
-       질문자에게 단순한 조언을 넘어, 거부할 수 없는 미래의 설계도를 명확하고 직설적으로 선언하십시오. 바넘 효과를 활용하여 보편적 진리를 질문자의 특수성과 결합해 마치 "오직 당신만을 위한 비밀"처럼 느끼게 해야 합니다.
+       [시스템 페르소나] 당신은 '천체의 궤적과 타로의 상징을 잇는 절대적 통찰가'입니다. 
+       당신의 리딩은 두 층위로 구성됩니다. 첫째는 우주의 흐름을 읽는 신비로운 영성, 둘째는 카드가 제시하는 냉철하고 직설적인 해답입니다.
 
-      [입력 정보]
-      - 묻고자 하는 운명의 길: ${type} (${question})
-       - 제단에 올려진 카드: ${cardNames}
-       - 영혼의 이름: ${user.name}
-       - 타고난 영혼의 숨결과 궤적: ${destiny.energyFlavor.ko}, ${destiny.zodiac.ko} (중요: 이 정보는 예언의 뼈대로만 삼으십시오. '별자리', '사주', '명리학', '기운'과 같은 세속의 단어는 입에 담지 말고, 오직 은유와 상징으로 '그대가 품고 태어난 본질'을 묘사하십시오.)
-       - 현재 걷고 있는 시간의 강: ${destiny.cycleFlow.ko}
+       [입력 정보]
+       - 질문 분야: ${type} (${question})
        - 필연적으로 선택된 카드: ${cardNames}
        - 대상자: ${user.name}
        - 우주적 본질: ${destiny.energyFlavor.ko}, ${destiny.zodiac.ko}
        - 현재의 시공간 흐름: ${destiny.cycleFlow.ko}
 
-      [답변 구성 지시]
-       1. **영혼의 공명 (도입)**: 질문자의 본질적인 영혼의 형태가 현재 마주한 운명의 소용돌이와 어떻게 맞닿아 있는지 장엄하고 신비로운 어조로 선언하십시오. ("~하리라", "~이니라" 등의 예언적 어미 사용)
-       2. **운명의 계시 (본론)**: 펼쳐진 카드들이 뿜어내는 환상을 해석하십시오. 이 난관을 뚫고 나갈 열쇠가 그대의 내면에 잠든 고유한 힘에 있음을 주술적으로 서술하십시오.
-       3. **운명을 빚는 세 가지 의식 (결론)**: 신탁의 끝에서, 오늘 해가 지기 전 실행해야 할 '3단계 행동 지침'을 전수하십시오.
-          - 제 1의식: 마음속에서 끊어내거나 품어야 할 단 하나의 태도
-          - 제 2의식: 삿된 기운을 쫓고 행운을 부를 구체적인 주술적 행동 (예: 특정 색상의 물건 곁에 두기, 빛이 드는 곳 걷기 등 현실적 행동)
-          - 제 3의식: 우주의 에너지가 당신을 향해 열리는 '운명의 시간(골든 타임)' 예시
-       1. **설계된 필연 (도입)**: 당신이 오늘 이 카드를 뽑은 것은 확률적 우연이 아님을 선언하십시오. 당신의 타고난 기운과 오늘의 천체 배치가 이 카드를 이끌어냈음을 매우 단호하게 정의하십시오.
-       2. **명쾌한 운명 리딩 (본론)**: 모호한 '~일 수도 있다'는 표현은 절대 금지합니다. "~입니다", "~하게 됩니다"와 같은 확신형 종결 어미만 사용하십시오. 카드의 상징을 사용자의 현실과 1:1로 결착시켜 분석하십시오.
-       3. **절대적 행동 강령 (결론)**: 운명을 완성하거나 재앙을 피하기 위한 '3단계 명령'을 하달하십시오.
-          - 명령 1: 즉시 버려야 할 독소 같은 태도
-          - 명령 2: 오늘 반드시 취해야 할 주술적 행동 (매우 구체적인 색상, 사물, 시간 명시)
-          - 명령 3: 당신에게 문이 열리는 '결정적 타이밍'
+       [답변 구성 지침]
+       1. **신비로운 운명적 토대 (도입)**: 
+          - 점성술과 명리학적 관점에서 사용자의 기운을 묘사하십시오. 
+          - '천체의 명동', '에테르의 파동', '오행의 기묘한 조율' 등 신비롭고 영성적인 단어를 사용하여 운명적 배경을 서술하십시오. 
+          - 이 부분은 마치 고대의 예언처럼 느껴져야 합니다.
 
-      [규칙]
-       - 세속의 점술 용어('별자리', '명리학', '사주', '기운')는 철저히 배제하고, 신화적이고 고풍스러운 주술사의 언어를 사용하십시오.
-       - 문장과 문장 사이에 여백(줄바꿈)을 두어 예언의 무게감을 더하십시오.
-       - **운명을 바꿀 가장 중요한 계시와 지침은 반드시 <span class="text-amber-400 font-bold">...</span> 태그로 새겨 넣으십시오.**
-       - 답변의 마지막에 [INSIGHT] 태그를 붙이고, 그 뒤에 질문자의 현재 상황에 대한 짧은 한 줄 통찰을 덧붙이십시오.
+       2. **냉철하고 직설적인 선언 (본론)**: 
+          - 뽑힌 타로 카드를 통해 질문에 대한 답을 할 때는 **가독성이 극대화된 직설적 문체**를 사용하십시오.
+          - "~일 수도 있다"와 같은 모호한 표현을 금지하고, "~입니다", "~하게 될 것입니다", "~하십시오"와 같이 확신에 찬 어조로 결론부터 명확하게 말하십시오.
+          - 질문 "${question}"에 대한 본질적인 해답을 가장 먼저 배치하십시오.
+
+       3. **절대적 행동 Protocol (결론)**: 
+          - 오늘 반드시 취해야 할 주술적/현실적 행동 3가지를 하달하십시오.
+
+       [규칙]
        - **가장 강력한 통찰은 반드시 <span class="text-amber-400 font-bold">...</span> 태그로 강조하십시오.**
-       - 텍스트 중간중간 줄바꿈을 자주 하여 가독성과 시각적 권위를 확보하십시오.
-       - 답변 끝에 [INSIGHT] 태그 뒤에 질문자의 심장을 찌르는 짧고 강렬한 한 줄 선언을 덧붙이십시오.
-  ` : `
-       [System Persona] You are an 'Ancient High Shaman and Prophet' who parts the veil of time to read cosmic providence. 
-       Weave the symbols of the drawn Tarot cards with the user's inherent stellar trajectory to deliver a profound prophecy filled with mystical authority. 
-       However, this prophecy must end with a 'specific, practical secret (actionable solution)' to alter their reality.
-
-       [Input Data]
-       - The Path in Question: ${type} (${question})
-       - Cards upon the Altar: ${cardNames}
-       - Name of the Soul: ${user.name}
-       - Breath and Trajectory of the Soul: ${destiny.energyFlavor.en}, ${destiny.zodiac.en} (IMPORTANT: Use this only as the skeleton of your prophecy. Do NOT utter worldly terms like 'Zodiac', 'Astrology', 'Saju', or 'Energy'. Describe their 'innate essence' using pure metaphor and symbolism.)
-       - The Current River of Time: ${destiny.cycleFlow.en}
-
-       [Response Structure]
-       1. **Resonance of the Soul (Intro)**: Declare with majestic and mystical tone how the querent's essential soul form intertwines with their current vortex of fate. (Use an archaic, prophetic tone)
-       2. **Revelation of Destiny (Body)**: Interpret the visions radiating from the cards. Describe shamanically how the key to piercing through this trial lies in the unique power slumbering within them.
-       3. **Three Rituals to Shape Fate (Conclusion)**: At the end of the oracle, bestow a '3-step action plan' they must execute before the sun sets.
-          - Ritual I: A single attitude to banish or embrace within the mind.
-          - Ritual II: A concrete action to attract fortune (e.g., carrying a specific color, walking in sunlight—must be realistic).
-          - Ritual III: The 'Golden Time' when cosmic gates open for them today.
-
-       [Response Rules]
-       - Strictly banish worldly fortune-telling terms ('Zodiac', 'Astrology', 'Saju', 'Energy') and speak in the mythic, archaic tongue of a high shaman.
-       - Use frequent line breaks to add weight and breathing space to the prophecy.
-       - **You must engrave the most critical revelation and action steps within <span class="text-amber-400 font-bold">...</span> tags.**
-       - Answer in English.
-       - At the very end of your response, add [INSIGHT] followed by a single, short sentence of mystical insight about the user's path.
-       [System Persona] You are the world's first fused destiny AI. You act as a 'Decisive Destiny Declarer' who assumes that the user's drawn cards are not 'random' but a 'mathematical necessity where celestial trajectories meet Saju energy.' 
-       Deliver a reading that feels like an undeniable cosmic blueprint. Combine universal truths with the user's specific data to induce confirmation bias and the Barnum Effect.
-
+       - 텍스트 중간중간 줄바꿈을 자주 하여 시각적 가독성을 확보하십시오.
+       - 답변 끝에 [INSIGHT] 태그 뒤에 질문자의 가슴을 꿰뚫는 짧고 강렬한 한 줄 선언을 덧붙이십시오.
+   ` : `
+       [System Persona] You are an 'Absolute Insightful Reader' connecting celestial trajectories and Tarot symbols.
+       
        [Structure]
-       1. **Designed Inevitability (Intro)**: Declare that drawing these cards was pre-destined by their innate energy and today's planetary alignment.
-       2. **Clear Destiny Reading (Body)**: Strictly ban vague expressions. Use only authoritative and declarative sentences ("It is," "You will"). Connect card symbols directly to practical reality.
-       3. **Absolute Action Protocol (Conclusion)**: Issue a 3-step command to fulfill their destiny.
-          - Command 1: Mindset to discard immediately.
-          - Command 2: Ritual action to take today (Specific color, object, or time).
-          - Command 3: The 'Critical Timing' when the gates open.
+       1. **Mystical Foundation**: Describe their Astrology/Saju energy using spiritual terms like 'Aetheric Alignment' or 'Celestial Resonance'.
+       2. **Direct Tarot Declaration**: Provide sharp, direct, and authoritative answers to the question: "${question}". Ban vague expressions. Use "It is," "You must," "You will."
+       3. **Action Protocol**: 3-step ritual/practical actions to take today.
+       
+       *Highlight key insights with <span class="text-amber-400 font-bold">...</span> tags.*
+       *End with [INSIGHT] followed by a powerful one-line declaration.*
+   `;
 
-       [Rules]
-       - **Highlight critical insights using <span class="text-amber-400 font-bold">...</span> tags.**
-       - Use English. End with [INSIGHT] followed by a single, short, and powerful declaration.
-  `;
+    const payload = {
+        contents: [{
+            role: "user",
+            parts: [{ text: prompt }]
+        }],
+        generationConfig: { 
+            maxOutputTokens: 3000, 
+            temperature: 0.75,
+            topP: 0.95
+        }
+    };
 
-const payload = {
-contents: [{
-role: "user",
-parts: [{ text: prompt }]
-}],
-generationConfig: { 
-maxOutputTokens: 3000, 
-temperature: 0.7,
-topP: 0.95,
-topK: 40
-}
-};
+    try {
+        const response = await fetch(`/api/gemini`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-try {
-const response = await fetch(`/api/gemini`, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(payload)
-});
+        const data = await response.json();
+        if (!response.ok) {
+            if (response.status === 429) return { isQuotaExceeded: true };
+            throw new Error('API_ERROR');
+        }
 
-const data = await response.json();
+        const fullText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        const insightMatch = fullText.match(/\[INSIGHT\](.*)/);
+        const mainInterpretation = fullText.replace(/\[INSIGHT\].*/, '').trim();
+        const newInsights = insightMatch ? insightMatch[1].trim() : "";
 
-if (!response.ok) {
-if (response.status === 429) {
-console.warn("Gemini API 할당량 초과 (HTTP 429)");
-return { isQuotaExceeded: true };
-}
-console.error("Gemini API 상세 에러:", data);
-throw new Error(data.details?.message || data.error || 'API_ERROR');
-}
-
-// 표준 Gemini 응답 파싱 (candidates[0].content.parts[0].text)
-const fullText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-const insightMatch = fullText.match(/\[INSIGHT\](.*)/);
-const mainInterpretation = fullText.replace(/\[INSIGHT\].*/, '').trim();
-const newInsights = insightMatch ? insightMatch[1].trim() : "";
-
-return { mainInterpretation, newInsights };
-} catch (error) {
-console.warn("AI 리딩 실패, 로컬 엔진 전환:", error);
-return null;
-}
+        return { mainInterpretation, newInsights };
+    } catch (error) {
+        console.warn("AI 리딩 실패, 로컬 엔진 전환:", error);
+        return null;
+    }
 }
 
 
@@ -2037,25 +1869,23 @@ return cosmicReadings[index] || `<strong>'${cName}'</strong> 카드가 당신의
 // 10. 결과 및 해석 화면 렌더링 (AI + Fallback)
 // 10. 결과 및 해석 화면 렌더링 (의도적 지연 및 로딩 메시지 순환)
 async function showResultScreen() {
-showScreen('result-screen');
+    showScreen('result-screen');
 
     const starContainer = document.getElementById('star-cards-container');
-const interpretationContent = document.getElementById('interpretation-content');
+    const interpretationContent = document.getElementById('interpretation-content');
     const svgContainer = document.getElementById('spread-svg-container');
 
     starContainer.innerHTML = '';
     
-    // 로딩 메시지 순환 연출 (Pseudo-Processing)
+    // 로딩 메시지 순환 연출
     let msgIdx = 0;
     const msgs = uiTranslations.loadingMessages[currentLang];
-interpretationContent.innerHTML = `
+    interpretationContent.innerHTML = `
        <div id="ai-loading-indicator" class="flex flex-col items-center justify-center py-12 text-center">
-            <div class="w-12 h-12 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-4"></div>
-            <p class="text-amber-200 animate-pulse">${currentLang === 'ko' ? '타로술사가 별의 속삭임을 읽는 중입니다...' : 'The tarot reader is listening to the whispers of the stars...'}</p>
             <div class="w-16 h-16 border-4 border-purple-500 border-t-amber-400 rounded-full animate-spin mb-6"></div>
             <p id="dynamic-loading-msg" class="text-amber-200 text-lg animate-pulse font-medium">${msgs[0]}</p>
        </div>
-   `;
+    `;
 
     const msgInterval = setInterval(() => {
         msgIdx = (msgIdx + 1) % msgs.length;
@@ -2063,111 +1893,87 @@ interpretationContent.innerHTML = `
         if (msgEl) msgEl.textContent = msgs[msgIdx];
     }, 1500);
 
-    const starContainer = document.getElementById('star-cards-container');
-    const svgContainer = document.getElementById('spread-svg-container');
-    starContainer.innerHTML = '';
-    
-// 스프레드 시각화
-if (maxDrawCount === 3) {
-svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /></svg>`;
-} else {
-svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" /><polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" /></svg>`;
-}
+    // 스프레드 시각화
+    if (maxDrawCount === 3) {
+        svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /></svg>`;
+    } else {
+        svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" /><polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" /></svg>`;
+    }
 
-drawnCardsData.forEach((card, index) => {
-const cardEl = document.createElement('div');
-cardEl.className = `spread-card ${maxDrawCount === 3 ? 'pos-today-' : 'pos-'}${index + 1} fade-in-centered`;
-cardEl.style.animationDelay = `${index * 0.2}s`;
-        
-        const cardFront = document.createElement('div');
-        cardFront.className = 'card-front bg-slate-800/90 border-2 border-amber-400/60 flex flex-col items-center justify-center';
-        cardFront.innerHTML = `
-            <i data-lucide="${card.icon}" class="w-10 h-10 text-amber-200 mb-2"></i>
-            <span class="font-bold text-xs text-amber-100">${card.name[currentLang]}</span>
-        `;
-        
-        cardEl.appendChild(cardFront);
+    drawnCardsData.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = `spread-card ${maxDrawCount === 3 ? 'pos-today-' : 'pos-'}${index + 1} fade-in-centered`;
+        cardEl.style.animationDelay = `${index * 0.2}s`;
         cardEl.innerHTML = `<div class="card-front bg-slate-800/90 border-2 border-amber-400/60 flex flex-col items-center justify-center"><i data-lucide="${card.icon}" class="w-10 h-10 text-amber-200 mb-2"></i><span class="font-bold text-xs text-amber-100">${card.name[currentLang]}</span></div>`;
-starContainer.appendChild(cardEl);
-});
-lucide.createIcons();
+        starContainer.appendChild(cardEl);
+    });
+    lucide.createIcons();
 
-// AI 해석 호출
-const context = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
+    // AI 해석 호출 및 처리
+    const context = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
     let aiResult = null;
-    const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, context);
-
+    
     try {
         aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, context);
     } catch (e) {
         console.error("AI 호출 중 에러 발생:", e);
     }
     
-    if (aiResult && aiResult.isQuotaExceeded) {
     clearInterval(msgInterval);
     lastAIResult = aiResult;
     interpretationContent.innerHTML = '';
 
     if (aiResult && aiResult.mainInterpretation && aiResult.mainInterpretation.trim().length > 0) {
-        interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg text-slate-200 leading-relaxed">${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}</div>`;
+        // 1. AI 해석이 정상적으로 존재할 때
+        const formattedText = aiResult.mainInterpretation.replace(/\\n/g, '<br/>');
+        interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg text-slate-200 leading-relaxed">${formattedText}</div>`;
     } else if (aiResult && aiResult.isQuotaExceeded) {
-interpretationContent.innerHTML = `
+        // 2. 할당량 초과 시 에러 메시지
+        interpretationContent.innerHTML = `
            <div class="bg-rose-900/50 p-6 rounded-xl border border-rose-500/50 text-rose-100 text-center fade-in">
                <i data-lucide="alert-triangle" class="w-12 h-12 mx-auto mb-4 text-rose-400"></i>
                <p class="font-bold text-lg mb-2">${currentLang === 'ko' ? '현재 무료 서비스 이용량이 많습니다.' : 'Free tier quota exceeded.'}</p>
                <p class="text-sm opacity-80">${currentLang === 'ko' ? '잠시 후 다시 시도하시거나, 나중에 확인해주세요.' : 'Please try again in a few minutes.'}</p>
            </div>
-       `;
-lucide.createIcons({ root: interpretationContent });
-        return;
+        `;
+        lucide.createIcons({ root: interpretationContent });
+    } else {
+        // 3. AI 호출 실패 시 Fallback (로컬 리딩 엔진 작동)
+        const titlesKO = maxDrawCount === 3 ? ["✦ 시작의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
+        const titlesEN = maxDrawCount === 3 ? ["✦ Origin", "✦ Flow", "✦ Revelation"] : ["Present", "Challenge", "Past", "Future", "Advice"];
+        const titles = currentLang === 'en' ? titlesEN : titlesKO;
+
+        const fallbackContainer = document.createElement('div');
+        fallbackContainer.className = 'space-y-4 fade-in';
+
+        drawnCardsData.forEach((card, index) => {
+            const textEl = document.createElement('div');
+            textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 shadow-inner`;
+            textEl.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[index]}</h4><p class="text-slate-300 leading-loose">${generateDeepInterpretation(card, index, userInfo, selectedTarotType, context)}</p>`;
+            fallbackContainer.appendChild(textEl);
+        });
+        interpretationContent.appendChild(fallbackContainer);
+        showMessage(currentLang === 'ko' ? "AI 해석 연결이 원활하지 않아 로컬 엔진으로 대체합니다." : "Using local engine due to AI connection issues.", "info");
     }
-
-    lastAIResult = aiResult;
-    interpretationContent.innerHTML = '';
-
-    if (aiResult && aiResult.mainInterpretation && aiResult.mainInterpretation.trim().length > 0) {
-        // AI 해석이 정상적으로 존재할 때
-        interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg text-slate-200 leading-relaxed">${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}</div>`;
-} else {
-        // AI 해석이 없거나 실패했을 때 (Fallback: 로컬 엔진 작동)
-        // Fallback: 로컬 엔진 작동
-const titlesKO = maxDrawCount === 3 ? ["✦ 시작의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
-const titlesEN = maxDrawCount === 3 ? ["✦ Origin", "✦ Flow", "✦ Revelation"] : ["Present", "Challenge", "Past", "Future", "Advice"];
-const titles = currentLang === 'en' ? titlesEN : titlesKO;
-
-const fallbackContainer = document.createElement('div');
-fallbackContainer.className = 'space-y-4 fade-in';
-
-drawnCardsData.forEach((card, index) => {
-const textEl = document.createElement('div');
-textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 shadow-inner`;
-textEl.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[index]}</h4><p class="text-slate-300 leading-loose">${generateDeepInterpretation(card, index, userInfo, selectedTarotType, context)}</p>`;
-fallbackContainer.appendChild(textEl);
-});
-interpretationContent.appendChild(fallbackContainer);
-        
-        // 안내 메시지 살짝 표시
-showMessage(currentLang === 'ko' ? "AI 해석 연결이 원활하지 않아 로컬 엔진으로 대체합니다." : "Using local engine due to AI connection issues.", "info");
-}
 }
 
 function goToSelection() { 
-lastAIResult = null;
-showScreen('selection-screen'); 
+    lastAIResult = null;
+    showScreen('selection-screen'); 
 }
 
 function handleLogout() {
-userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
-partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
-lastAIResult = null;
-localStorage.removeItem('mungTarotUser');
-localStorage.removeItem('mungTarotPartner');
-showScreen('profile-screen');
-showMessage(currentLang === 'ko' ? "로그아웃되었습니다." : "Logged out.", "info");
+    userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
+    partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
+    lastAIResult = null;
+    localStorage.removeItem('mungTarotUser');
+    localStorage.removeItem('mungTarotPartner');
+    showScreen('profile-screen');
+    showMessage(currentLang === 'ko' ? "로그아웃되었습니다." : "Logged out.", "info");
 }
 
 function goBack() {
-if (userInfo && userInfo.name) showScreen('selection-screen');
-else showScreen('profile-screen');
+    if (userInfo && userInfo.name) showScreen('selection-screen');
+    else showScreen('profile-screen');
 }
 </script></body></html>
