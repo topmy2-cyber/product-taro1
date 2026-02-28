@@ -14,7 +14,7 @@ export async function onRequestPost(context) {
         }
 
         // 구글 Gemini API 엔드포인트 (v1beta generateContent)
-        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
         
         // 구글 API에 보낼 최종 페이로드 구성
         const googlePayload = {
