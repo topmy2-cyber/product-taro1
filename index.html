@@ -1748,121 +1748,107 @@ else if ((birthMonth == 10 && birthDay >= 24) || (birthMonth == 11 && birthDay <
 else if ((birthMonth == 11 && birthDay >= 23) || (birthMonth == 12 && birthDay <= 21)) zodiac = { ko: "사수자리 (Sagittarius)", en: "Sagittarius" };
 else if ((birthMonth == 12 && birthDay >= 22) || (birthMonth == 1 && birthDay <= 19)) zodiac = { ko: "염소자리 (Capricorn)", en: "Capricorn" };
 else if ((birthMonth == 1 && birthDay >= 20) || (birthMonth == 2 && birthDay <= 18)) zodiac = { ko: "물병자리 (Aquarius)", en: "Aquarius" };
-else zodiac = { ko: "물고기자리 (Pisces)", en: "Pisces" };
+// AI 해석 엔진 (페르소나 및 가독성 최적화)
+async function fetchAIInterpretation(cards, user, type, contextInfo) {
+    const destiny = calculateDestinyEnergy(user.birthDate);
+    const cardNames = cards.map(c => c.name[currentLang]).join(', ');
+    const question = contextInfo.question || (currentLang === 'ko' ? "당신의 운명적 흐름" : "your destiny flow");
 
-const lifePhase = age % 10;
-let cycleFlow = {};
-if (lifePhase <= 2) {
-cycleFlow = { ko: "전환의 시기", en: "Transition Period" };
-} else if (lifePhase <= 6) {
-cycleFlow = { ko: "확장의 시기", en: "Expansion Period" };
-} else {
-cycleFlow = { ko: "안정의 시기", en: "Stability Period" };
-}
+    const prompt = currentLang === 'ko' ? `
+       [시스템 페르소나] 당신은 '운명의 설계도를 해독하는 냉철한 선언가'입니다. 
+       
+       [리딩 가이드라인]
+       1. **신비로운 토대 (점성술/명리학)**: 사용자의 타고난 기운을 설명할 때는 '천체의 명동', '에테르의 파동', '오행의 기묘한 조율', '명맥의 흐름' 등 신비롭고 영성적인 단어를 사용하여 질문자의 운명적 배경을 묘사하십시오.
+       2. **직설적 해답 (타로)**: 뽑힌 카드를 통해 질문에 대한 답을 할 때는 가독성이 극대화된 **직설적 선언**을 하십시오. 결론부터 명확하게 말하며 (~입니다, ~하십시오) 형식을 유지하십시오.
+       3. **질문 반영**: 사용자의 질문인 "${question}"을 리딩의 핵심 근거로 삼아, 사용자가 듣고 싶어 하는 본질적인 답을 명확히 전달하십시오.
 
-return { energyFlavor, zodiac, cycleFlow };
-}
+       [답변 구성]
+       - **도입**: "${user.name}님이 마주한 '${question}'이라는 화두는 결코 우연이 아닌, 천체의 궤적 속에 예견된 필연의 떨림입니다."로 시작하십시오.
+       - **토대**: 신비로운 언어로 질문자의 운명적 배경을 묘사하여 왜 이 질문을 할 수밖에 없었는지 정의하십시오.
+       - **해석**: 타로 카드의 상징을 질문과 1:1로 결착시켜 **명쾌하고 가독성 좋게** 리딩하십시오.
+       - **결론**: 가장 강력한 행동 지침을 <span class="text-amber-400 font-bold">...</span> 태그로 강조하십시오.
 
-// --- 위치별 딥리딩 생성 함수 (다국어 처리) ---
-function createStars() {
-    const container = document.querySelector('.stars-container');
-    if (!container) return;
-    container.innerHTML = '';
-    
-    // 깊이감이 있는 별들 생성
-    for (let i = 0; i < 150; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        
-        // 3D 공간의 무작위 위치
-        const x = Math.random() * 100;
-        const y = Math.random() * 100;
-        const z = (Math.random() * 800) - 400; // -400px to 400px depth
-        
-        // 크기와 투명도
-        const size = Math.random() * 2 + 1;
-        const maxOpacity = Math.random() * 0.5 + 0.5;
-        const duration = Math.random() * 3 + 2;
-        const delay = Math.random() * 5;
-        
-        star.style.left = `${x}%`;
-        star.style.top = `${y}%`;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        star.style.setProperty('--z-depth', `${z}px`);
-        star.style.setProperty('--max-opacity', maxOpacity);
-        star.style.setProperty('--duration', `${duration}s`);
-        star.style.animationDelay = `${delay}s`;
-        
-        container.appendChild(star);
+       [주의] 모호한 표현을 삭제하고 단호하게 선언하십시오.
+   ` : `
+       [System Persona] Decisive Destiny Declarer.
+       1. **Mystical Base**: Use terms like 'Celestial Resonance' and 'Aetheric Alignment' for Astrology/Saju.
+       2. **Direct Tarot**: Provide sharp, direct, and readable answers to the question: "${question}".
+       3. **Question-Centric**: Ensure the core of the answer directly addresses their inquiry.
+       
+       *Highlight key sentences with <span class="text-amber-400 font-bold">...</span> tags.*
+   `;
+
+const payload = {
+    contents: [{
+        role: "user",
+        parts: [{ text: prompt }]
+    }],
+    generationConfig: { 
+        maxOutputTokens: 3000, 
+        temperature: 0.75,
+        topP: 0.95
     }
-    
-    // 별똥별 생성
-    setInterval(() => {
-        const space = document.querySelector('.space-background');
-        if (space && Math.random() > 0.5) { // 50% 확률로 생성
-            const shootingStar = document.createElement('div');
-            shootingStar.className = 'shooting-star';
-            shootingStar.style.left = `${Math.random() * 100}%`;
-            space.appendChild(shootingStar);
-            
-            setTimeout(() => {
-                shootingStar.remove();
-            }, 4000);
-        }
-    }, 2000);
+};
+
+try {
+const response = await fetch(`/api/gemini`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(payload)
+});
+
+const data = await response.json();
+if (!response.ok) {
+    if (response.status === 429) return { isQuotaExceeded: true };
+    throw new Error('API_ERROR');
 }
 
-function generateDeepInterpretation(card, index, userInfo, type, partnerInfo) {
+const fullText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+return { mainInterpretation: fullText };
+} catch (error) {
+console.warn("AI 리딩 실패, 로컬 엔진 전환");
+return null;
+}
+}
+
+// --- 로컬 엔진 해석 스타일 수정 ---
+function generateDeepInterpretation(card, index, userInfo, type, contextInfo) {
 const destiny = calculateDestinyEnergy(userInfo.birthDate);
 const cName = card.name[currentLang];
 const cCore = card.baseCore[currentLang];
-const uName = userInfo.name;
-const uEnergy = destiny.energyFlavor[currentLang];
-const uZodiac = destiny.zodiac[currentLang];
-const uCycle = destiny.cycleFlow[currentLang];
+const question = contextInfo.question || (currentLang === 'ko' ? "당신의 길" : "your path");
 
-if (currentLang === 'en') {
-    const energyContext = `As one who naturally embodies the essence of ${uEnergy} and the spirit of ${uZodiac}, `;
-    if (type === 'today') {
-        const dailyFlows = [
-            `The morning sun reflects <strong>'${cName}'</strong>. It whispers that your dawn resonates with <strong>[${cCore}]</strong>. Walk softly, for the seeds of your day are being sown in this very vibration.`,
-            `The mid-day zenith brings the shadow of <strong>'${cName}'</strong>. Amidst the busyness, the core of <strong>[${cCore}]</strong> will manifest as your guiding light. Observe the signs around you.`,
-            `As the stars emerge, <strong>'${cName}'</strong> settles into your spirit. The resonance of <strong>[${cCore}]</strong> will be the final note of your day, offering peace and a chance for silent reflection.`
-        ];
-        return dailyFlows[index] || `The vibration of <strong>'${cName}'</strong> guides your path.`;
-    }
+const mysticalTermsKO = {
+    "Wood": "태초의 목질적 발흥", "Fire": "에테르의 화염적 분출", "Metal": "금속적 명동의 조율", "Water": "심연의 수류적 지혜",
+    "Aries": "불꽃의 성좌", "Taurus": "대지의 성좌", "Gemini": "바람의 성좌", "Cancer": "달의 성좌", 
+    "Leo": "태양의 성좌", "Virgo": "수성의 성좌", "Libra": "균형의 성좌", "Scorpio": "비명의 성좌", 
+    "Sagittarius": "궁수의 성좌", "Capricorn": "토성의 성좌", "Aquarius": "천왕성의 성좌", "Pisces": "해왕성의 성좌"
+};
 
-    const cosmicReadings = [
-        `<strong>The Foundation of Fate:</strong> ${energyContext} the appearance of <strong>'${cName}'</strong> signifies that <strong>[${cCore}]</strong> is the sacred soil upon which your current life is built.`,
-        `<strong>The Trial of the Soul:</strong> Your immediate hurdle is mirrored in <strong>'${cName}'</strong>. Within your current phase of <em>${uCycle}</em>, you are being asked to master <strong>[${cCore}]</strong>.`,
-        `<strong>The Echo of the Past:</strong> Behind the veil of the present lies <strong>'${cName}'</strong>. Your past experience with <strong>[${cCore}]</strong> is the invisible wind pushing your sail forward.`,
-        `<strong>The Horizon of Tomorrow:</strong> The stars are weaving <strong>'${cName}'</strong> into your path. You shall soon witness the blossoming of <strong>[${cCore}]</strong> in your near future.`,
-        `<strong>The Divine Guidance:</strong> Take the wisdom of <strong>'${cName}'</strong> as your ultimate compass. The universe encourages you to seek <strong>[${cCore}]</strong> for your growth.`
-    ];
-    return cosmicReadings[index] || `The card <strong>'${cName}'</strong> holds the key to <strong>[${cCore}]</strong>.`;
+const engKey = destiny.energyFlavor.en.split(' ')[0];
+const zodiacKey = destiny.zodiac.en;
 
+if (currentLang === 'ko') {
+    const mysticalFoundation = `${mysticalTermsKO[engKey] || '우주의 미동'}과 ${mysticalTermsKO[zodiacKey] || '별의 궤적'}이 만나는 찰나, `;
+    return `
+        ${index === 0 ? `<p class="mb-4 text-amber-200/70 italic">'${question}'에 대한 운명의 응답입니다.</p>` : ''}
+        ${mysticalFoundation} <strong>'${cName}'</strong> 카드가 당신의 앞에 섰습니다.
+        <br/><br/>
+        <div class="bg-purple-950/30 p-4 rounded-lg border-l-4 border-amber-500">
+            <span class="text-white font-bold text-lg">결론: ${cCore}입니다.</span>
+        </div>
+        <p class="mt-4">이것은 질문에 대한 <span class="text-amber-400 font-bold">확정된 필연</span>입니다. 주저 없이 따르십시오.</p>
+    `;
 } else {
-    // 국문: 고전적이고 문학적인 서사형 리딩
-    const energyContext = `${uName}님이 지닌 ${uEnergy}의 본질과 ${uZodiac}의 기질이 어우러져, `;
-    
-    if (type === 'today') {
-        const dailyFlows = [
-            `새벽의 정적을 깨고 나타난 <strong>'${cName}'</strong> 카드는 오늘 당신의 시작이 <strong>[${cCore}]</strong>와 깊이 공명하고 있음을 암시합니다. 첫 발자국에 깃든 이 운율을 따라가 보십시오.`,
-            `태양이 머리 위에 머무는 시간, <strong>'${cName}'</strong>의 형상이 더욱 선명해집니다. 삶의 번잡함 속에서도 <strong>[${cCore}]</strong>라는 핵심을 놓치지 않는다면 길을 잃지 않을 것입니다.`,
-            `별빛이 내려앉는 저녁, <strong>'${cName}'</strong>의 에너지가 하루를 갈무리합니다. 오늘 얻은 <strong>[${cCore}]</strong>라는 배움은 당신의 내면을 살찌우는 소중한 자양분이 될 것입니다.`
-        ];
-        return dailyFlows[index] || `<strong>'${cName}'</strong>의 기운이 당신의 하루와 함께합니다.`;
-    }
-
-    const cosmicReadings = [
-        `<strong>운명의 주춧돌</strong>: ${energyContext} 현재 당신이 딛고 선 자리에 <strong>'${cName}'</strong>이 나타나 <strong>[${cCore}]</strong>라는 강한 맥박이 흐르고 있음을 말해줍니다.`,
-        `<strong>영혼의 시험대</strong>: 당신의 앞길을 마주한 과제는 <strong>'${cName}'</strong>의 모습입니다. 현재 <em>${uCycle}</em>의 흐름 속에서 <strong>[${cCore}]</strong>를 어떻게 다루느냐가 중요할 것입니다.`,
-        `<strong>기억의 메아리</strong>: 현재의 당신을 만든 것은 과거의 <strong>'${cName}'</strong>이 남긴 흔적입니다. 지나온 시간 속의 <strong>[${cCore}]</strong>가 이제는 지혜라는 이름의 나침반이 되어주고 있습니다.`,
-        `<strong>다가올 계시</strong>: 머지않아 당신의 삶에는 <strong>'${cName}'</strong>의 풍경이 펼쳐질 것입니다. <strong>[${cCore}]</strong>의 현상이 예기치 못한 순간에 당신의 일상을 찾아올 것을 예견합니다.`,
-        `<strong>하늘의 전언</strong>: 마지막으로 별들이 전하는 조언에 귀를 기울이십시오. <strong>'${cName}'</strong> 카드는 당신이 나아갈 궁극의 방향이 <strong>[${cCore}]</strong>에 있음을 명시합니다.`
-    ];
-    return cosmicReadings[index] || `<strong>'${cName}'</strong> 카드가 당신의 삶에 <strong>[${cCore}]</strong>라는 화두를 던지고 있습니다.`;
+    return `
+        ${index === 0 ? `<p class="mb-4 text-amber-200/70 italic">Responding to: '${question}'</p>` : ''}
+        Under the 'Celestial Resonance' of your path, <strong>'${cName}'</strong> has appeared.
+        <br/><br/>
+        <div class="bg-purple-950/30 p-4 rounded-lg border-l-4 border-amber-500">
+            <span class="text-white font-bold text-lg">Declaration: It is ${cCore}.</span>
+        </div>
+        <p class="mt-4">This is the <span class="text-amber-400 font-bold">inevitable answer</span>. Act with certainty.</p>
+    `;
 }
 }
 
@@ -1871,7 +1857,6 @@ async function showResultScreen() {
     showScreen('result-screen');
     const interpretationContent = document.getElementById('interpretation-content');
     
-    // 로딩 메시지 순환 연출 (Pseudo-Processing)
     let msgIdx = 0;
     const msgs = uiTranslations.loadingMessages[currentLang];
     interpretationContent.innerHTML = `
@@ -1891,43 +1876,39 @@ async function showResultScreen() {
     const svgContainer = document.getElementById('spread-svg-container');
     starContainer.innerHTML = '';
     
-    // 스프레드 시각화
     if (maxDrawCount === 3) {
-        svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /></svg>`;
+        svgContainer.innerHTML = \`<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><line x1="20" y1="50" x2="80" y2="50" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="2,2" /></svg>\`;
     } else {
-        svgContainer.innerHTML = `<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" /><polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" /></svg>`;
+        svgContainer.innerHTML = \`<svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100"><polygon points="50,15 85,40 70,85 30,85 15,40" fill="none" stroke="#fbbf24" stroke-width="0.5" /><polygon points="50,15 70,85 15,40 85,40 30,85" fill="none" stroke="#fbbf24" stroke-width="0.5" /></svg>\`;
     }
 
     drawnCardsData.forEach((card, index) => {
         const cardEl = document.createElement('div');
-        cardEl.className = `spread-card ${maxDrawCount === 3 ? 'pos-today-' : 'pos-'}${index + 1} fade-in-centered`;
-        cardEl.style.animationDelay = `${index * 0.2}s`;
-        cardEl.innerHTML = `<div class="card-front bg-slate-800/90 border-2 border-amber-400/60 flex flex-col items-center justify-center"><i data-lucide="${card.icon}" class="w-10 h-10 text-amber-200 mb-2"></i><span class="font-bold text-xs text-amber-100">${card.name[currentLang]}</span></div>`;
+        cardEl.className = \`spread-card \${maxDrawCount === 3 ? 'pos-today-' : 'pos-'}\${index + 1} fade-in-centered\`;
+        cardEl.style.animationDelay = \`\${index * 0.2}s\`;
+        cardEl.innerHTML = \`<div class="card-front bg-slate-800/90 border-2 border-amber-400/60 flex flex-col items-center justify-center"><i data-lucide="\${card.icon}" class="w-10 h-10 text-amber-200 mb-2"></i><span class="font-bold text-xs text-amber-100">\${card.name[currentLang]}</span></div>\`;
         starContainer.appendChild(cardEl);
     });
     lucide.createIcons();
 
-    // AI 해석 호출
     const context = selectedTarotType === 'love' ? partnerInfo : (selectedTarotType === 'career' ? careerInfo : todayInfo);
     const aiResult = await fetchAIInterpretation(drawnCardsData, userInfo, selectedTarotType, context);
     
     clearInterval(msgInterval);
-    lastAIResult = aiResult;
     interpretationContent.innerHTML = '';
 
     if (aiResult && aiResult.mainInterpretation && aiResult.mainInterpretation.trim().length > 0) {
-        interpretationContent.innerHTML = `<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg text-slate-200 leading-relaxed">${aiResult.mainInterpretation.replace(/\\n/g, '<br/>')}</div>`;
+        interpretationContent.innerHTML = \`<div class="bg-slate-800/50 p-6 md:p-10 rounded-xl border border-purple-500/20 fade-in whitespace-pre-line text-lg text-slate-200 leading-relaxed">\${aiResult.mainInterpretation.replace(/\\\\n/g, '<br/>')}</div>\`;
     } else if (aiResult && aiResult.isQuotaExceeded) {
-        interpretationContent.innerHTML = `
+        interpretationContent.innerHTML = \`
             <div class="bg-rose-900/50 p-6 rounded-xl border border-rose-500/50 text-rose-100 text-center fade-in">
                 <i data-lucide="alert-triangle" class="w-12 h-12 mx-auto mb-4 text-rose-400"></i>
-                <p class="font-bold text-lg mb-2">${currentLang === 'ko' ? '현재 무료 서비스 이용량이 많습니다.' : 'Free tier quota exceeded.'}</p>
-                <p class="text-sm opacity-80">${currentLang === 'ko' ? '잠시 후 다시 시도하시거나, 나중에 확인해주세요.' : 'Please try again in a few minutes.'}</p>
+                <p class="font-bold text-lg mb-2">\${currentLang === 'ko' ? '현재 무료 서비스 이용량이 많습니다.' : 'Free tier quota exceeded.'}</p>
+                <p class="text-sm opacity-80">\${currentLang === 'ko' ? '잠시 후 다시 시도하시거나, 나중에 확인해주세요.' : 'Please try again in a few minutes.'}</p>
             </div>
-        `;
+        \`;
         lucide.createIcons({ root: interpretationContent });
     } else {
-        // Fallback: 로컬 엔진 작동
         const titlesKO = maxDrawCount === 3 ? ["✦ 시작의 기운", "✦ 전개되는 흐름", "✦ 하늘의 계시"] : ["현재의 좌표", "당면한 과제", "지나온 궤적", "다가올 풍경", "운명의 조언"];
         const titlesEN = maxDrawCount === 3 ? ["✦ Origin", "✦ Flow", "✦ Revelation"] : ["Present", "Challenge", "Past", "Future", "Advice"];
         const titles = currentLang === 'en' ? titlesEN : titlesKO;
@@ -1937,8 +1918,8 @@ async function showResultScreen() {
         
         drawnCardsData.forEach((card, index) => {
             const textEl = document.createElement('div');
-            textEl.className = `bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 shadow-inner`;
-            textEl.innerHTML = `<h4 class="text-amber-300 font-bold mb-3 text-xl">${titles[index]}</h4><p class="text-slate-300 leading-loose">${generateDeepInterpretation(card, index, userInfo, selectedTarotType, context)}</p>`;
+            textEl.className = \`bg-slate-800/50 p-6 rounded-xl border border-purple-500/20 shadow-inner\`;
+            textEl.innerHTML = \`<h4 class="text-amber-300 font-bold mb-3 text-xl">\${titles[index]}</h4><p class="text-slate-300 leading-loose">\${generateDeepInterpretation(card, index, userInfo, selectedTarotType, context)}</p>\`;
             fallbackContainer.appendChild(textEl);
         });
         interpretationContent.appendChild(fallbackContainer);
@@ -1947,14 +1928,12 @@ async function showResultScreen() {
 }
 
 function goToSelection() { 
-    lastAIResult = null;
     showScreen('selection-screen'); 
 }
 
 function handleLogout() {
     userInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', maritalStatus: 'single' };
     partnerInfo = { name: '', birthDate: '', calendarType: 'solar', gender: 'none', question: '' };
-    lastAIResult = null;
     localStorage.removeItem('mungTarotUser');
     localStorage.removeItem('mungTarotPartner');
     showScreen('profile-screen');
