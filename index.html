@@ -1748,6 +1748,9 @@ else if ((birthMonth == 10 && birthDay >= 24) || (birthMonth == 11 && birthDay <
 else if ((birthMonth == 11 && birthDay >= 23) || (birthMonth == 12 && birthDay <= 21)) zodiac = { ko: "사수자리 (Sagittarius)", en: "Sagittarius" };
 else if ((birthMonth == 12 && birthDay >= 22) || (birthMonth == 1 && birthDay <= 19)) zodiac = { ko: "염소자리 (Capricorn)", en: "Capricorn" };
 else if ((birthMonth == 1 && birthDay >= 20) || (birthMonth == 2 && birthDay <= 18)) zodiac = { ko: "물병자리 (Aquarius)", en: "Aquarius" };
+else zodiac = { ko: "물고기자리 (Pisces)", en: "Pisces" };
+return { age, energyFlavor, zodiac };
+}
 // AI 해석 엔진 (페르소나 및 가독성 최적화)
 async function fetchAIInterpretation(cards, user, type, contextInfo) {
     const destiny = calculateDestinyEnergy(user.birthDate);
