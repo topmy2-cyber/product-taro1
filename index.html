@@ -1791,21 +1791,6 @@ function createStars() {
         
         container.appendChild(star);
     }
-    
-    // 별똥별 생성
-    setInterval(() => {
-        const space = document.querySelector('.space-background');
-        if (space && Math.random() > 0.5) { // 50% 확률로 생성
-            const shootingStar = document.createElement('div');
-            shootingStar.className = 'shooting-star';
-            shootingStar.style.left = `${Math.random() * 100}%`;
-            space.appendChild(shootingStar);
-            
-            setTimeout(() => {
-                shootingStar.remove();
-            }, 4000);
-        }
-    }, 2000);
 }
 
 function generateDeepInterpretation(card, index, userInfo, type, partnerInfo) {
