@@ -621,6 +621,21 @@ window.downloadPDF = function (btn) {
     btn.innerHTML = '<i class="animate-spin mr-2">...</i> 생성 중';
     btn.disabled = true;
 
+    // PDF 렌더링 시 텍스트 잘림 현상을 방지하기 위해 input 요소들을 임시로 텍스트 분할이 허용된 div 레이아웃으로 변환
+    const inputs = element.querySelectorAll('input.input-cell');
+    const placeholders = [];
+    inputs.forEach(input => {
+        const div = document.createElement('div');
+        div.className = input.className;
+        // 기존 텍스트 중앙정렬, 배경 스타일 등을 유지하면서 줄바꿈 속성을 강제 주입
+        div.style.cssText = 'min-height: 48px; border: none; padding: 0.5rem; text-align: center; word-break: break-all; white-space: pre-wrap; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;';
+        div.innerText = input.value;
+        
+        input.parentNode.insertBefore(div, input);
+        input.style.display = 'none'; // 숨김
+        placeholders.push({ input, div });
+    });
+
     const opt = {
         margin: [10, 3], // 상하 10mm, 좌우 여백 3mm
         filename: `티켓배부현황_${date}.pdf`,
@@ -639,11 +654,24 @@ window.downloadPDF = function (btn) {
 
     // 다운로드 실행
     html2pdf().set(opt).from(element).save().then(() => {
+        // 복구
+        placeholders.forEach(p => {
+            p.input.style.display = '';
+            p.div.remove();
+        });
+        
         btn.innerHTML = originalText;
         btn.disabled = false;
         tableContainers.forEach(container => container.style.overflowX = 'auto');
     }).catch(err => {
         console.error('PDF 다운로드 실패:', err);
+        
+        // 에러 시 복구
+        placeholders.forEach(p => {
+            p.input.style.display = '';
+            p.div.remove();
+        });
+
         btn.innerHTML = originalText;
         btn.disabled = false;
         tableContainers.forEach(container => container.style.overflowX = 'auto');
