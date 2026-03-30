@@ -360,6 +360,15 @@ function processFile(file) {
         }
     };
 
+    if (isImage) {
+        reader.readAsDataURL(file);
+    } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        reader.readAsArrayBuffer(file);
+    } else {
+        reader.readAsText(file);
+    }
+}
+
 // 8. PDF 다운로드 기능
 window.downloadPDF = function() {
     const element = document.getElementById('main-content');
