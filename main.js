@@ -8,13 +8,15 @@ const ADMIN_PASSWORD = "shwlgus";
 // (키값이 채워지면 앱은 자동으로 실시간 공유시트 모드로 변신합니다!)
 // ==========================================
 const FIREBASE_CONFIG = {
-    apiKey: "",
-    authDomain: "",
-    databaseURL: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyCohWki6En4FBDXMz41-8n9vMoKjH-TNls",
+    authDomain: "product-f6f4e.firebaseapp.com",
+    // 웹앱 생성 시점에 따라 아래 databaseURL이 누락되어 뜨는 경우가 많습니다. 
+    // 파이어베이스 콘솔의 'Realtime Database' 탭에 들어가서 상단에 뜨는 매우 긴 주소(https://~)를 복사해 꼭 넣어주세요!
+    databaseURL: "https://product-f6f4e-default-rtdb.firebaseio.com", // <-- 수정 필요할 수 있음
+    projectId: "product-f6f4e",
+    storageBucket: "product-f6f4e.firebasestorage.app",
+    messagingSenderId: "105855342587",
+    appId: "1:105855342587:web:33f205dc28ef4f60ed5d5e"
 };
 
 let firebaseDb = null;
@@ -87,7 +89,7 @@ function saveAllData() {
         date: dateStr,
         timestamp: Date.now()
     };
-    
+
     // 파이어베이스가 세팅되어 있으면 클라우드에 전송, 아니면 예전처럼 내 폰(로컬)에만 임시저장
     if (firebaseDb) {
         firebaseDb.ref('tickets/' + dateStr).set(data);
@@ -132,11 +134,11 @@ function loadSavedData(forceRender = false) {
     if (firebaseDb) {
         // [클라우드 연동 모드]
         if (currentSyncRef) currentSyncRef.off(); // 이전 날짜 실시간 수신기능 해제
-        
+
         currentSyncRef = firebaseDb.ref('tickets/' + dateStr);
         currentSyncRef.on('value', (snapshot) => {
             // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트
-            if (isLocalUpdate && !forceRender) return; 
+            if (isLocalUpdate && !forceRender) return;
             const data = snapshot.val();
             renderTableData(data);
         });
@@ -154,7 +156,7 @@ function loadSavedData(forceRender = false) {
 function renderTableData(data) {
     const performerBody = document.getElementById('performer-body');
     const otherBody = document.getElementById('other-body');
-    
+
     performerBody.innerHTML = '';
     otherBody.innerHTML = '';
 
@@ -256,7 +258,7 @@ function addRow(tableId, data = null) {
                 input.tabIndex = -1;
             }
             if (field.key === 'regular' || field.key === 'vip') {
-                input.oninput = function() {
+                input.oninput = function () {
                     saveAllData();
                     updateTableSummary(tableId);
                 };
@@ -274,7 +276,7 @@ function addRow(tableId, data = null) {
     const button = document.createElement('button');
     button.className = 'text-slate-300 hover:text-red-500';
     button.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
-    button.onclick = function() { deleteRow(this, tableId); };
+    button.onclick = function () { deleteRow(this, tableId); };
     actionTd.appendChild(button);
     tr.appendChild(actionTd);
     tbody.appendChild(tr);
@@ -505,7 +507,7 @@ window.downloadPDF = function (btn) {
             scrollX: 0,
             scrollY: 0,
             // 캔버스 사이즈가 컨테이너(max-width 1280px)보다 작아서 잘리는 현상 방지. 최소 1300 보장
-            windowWidth: Math.max(1300, window.innerWidth) 
+            windowWidth: Math.max(1300, window.innerWidth)
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
