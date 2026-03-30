@@ -71,11 +71,10 @@ function getTableData(tbodyId) {
             regular: inputs[0].value,
             vip: inputs[1].value,
             name: inputs[2].value,
-            total: inputs[3].value,
-            recipient: inputs[4].value,
-            received: inputs[5].value,
-            phone: inputs[6].value,
-            remarks: inputs[7].value
+            recipient: inputs[3].value,
+            received: inputs[4].value,
+            phone: inputs[5].value,
+            remarks: inputs[6].value
         };
 
         if (Object.values(rowData).some(val => val !== '')) {
@@ -168,7 +167,6 @@ function addRow(tableId, data = null) {
         { key: 'regular', value: data?.regular || '', type: 'number' },
         { key: 'vip', value: data?.vip || '', type: 'number' },
         { key: 'name', value: data?.name || '' },
-        { key: 'total', value: data?.total || '', type: 'number', readonly: true },
         { key: 'recipient', value: data?.recipient || '' },
         { key: 'received', value: data?.received || '', type: 'number' },
         { key: 'phone', value: data?.phone || '' },
@@ -192,15 +190,6 @@ function addRow(tableId, data = null) {
             }
             if (field.key === 'regular' || field.key === 'vip') {
                 input.oninput = function() {
-                    const tr = this.closest('tr');
-                    const reg = parseInt(tr.querySelector('input[data-key="regular"]').value) || 0;
-                    const vip = parseInt(tr.querySelector('input[data-key="vip"]').value) || 0;
-                    const totalInput = tr.querySelector('input[data-key="total"]');
-                    if (tr.querySelector('input[data-key="regular"]').value === "" && tr.querySelector('input[data-key="vip"]').value === "") {
-                        totalInput.value = "";
-                    } else {
-                        totalInput.value = reg + vip;
-                    }
                     saveAllData();
                     updateTableSummary();
                 };
@@ -278,7 +267,7 @@ async function handleAIParse() {
     try {
         const promptText = `사용자가 제공한 티켓 배부 정보(텍스트 또는 이미지)를 분석하여 JSON 배열로 반환해줘. 
         데이터가 여러 명일 경우 배열에 모두 포함시켜줘.
-        필드: regular, vip, name, total, recipient, received, phone, remarks.
+        필드: regular, vip, name, recipient, received, phone, remarks.
         주의: 분석할 수 없는 데이터는 제외해줘. 텍스트 내용: "${text}"`;
 
         const parts = [{ text: promptText }];
@@ -309,7 +298,7 @@ async function handleAIParse() {
         const items = Array.isArray(res) ? res : (res.items || res.tickets || res.performers || res.others || [res]);
 
         items.forEach(i => {
-            if (i && (i.name || i.phone || i.total)) {
+            if (i && (i.name || i.phone || i.regular || i.vip)) {
                 addRow('ticket-table', i);
             }
         });
