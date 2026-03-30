@@ -176,8 +176,8 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2" data-html2canvas-ignore>
-                        <button onclick="toggleAIModal('performer-table')" class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-all">
-                            <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> AI 스마트 입력
+                        <button onclick="smartOrganize('performer-table')" class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-all shadow-sm">
+                            <i data-lucide="layers" class="w-3.5 h-3.5"></i> AI 스마트 정리
                         </button>
                         <button onclick="addRow('performer-table')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1 transition-all">
                             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 행 추가
@@ -247,49 +247,13 @@
         </div>
     </div>
 
-    <!-- AI Smart Input Modal -->
-    <div id="ai-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4" data-html2canvas-ignore>
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-            <div id="modal-header" class="bg-purple-600 p-4 flex justify-between items-center text-white">
-                <h3 id="modal-title" class="font-bold flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5"></i> AI 스마트 데이터 정리</h3>
-                <button onclick="toggleAIModal()" class="hover:bg-purple-500 p-1 rounded-lg transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-6">
-                <p id="modal-desc" class="text-sm text-slate-500 mb-4">비정형 텍스트를 입력하거나, 파일을 첨부하여 시트를 채울 수 있습니다.</p>
-                <div class="mb-4">
-                    <input type="file" id="file-upload" class="hidden" onchange="handleFileSelect(this)">
-                    <button id="file-dropzone" onclick="document.getElementById('file-upload').click()" class="w-full border-2 border-dashed border-slate-200 hover:border-purple-300 hover:bg-purple-50 rounded-xl p-6 flex flex-col items-center gap-3 transition-all relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-purple-100 opacity-0 group-[.dragover]:opacity-50 transition-opacity"></div>
-                        <i data-lucide="upload-cloud" class="text-slate-400 group-[.dragover]:text-purple-600 group-[.dragover]:scale-110 transition-transform w-8 h-8 relative z-10"></i>
-                        <div class="relative z-10 text-center">
-                            <span class="block text-sm font-bold text-slate-600 group-[.dragover]:text-purple-700">엑셀/사진/텍스트 파일 첨부하거나 <br/>여기로 끌어다 놓으세요</span>
-                            <span class="block text-xs text-slate-400 mt-1">파일에서 정보를 추출하여 AI가 정리합니다. (스크린샷 붙여넣기 지원)</span>
-                        </div>
-                    </button>
-                </div>
-                <div class="relative">
-                    <textarea id="ai-input" rows="5" 
-                        class="w-full border-2 border-slate-200 rounded-xl p-4 text-sm focus:border-purple-500 outline-none mb-4 transition-all" 
-                        placeholder="파일을 첨부하거나 텍스트를 직접 입력해주세요."></textarea>
-                    <div id="file-loading" class="absolute inset-0 bg-white/80 hidden items-center justify-center rounded-xl">
-                        <div class="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <button id="btn-parse" onclick="handleAIParse()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-200">
-                        <i data-lucide="wand-2" class="w-5 h-5"></i> <span id="btn-text">데이터 추가</span>
-                    </button>
-                    <button onclick="toggleAIModal()" class="w-full text-slate-400 text-sm hover:text-slate-600 font-medium">취소</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Loading Overlay -->
     <div id="loading" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50" data-html2canvas-ignore>
         <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-4">
             <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p class="font-bold text-slate-700">AI가 데이터를 분석 중입니다...</p>
+            <p class="font-bold text-slate-700">표를 인공지능으로 병합/정리 중입니다...</p>
         </div>
     </div>
 
