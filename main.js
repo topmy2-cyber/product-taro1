@@ -108,8 +108,8 @@ function updateTableSummary(tableId) {
 function saveAllData() {
     isLocalUpdate = true;
     clearTimeout(localUpdateTimer);
-    // 내가 수정 중일 때 타인의 동기화로 표가 덮어씌워져 타이핑이 끊기는 현상 1.5초간 방지
-    localUpdateTimer = setTimeout(() => { isLocalUpdate = false; }, 1500);
+    // 내가 수정 중일 때 타인의 동기화로 표가 덮어씌워져 타이핑이 끊기는 현상 3초간 방지
+    localUpdateTimer = setTimeout(() => { isLocalUpdate = false; }, 3000);
 
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     // Firebase 경로 생성 규칙에 맞게 특수문자 치환 (., #, $, [, ] 금지)
