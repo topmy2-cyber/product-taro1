@@ -312,9 +312,12 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         if (!hidden) input.className = 'input-cell';
         
         if (key === 'regular' || key === 'vip' || key === 'received') {
-            input.oninput = function () { saveAllData(); updateTableSummary(tableId); };
+            input.addEventListener('input', function() { 
+                updateTableSummary(tableId); 
+                saveAllData(); 
+            });
         } else {
-            input.onchange = saveAllData;
+            input.addEventListener('input', function() { saveAllData(); });
         }
 
         // 엔터(Enter) / 쉬프트+엔터(Shift+Enter) 입력 시 상하 이동 기능 (엑셀 UX)
