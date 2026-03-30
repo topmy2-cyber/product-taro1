@@ -771,6 +771,24 @@ window.downloadPDF = function (btn) {
         placeholders.push({ input, div });
     });
 
+    // 2. html2canvas rowspan 버그 수정
+    // rowspan이 적용된 셀들의 텍스트가 vertical-align: middle일경우 중간으로 이동하다가 화면에서 짤려나가는 고질병 우회
+    const rowspanTds = element.querySelectorAll('td[rowspan]');
+    const originalStyles = [];
+    rowspanTds.forEach(td => {
+        if (parseInt(td.getAttribute('rowspan')) > 1) {
+            originalStyles.push({ 
+                td: td, 
+                vAlign: td.style.verticalAlign, 
+                pTop: td.style.paddingTop 
+            });
+            // 텍스트를 최상단(1행 위치)으로 끌어올림으로써 클리핑 영역 탈출
+            td.style.setProperty('vertical-align', 'top', 'important');
+            // 1행의 정중앙(약 16px)에 텍스트가 예쁘게 위치하도록 미세 패딩 추가
+            td.style.setProperty('padding-top', '16px', 'important');
+        }
+    });
+
     const opt = {
         margin: [10, 3], // 상하 10mm, 좌우 여백 3mm
         filename: `티켓배부현황_${date}.pdf`,
@@ -793,6 +811,10 @@ window.downloadPDF = function (btn) {
         placeholders.forEach(p => {
             p.input.style.display = '';
             p.div.remove();
+        });
+        originalStyles.forEach(s => {
+            s.td.style.verticalAlign = s.vAlign;
+            s.td.style.paddingTop = s.pTop;
         });
         
         btn.innerHTML = originalText;
