@@ -6,6 +6,7 @@
     <title>티켓 배부 관리 시스템 - LLM Smart Organizer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; }
@@ -108,7 +109,7 @@
             </div>
         </div>
 
-        <!-- Main content area (without LLM section) -->
+        <!-- Main content area -->
         <div class="space-y-12">
             <!-- Table 1: 출연자 티켓 배부 -->
             <section>
@@ -116,9 +117,14 @@
                     <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i data-lucide="users" class="text-blue-500 w-5 h-5"></i> 출연자 티켓 배부
                     </h3>
-                    <button onclick="addRow('performer-table')" class="text-blue-600 text-sm font-bold flex items-center gap-1 hover:underline">
-                        <i data-lucide="plus" class="w-4 h-4"></i> 행 추가
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleAIModal('performer-table')" class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 transition-all">
+                            <i data-lucide="wand-2" class="w-4 h-4"></i> AI 스마트 입력
+                        </button>
+                        <button onclick="addRow('performer-table')" class="text-blue-600 text-sm font-bold flex items-center gap-1 hover:underline">
+                            <i data-lucide="plus" class="w-4 h-4"></i> 행 추가
+                        </button>
+                    </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 table-container">
                     <table id="performer-table">
@@ -149,9 +155,14 @@
                     <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i data-lucide="package" class="text-emerald-500 w-5 h-5"></i> 그 외 배부
                     </h3>
-                    <button onclick="addRow('other-table')" class="text-emerald-600 text-sm font-bold flex items-center gap-1 hover:underline">
-                        <i data-lucide="plus" class="w-4 h-4"></i> 행 추가
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleAIModal('other-table')" class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 transition-all">
+                            <i data-lucide="wand-2" class="w-4 h-4"></i> AI 스마트 입력
+                        </button>
+                        <button onclick="addRow('other-table')" class="text-emerald-600 text-sm font-bold flex items-center gap-1 hover:underline">
+                            <i data-lucide="plus" class="w-4 h-4"></i> 행 추가
+                        </button>
+                    </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 table-container">
                     <table id="other-table">
@@ -178,27 +189,38 @@
         </div>
     </div>
 
-    <!-- Floating AI Button -->
-    <button onclick="toggleAIModal()" class="fixed bottom-8 right-8 w-16 h-16 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 z-40 group">
-        <i data-lucide="wand-2" class="w-8 h-8"></i>
-        <span class="absolute right-20 bg-slate-800 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">AI 스마트 입력</span>
-    </button>
-
-    <!-- AI Smart Input Modal -->
+    <!-- AI Smart Input Modal (Single modal, dynamic content) -->
     <div id="ai-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-            <div class="bg-purple-600 p-4 flex justify-between items-center text-white">
-                <h3 class="font-bold flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5"></i> AI 스마트 데이터 정리</h3>
+            <div id="modal-header" class="bg-purple-600 p-4 flex justify-between items-center text-white">
+                <h3 id="modal-title" class="font-bold flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5"></i> AI 스마트 데이터 정리</h3>
                 <button onclick="toggleAIModal()" class="hover:bg-purple-500 p-1 rounded-lg transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="p-6">
-                <p class="text-sm text-slate-500 mb-4">비정형 텍스트를 입력하면 AI가 자동으로 시트에 분류하여 추가합니다.</p>
-                <textarea id="ai-input" rows="6" 
-                    class="w-full border-2 border-slate-200 rounded-xl p-4 text-sm focus:border-purple-500 outline-none mb-4 transition-all" 
-                    placeholder="예: '출연자 홍길동 VIP 2매, 일반 1매, 본인 수령, 010-1234-5678'"></textarea>
+                <p id="modal-desc" class="text-sm text-slate-500 mb-4">비정형 텍스트를 입력하거나, 파일을 첨부하여 시트를 채울 수 있습니다.</p>
+                
+                <!-- File Upload Box -->
+                <div class="mb-4">
+                    <input type="file" id="file-upload" class="hidden" onchange="handleFileSelect(this)">
+                    <button onclick="document.getElementById('file-upload').click()" class="w-full border-2 border-dashed border-slate-200 hover:border-purple-300 hover:bg-purple-50 rounded-xl p-4 flex flex-col items-center gap-2 transition-all">
+                        <i data-lucide="upload-cloud" class="text-slate-400"></i>
+                        <span class="text-xs font-semibold text-slate-500">엑셀/텍스트 파일 첨부하기 (xlsx, xls, txt, hwp 등)</span>
+                        <span class="text-[10px] text-slate-400">파일에서 텍스트를 추출하여 AI가 정리합니다.</span>
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <textarea id="ai-input" rows="5" 
+                        class="w-full border-2 border-slate-200 rounded-xl p-4 text-sm focus:border-purple-500 outline-none mb-4 transition-all" 
+                        placeholder="파일을 첨부하거나 텍스트를 직접 입력해주세요."></textarea>
+                    <div id="file-loading" class="absolute inset-0 bg-white/80 hidden items-center justify-center rounded-xl">
+                        <div class="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                </div>
+
                 <div class="flex flex-col gap-3">
                     <button id="btn-parse" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-200">
-                        <i data-lucide="wand-2" class="w-5 h-5"></i> 데이터 분석 및 시트 추가
+                        <i data-lucide="wand-2" class="w-5 h-5"></i> <span id="btn-text">이 시트에 데이터 추가</span>
                     </button>
                     <button onclick="toggleAIModal()" class="w-full text-slate-400 text-sm hover:text-slate-600 font-medium">취소하고 돌아가기</button>
                 </div>
