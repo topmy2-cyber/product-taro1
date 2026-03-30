@@ -391,7 +391,9 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
                 let targetInput = null;
                 let stepTr = currentTr;
                 
-                while (true) {
+                let loopCount = 0;
+                while (loopCount < 100) {
+                    loopCount++;
                     if (e.shiftKey) {
                         stepTr = stepTr.previousElementSibling;
                         while (stepTr && stepTr.classList.contains('subtotal-row')) stepTr = stepTr.previousElementSibling;
@@ -399,9 +401,9 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
                         stepTr = stepTr.nextElementSibling;
                         while (stepTr && stepTr.classList.contains('subtotal-row')) stepTr = stepTr.nextElementSibling;
                         
-                        // 하단 끝에 도달하면 새 줄을 생성
+                        // 하단 끝에 도달하면 정상(독립)적인 새 줄 생성
                         if (!stepTr && !e.shiftKey) {
-                            addRow(tableId);
+                            window.addBlankRow(tableId);
                             // 새로 생성된 마지막 줄을 타겟으로 선택
                             stepTr = tbody.lastElementChild;
                             while (stepTr && stepTr.classList.contains('subtotal-row')) stepTr = stepTr.previousElementSibling;
@@ -411,8 +413,8 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
                     if (!stepTr) break;
                     
                     const candidateInput = stepTr.querySelector(`[data-key="${key}"]`);
-                    // 만약 병합 처리되어 숨겨진(hidden) 칸이라면 한 줄 더 넘어감
-                    if (candidateInput && candidateInput.type !== 'hidden') {
+                    // 만약 병합 처리되어 숨겨진(hidden) 칸이 아니고 실제 노드가 있다면
+                    if (candidateInput && candidateInput.getAttribute('type') !== 'hidden' && candidateInput.style.display !== 'none') {
                         targetInput = candidateInput;
                         break;
                     }
@@ -796,8 +798,8 @@ window.downloadPDF = function (btn) {
         const div = document.createElement('div');
         div.className = input.className;
         // 기존 텍스트 중앙정렬 등을 유지하되, 내용이 많을 경우 아래로 무한 확장될 수 있도록 고정 높이(100%, 48px)를 해제
-        // 한글 단어 단위 잘림을 위해 word-break: keep-all 적용
-        div.style.cssText = 'border: none; padding: 0.5rem; text-align: center; word-break: keep-all; overflow-wrap: anywhere; white-space: pre-wrap; width: 100%; display: block;';
+        // 너무 긴 문자열이 가로로 테이블을 찢고 짤리는 현상을 막기 위해 강제 줄바꿈(break-all) 적용
+        div.style.cssText = 'border: none; padding: 0.5rem; text-align: center; word-break: break-all; white-space: pre-wrap; width: 100%; display: block;';
         div.innerText = input.value;
         
         input.parentNode.insertBefore(div, input);
