@@ -74,8 +74,8 @@ function updateTableSummary(tableId) {
         if (tr.classList.contains('subtotal-row')) {
             const tds = tr.getElementsByTagName('td');
             if (tds.length >= 6) {
-                tds[1].innerText = groupRegular > 0 ? groupRegular : '';
-                tds[2].innerText = groupVip > 0 ? groupVip : '';
+                tds[2].innerText = groupRegular > 0 ? groupRegular : '';
+                tds[3].innerText = groupVip > 0 ? groupVip : '';
                 tds[5].innerText = groupReceived > 0 ? groupReceived : '';
             }
             groupRegular = 0;
@@ -375,7 +375,7 @@ function addRow(tableId, data = null, nameRowspan = 1) {
                 e.preventDefault(); // 기본 한 칸 붙여넣기 방지
                 
                 const rowsData = pastedText.split(/\r?\n/).filter(row => row.trim() !== '');
-                const keys = ['regular', 'vip', 'name', 'recipient', 'received', 'phone', 'remarks'];
+                const keys = ['name', 'regular', 'vip', 'recipient', 'received', 'phone', 'remarks'];
                 
                 let currentTr = this.closest('tr');
                 const tbody = currentTr.closest('tbody');
@@ -431,17 +431,8 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         tr.appendChild(td);
     }
 
-    // 2. 일반석
-    let td = document.createElement('td');
-    td.appendChild(createInput('regular', data?.regular, 'number'));
-    tr.appendChild(td);
-
-    // 3. VIP석
-    td = document.createElement('td');
-    td.appendChild(createInput('vip', data?.vip, 'number'));
-    tr.appendChild(td);
-
-    // 4. 이름 (rowspan 적용 및 숨김 처리)
+    // 2. 이름 (rowspan 적용 및 숨김 처리)
+    let td;
     if (nameRowspan > 0) {
         td = document.createElement('td');
         if (nameRowspan > 1) td.rowSpan = nameRowspan;
@@ -455,6 +446,16 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         td.appendChild(createInput('name', data?.name, 'text', true));
         tr.appendChild(td);
     }
+
+    // 3. 일반석
+    td = document.createElement('td');
+    td.appendChild(createInput('regular', data?.regular, 'number'));
+    tr.appendChild(td);
+
+    // 4. VIP석
+    td = document.createElement('td');
+    td.appendChild(createInput('vip', data?.vip, 'number'));
+    tr.appendChild(td);
 
     // 5. 수령자
     td = document.createElement('td');
@@ -507,6 +508,11 @@ function addSubtotalRow(tableId, name, regular, vip, received) {
     tr.appendChild(td);
 
     td = document.createElement('td');
+    td.className = "text-center";
+    td.innerText = `${name} 팀 합계`;
+    tr.appendChild(td);
+
+    td = document.createElement('td');
     td.className = "text-center text-blue-600 bg-blue-50/50 py-2";
     td.innerText = regular > 0 ? regular : '';
     tr.appendChild(td);
@@ -514,11 +520,6 @@ function addSubtotalRow(tableId, name, regular, vip, received) {
     td = document.createElement('td');
     td.className = "text-center text-blue-600 bg-blue-50/50 py-2";
     td.innerText = vip > 0 ? vip : '';
-    tr.appendChild(td);
-
-    td = document.createElement('td');
-    td.className = "text-center";
-    td.innerText = `${name} 팀 합계`;
     tr.appendChild(td);
 
     td = document.createElement('td');
