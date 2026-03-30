@@ -112,6 +112,9 @@ function saveAllData() {
     localUpdateTimer = setTimeout(() => { isLocalUpdate = false; }, 1500);
 
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
+    // Firebase 경로 생성 규칙에 맞게 특수문자 치환 (., #, $, [, ] 금지)
+    const safeDateKey = dateStr.replace(/[.#$\[\]]/g, '_');
+    
     const data = {
         performers: getTableData('performer-body'),
         others: getTableData('other-body'),
@@ -119,12 +122,15 @@ function saveAllData() {
         timestamp: Date.now()
     };
 
-    // 파이어베이스가 세팅되어 있으면 클라우드에 전송, 아니면 예전처럼 내 폰(로컬)에만 임시저장
-    if (firebaseDb) {
-        firebaseDb.ref('tickets/' + dateStr).set(data);
-    } else {
-        localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
-        console.log("Data Auto-Saved for " + dateStr);
+    try {
+        if (firebaseDb) {
+            firebaseDb.ref('tickets/' + safeDateKey).set(data);
+        } else {
+            localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
+            console.log("Data Auto-Saved for " + dateStr);
+        }
+    } catch (e) {
+        console.error("Save Error:", e);
     }
 }
 
@@ -165,6 +171,7 @@ let currentSyncRef = null;
 
 function loadSavedData(forceRender = false) {
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
+    const safeDateKey = dateStr.replace(/[.#$\[\]]/g, '_');
 
     if (firebaseDb) {
         // [클라우드 연동 모드]
@@ -175,7 +182,7 @@ function loadSavedData(forceRender = false) {
 
         if (currentSyncRef) currentSyncRef.off(); // 이전 날짜 실시간 수신기능 해제
         
-        currentSyncRef = firebaseDb.ref('tickets/' + dateStr);
+        currentSyncRef = firebaseDb.ref('tickets/' + safeDateKey);
         currentSyncRef.on('value', (snapshot) => {
             // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트
             if (isLocalUpdate && !forceRender) return; 
