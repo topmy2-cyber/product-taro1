@@ -1,6 +1,31 @@
 // 1. 보안 설정 (비밀번호: shwlgus)
 const ADMIN_PASSWORD = "shwlgus";
 
+// ==========================================
+// [ 파이어베이스 공유 데이터베이스 설정 ]
+// 1. 파이어베이스 접속 후 새 프로젝트 생성 -> Realtime Database 생성 (테스트 모드)
+// 2. 프로젝트 설정에서 웹앱 추가 후 아래 텅 빈 '' 안에 발급받은 키값을 붙여넣으세요.
+// (키값이 채워지면 앱은 자동으로 실시간 공유시트 모드로 변신합니다!)
+// ==========================================
+const FIREBASE_CONFIG = {
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+};
+
+let firebaseDb = null;
+if (FIREBASE_CONFIG.apiKey) {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firebaseDb = firebase.database();
+}
+
+let isLocalUpdate = false;
+let localUpdateTimer = null;
+
 // 2. 로그인 함수 (전역)
 window.checkLogin = function () {
     const passwordInput = document.getElementById('login-password');
@@ -50,14 +75,26 @@ function updateTableSummary(tableId) {
 }
 
 function saveAllData() {
+    isLocalUpdate = true;
+    clearTimeout(localUpdateTimer);
+    // 내가 수정 중일 때 타인의 동기화로 표가 덮어씌워져 타이핑이 끊기는 현상 1.5초간 방지
+    localUpdateTimer = setTimeout(() => { isLocalUpdate = false; }, 1500);
+
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const data = {
         performers: getTableData('performer-body'),
         others: getTableData('other-body'),
-        date: dateStr
+        date: dateStr,
+        timestamp: Date.now()
     };
-    localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
-    console.log("Data Auto-Saved for " + dateStr);
+    
+    // 파이어베이스가 세팅되어 있으면 클라우드에 전송, 아니면 예전처럼 내 폰(로컬)에만 임시저장
+    if (firebaseDb) {
+        firebaseDb.ref('tickets/' + dateStr).set(data);
+    } else {
+        localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
+        console.log("Data Auto-Saved for " + dateStr);
+    }
 }
 
 function getTableData(tbodyId) {
@@ -87,26 +124,48 @@ function getTableData(tbodyId) {
     return rows;
 }
 
-function loadSavedData() {
-    const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
-    const saved = localStorage.getItem(`ticket_management_data_${dateStr}`);
+let currentSyncRef = null;
 
+function loadSavedData(forceRender = false) {
+    const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
+
+    if (firebaseDb) {
+        // [클라우드 연동 모드]
+        if (currentSyncRef) currentSyncRef.off(); // 이전 날짜 실시간 수신기능 해제
+        
+        currentSyncRef = firebaseDb.ref('tickets/' + dateStr);
+        currentSyncRef.on('value', (snapshot) => {
+            // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트
+            if (isLocalUpdate && !forceRender) return; 
+            const data = snapshot.val();
+            renderTableData(data);
+        });
+    } else {
+        // [오프라인 모드]
+        const saved = localStorage.getItem(`ticket_management_data_${dateStr}`);
+        if (saved) {
+            renderTableData(JSON.parse(saved));
+        } else {
+            renderTableData(null);
+        }
+    }
+}
+
+function renderTableData(data) {
     const performerBody = document.getElementById('performer-body');
     const otherBody = document.getElementById('other-body');
     
     performerBody.innerHTML = '';
     otherBody.innerHTML = '';
 
-    if (saved) {
-        const data = JSON.parse(saved);
-        
+    if (data) {
         if (data.performers && data.performers.length > 0) {
             data.performers.forEach(item => addRow('performer-table', item));
         }
         if (data.others && data.others.length > 0) {
             data.others.forEach(item => addRow('other-table', item));
         }
-        // 통합 시절에 저장된 tickets 배열이 있다면 모두 안전을 위해 출연자(performer) 명단으로 우선 흡수
+        // 과거 로컬통합 데이터 호환용
         if (data.tickets && data.tickets.length > 0) {
             data.tickets.forEach(item => addRow('performer-table', item));
         }
@@ -118,7 +177,7 @@ function loadSavedData() {
     updateTableSummary('performer-table');
     updateTableSummary('other-table');
 
-    return !!saved;
+    return !!data;
 }
 
 // 4. 페이지 초기화
@@ -132,11 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const lastDate = localStorage.getItem('last_accessed_date') || '[1경기] 4월 11일 (토)';
     document.getElementById('event-date').value = lastDate;
 
-    loadSavedData();
+    loadSavedData(true);
 
     document.getElementById('event-date').onchange = (e) => {
         localStorage.setItem('last_accessed_date', e.target.value);
-        loadSavedData();
+        loadSavedData(true);
     };
 
     // 붙여넣기 이벤트 지원 (스크린샷 붙여넣기 등)
