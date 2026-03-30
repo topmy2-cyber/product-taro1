@@ -208,19 +208,23 @@ function renderTableData(data) {
     performerBody.innerHTML = '';
     otherBody.innerHTML = '';
 
+    const renderFlat = (list, tableId) => {
+        list.forEach(item => addRow(tableId, item, 1));
+    };
+
     if (data) {
-        // 출연자 명단은 그룹화하여 렌더링
+        // 평소 데이터 바인딩 시에는 AI 스마트 정리(그룹핑)를 적용하지 않고 입력 형태 그대로(Raw) 나열합니다.
         if (data.performers && data.performers.length > 0) {
-            renderGroupedList(data.performers, 'performer-table');
+            renderFlat(data.performers, 'performer-table');
         }
         // 옛날 호환용 속성
         if (data.tickets && data.tickets.length > 0) {
-            renderGroupedList(data.tickets, 'performer-table');
+            renderFlat(data.tickets, 'performer-table');
         }
         
-        // 그 외 배부도 동일하게 자동 병합 그룹핑 지원
+        // 그 외 배부도 동일하게 평문 나열
         if (data.others && data.others.length > 0) {
-            renderGroupedList(data.others, 'other-table');
+            renderFlat(data.others, 'other-table');
         }
     }
 
@@ -576,7 +580,9 @@ window.smartOrganize = function (tableId) {
     // 정렬된 리스트를 화면에 다시 렌더링 (그 외 배부도 동일한 그룹핑 기능 제공)
     const tbody = document.getElementById(tbodyId);
     tbody.innerHTML = '';
-    renderGroupedList(dataList, tableId);
+    
+    // 삭제 후 렌더링 시에는 임의로 그룹핑하지 않고 원래 평문 나열 방식을 유지합니다.
+    dataList.forEach(item => addRow(tableId, item, 1));
     
     // 부족해진 행 빈칸 다시 채워기 (10줄 유지)
     let currentCount = tbody.querySelectorAll('tr:not(.subtotal-row)').length;
