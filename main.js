@@ -414,21 +414,25 @@ window.downloadPDF = function (btn) {
     const element = document.getElementById('main-content');
     const date = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
 
-    // 로딩 표시 (선택사항)
+    // 성능 및 잘림 현상(Cut-off) 방지를 위해 스크롤 임시 해제
+    const tableContainers = document.querySelectorAll('.table-container');
+    tableContainers.forEach(container => container.style.overflowX = 'visible');
+
+    // 로딩 표시
     btn = btn || event.currentTarget;
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="animate-spin mr-2">...</i> 생성 중';
     btn.disabled = true;
 
     const opt = {
-        margin: [10, 5, 10, 5], // 상, 좌, 하, 우
+        margin: [10, 3], // 상하 10mm, 좌우 여백 3mm
         filename: `티켓배부현황_${date}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg', quality: 1.0 },
         html2canvas: {
             scale: 2,
             useCORS: true,
             logging: false,
-            windowWidth: 1200 // 캔버스 캡처 시 너비 고정
+            windowWidth: Math.max(1200, element.scrollWidth) // 컨텐츠가 1200을 넘으면 그 너비에 맞게 캡처
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
@@ -437,10 +441,13 @@ window.downloadPDF = function (btn) {
     html2pdf().set(opt).from(element).save().then(() => {
         btn.innerHTML = originalText;
         btn.disabled = false;
+        // 스크롤 원상 복구
+        tableContainers.forEach(container => container.style.overflowX = 'auto');
     }).catch(err => {
-        console.error(err);
+        console.error('PDF 다운로드 실패:', err);
         btn.innerHTML = originalText;
         btn.disabled = false;
+        tableContainers.forEach(container => container.style.overflowX = 'auto');
         alert("PDF 생성 중 오류가 발생했습니다.");
     });
 };
