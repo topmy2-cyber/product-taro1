@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>열농단 티켓 배부 관리 시스템 - LLM Smart Organizer</title>
+    <script>
+        const originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+            originalWarn.apply(console, arguments);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
         
@@ -90,6 +98,7 @@
             th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .input-cell[readonly], .no-cell { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
+    </style>
 </head>
 <body class="p-4 md:p-8">
     <!-- Login Overlay -->
