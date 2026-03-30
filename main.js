@@ -274,11 +274,6 @@ function renderGroupedList(list, tableId) {
             addRow(tableId, dataItem, rowspanFlag); 
         }
 
-        // 이름이 있고 의미있는 데이터가 있으면 해당 인물의 부분합계 행 추가
-        if (item.name && item.name.trim() !== "") {
-            addSubtotalRow(tableId, item.name, subRegular, subVip, subReceived);
-        }
-
         i += groupSize;
     }
 }
