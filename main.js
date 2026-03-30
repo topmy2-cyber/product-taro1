@@ -515,7 +515,7 @@ function addSubtotalRow(tableId, name, regular, vip, received) {
     let td = document.createElement('td');
     td.colSpan = 2;
     td.className = "text-center";
-    td.innerText = `${name} 팀 합계`;
+    td.innerText = `합계`;
     tr.appendChild(td);
 
     td = document.createElement('td');
