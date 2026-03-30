@@ -551,7 +551,9 @@ function deleteRow(btn, tableId) {
     // 병합된 엘리먼트를 삭제할 때 UI가 꼬이는 rowspan 에러를 방지하고 순서(NO)를 최신화하기 위해 즉각 재정렬
     const dataList = getTableData(tbodyId);
     document.getElementById(tbodyId).innerHTML = '';
-    renderGroupedList(dataList, tableId, tbodyId);
+    
+    // 삭제 후 렌더링 시에는 임의로 그룹핑하지 않고 평문 나열 방식을 유지합니다.
+    dataList.forEach(item => addRow(tableId, item, 1));
     
     // 부족해진 행 빈칸 다시 채워기
     let currentCount = document.getElementById(tbodyId).querySelectorAll('tr:not(.subtotal-row)').length;
@@ -579,12 +581,10 @@ window.smartOrganize = function (tableId) {
         return nameA.localeCompare(nameB);
     });
 
-    // 정렬된 리스트를 화면에 다시 렌더링 (그 외 배부도 동일한 그룹핑 기능 제공)
+    // 정렬된 리스트를 화면에 다시 렌더링 (그룹핑 기능 적용)
     const tbody = document.getElementById(tbodyId);
     tbody.innerHTML = '';
-    
-    // 삭제 후 렌더링 시에는 임의로 그룹핑하지 않고 원래 평문 나열 방식을 유지합니다.
-    dataList.forEach(item => addRow(tableId, item, 1));
+    renderGroupedList(dataList, tableId);
     
     // 부족해진 행 빈칸 다시 채워기 (10줄 유지)
     let currentCount = tbody.querySelectorAll('tr:not(.subtotal-row)').length;
