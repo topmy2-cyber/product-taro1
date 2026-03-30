@@ -360,11 +360,38 @@ function processFile(file) {
         }
     };
 
-    if (isImage) {
-        reader.readAsDataURL(file);
-    } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-        reader.readAsArrayBuffer(file);
-    } else {
-        reader.readAsText(file, "UTF-8");
-    }
-}
+// 8. PDF 다운로드 기능
+window.downloadPDF = function() {
+    const element = document.getElementById('main-content');
+    const date = document.getElementById('event-date').value || new Date().toISOString().split('T')[0];
+    
+    // 로딩 표시 (선택사항)
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="animate-spin mr-2">...</i> 생성 중';
+    btn.disabled = true;
+
+    const opt = {
+        margin: [10, 5, 10, 5], // 상, 좌, 하, 우
+        filename: `티켓배부현황_${date}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            logging: false,
+            windowWidth: 1200 // 캔버스 캡처 시 너비 고정
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    // 다운로드 실행
+    html2pdf().set(opt).from(element).save().then(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }).catch(err => {
+        console.error(err);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert("PDF 생성 중 오류가 발생했습니다.");
+    });
+};
