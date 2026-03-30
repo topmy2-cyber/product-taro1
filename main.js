@@ -586,9 +586,7 @@ window.smartOrganize = function (tableId) {
     tbody.innerHTML = '';
     renderGroupedList(dataList, tableId);
     
-    // 부족해진 행 빈칸 다시 채워기 (10줄 유지)
-    let currentCount = tbody.querySelectorAll('tr:not(.subtotal-row)').length;
-    while (currentCount < 10) { addRow(tableId); currentCount++; }
+    // 스마트 정리 후에는 불필요한 빈 행을 추가하지 않고 깔끔한 요약 대시보드 형태만 유지합니다.
     
     updateTableSummary(tableId);
     saveAllData();
