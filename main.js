@@ -84,10 +84,9 @@ function updateTableSummary(tableId) {
             continue;
         }
         
-        const inputs = Array.from(tr.getElementsByTagName('input'));
-        const regInput = inputs.find(el => el.dataset.key === 'regular');
-        const vipInput = inputs.find(el => el.dataset.key === 'vip');
-        const rcvInput = inputs.find(el => el.dataset.key === 'received');
+        const regInput = tr.querySelector('input[data-key="regular"]');
+        const vipInput = tr.querySelector('input[data-key="vip"]');
+        const rcvInput = tr.querySelector('input[data-key="received"]');
         
         const r = regInput ? (parseInt(regInput.value) || 0) : 0;
         const v = vipInput ? (parseInt(vipInput.value) || 0) : 0;
