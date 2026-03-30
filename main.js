@@ -320,7 +320,7 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         const td = document.createElement('td');
         td.className = 'no-cell bg-white'; 
         if (nameRowspan > 1) td.rowSpan = nameRowspan;
-        td.innerText = data?.no || noCount;
+        td.innerText = noCount;
         tr.appendChild(td);
     }
 
@@ -465,12 +465,14 @@ window.smartOrganize = function (tableId) {
         return nameA.localeCompare(nameB);
     });
 
-    // 정렬된 데이터를 다시 화면에 뿌림 (데이터 구조에 맞게 renderGroupedList 재활용)
+    // 정렬된 리스트를 화면에 다시 렌더링 (그 외 배부도 동일한 그룹핑 기능 제공)
     const tbody = document.getElementById(tbodyId);
     tbody.innerHTML = '';
+    renderGroupedList(dataList, tableId);
     
-    // 정렬된 리스트를 화면에 다시 렌더링 (그 외 배부도 동일한 그룹핑 기능 제공)
-    renderGroupedList(dataList, tableId, tbodyId);
+    // 부족해진 행 빈칸 다시 채워기 (10줄 유지)
+    let currentCount = tbody.querySelectorAll('tr:not(.subtotal-row)').length;
+    while (currentCount < 10) { addRow(tableId); currentCount++; }
     
     updateTableSummary(tableId);
     saveAllData();
