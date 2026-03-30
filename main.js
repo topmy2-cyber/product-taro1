@@ -73,10 +73,10 @@ function updateTableSummary(tableId) {
         // 부분합계 행을 만나면 지금까지 모은 그룹 정산을 출력하고 리셋함
         if (tr.classList.contains('subtotal-row')) {
             const tds = tr.getElementsByTagName('td');
-            if (tds.length >= 6) {
-                tds[2].innerText = groupRegular > 0 ? groupRegular : '';
-                tds[3].innerText = groupVip > 0 ? groupVip : '';
-                tds[5].innerText = groupReceived > 0 ? groupReceived : '';
+            if (tds.length >= 5) {
+                tds[1].innerText = groupRegular > 0 ? groupRegular : '';
+                tds[2].innerText = groupVip > 0 ? groupVip : '';
+                tds[4].innerText = groupReceived > 0 ? groupReceived : '';
             }
             groupRegular = 0;
             groupVip = 0;
@@ -513,10 +513,7 @@ function addSubtotalRow(tableId, name, regular, vip, received) {
     tr.className = "subtotal-row bg-slate-50 font-bold text-slate-600 border-b-2 border-slate-300";
     
     let td = document.createElement('td');
-    td.colSpan = 1;
-    tr.appendChild(td);
-
-    td = document.createElement('td');
+    td.colSpan = 2;
     td.className = "text-center";
     td.innerText = `${name} 팀 합계`;
     tr.appendChild(td);
