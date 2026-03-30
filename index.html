@@ -37,7 +37,7 @@
             padding: 14px 10px; 
             border-bottom: 2px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
-            font-size: 13px;
+            font-size: 15px;
             position: sticky;
             top: 0;
             z-index: 10;
@@ -64,9 +64,10 @@
             background: transparent; 
             border: none; 
             outline: none; 
-            font-size: 14px;
+            font-size: 15px;
             color: #1e293b;
             display: block;
+            text-align: center;
         }
         
         .input-cell:focus { 
@@ -162,12 +163,12 @@
                         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                             <i data-lucide="users" class="text-blue-500 w-5 h-5"></i> 통합 티켓 배부 명단
                         </h3>
-                        <div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-[11px] font-bold shadow-sm">
-                            <span class="text-slate-500">일반: <span id="ticket-regular-sum" class="text-slate-800">0</span></span>
+                        <div class="flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-full text-sm font-bold shadow-sm">
+                            <span class="text-slate-500">일반: <span id="ticket-regular-sum" class="text-slate-800 text-base">0</span></span>
                             <span class="text-slate-300">|</span>
-                            <span class="text-slate-500">VIP: <span id="ticket-vip-sum" class="text-slate-800">0</span></span>
+                            <span class="text-slate-500">VIP: <span id="ticket-vip-sum" class="text-slate-800 text-base">0</span></span>
                             <span class="text-slate-300">|</span>
-                            <span class="text-blue-600">합계: <span id="ticket-total-sum">0</span></span>
+                            <span class="text-blue-600">합계: <span id="ticket-total-sum" class="text-lg">0</span></span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2" data-html2canvas-ignore>
