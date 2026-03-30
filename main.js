@@ -429,12 +429,6 @@ window.downloadPDF = function (btn) {
     const tableContainers = document.querySelectorAll('.table-container');
     tableContainers.forEach(container => container.style.overflowX = 'visible');
 
-    // html2canvas 특정 버그(mx-auto에 의한 왼쪽 여백 잘림 현상) 방지
-    const originalWidth = element.style.width;
-    element.classList.remove('mx-auto');
-    element.style.width = '1150px'; // A4 가로 한 페이지에 꽉 차게 캡처 너비 고정 강제
-    element.style.padding = '20px'; // 좌우 내용 조금도 잘리지 않게 내부 패딩 추가
-
     // 로딩 표시
     btn = btn || event.currentTarget;
     const originalText = btn.innerHTML;
@@ -449,7 +443,10 @@ window.downloadPDF = function (btn) {
             scale: 2,
             useCORS: true,
             logging: false,
-            windowWidth: 1200 // 캔버스 캡처 시 너비 고정 (element 너비보다 살짝 여유있게)
+            scrollX: 0,
+            scrollY: 0,
+            // 캔버스 사이즈가 컨테이너(max-width 1280px)보다 작아서 잘리는 현상 방지. 최소 1300 보장
+            windowWidth: Math.max(1300, window.innerWidth) 
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
@@ -458,19 +455,12 @@ window.downloadPDF = function (btn) {
     html2pdf().set(opt).from(element).save().then(() => {
         btn.innerHTML = originalText;
         btn.disabled = false;
-        // 스크롤 및 레이아웃 100% 원상 복구
         tableContainers.forEach(container => container.style.overflowX = 'auto');
-        element.classList.add('mx-auto');
-        element.style.width = originalWidth;
-        element.style.padding = '';
     }).catch(err => {
         console.error('PDF 다운로드 실패:', err);
         btn.innerHTML = originalText;
         btn.disabled = false;
         tableContainers.forEach(container => container.style.overflowX = 'auto');
-        element.classList.add('mx-auto');
-        element.style.width = originalWidth;
-        element.style.padding = '';
         alert("PDF 생성 중 오류가 발생했습니다.");
     });
 };
