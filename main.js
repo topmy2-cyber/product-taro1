@@ -60,24 +60,50 @@ function updateTableSummary(tableId) {
     const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
 
-    let regularTotal = 0;
-    let vipTotal = 0;
+    let globalRegular = 0;
+    let globalVip = 0;
+
+    let groupRegular = 0;
+    let groupVip = 0;
+    let groupReceived = 0;
 
     for (let i = 0; i < tbody.rows.length; i++) {
         const tr = tbody.rows[i];
-        if (tr.classList.contains('subtotal-row')) continue;
+        
+        // 부분합계 행을 만나면 지금까지 모은 그룹 정산을 출력하고 리셋함
+        if (tr.classList.contains('subtotal-row')) {
+            const tds = tr.getElementsByTagName('td');
+            if (tds.length >= 6) {
+                tds[1].innerText = groupRegular > 0 ? groupRegular : '';
+                tds[2].innerText = groupVip > 0 ? groupVip : '';
+                tds[5].innerText = groupReceived > 0 ? groupReceived : '';
+            }
+            groupRegular = 0;
+            groupVip = 0;
+            groupReceived = 0;
+            continue;
+        }
         
         const inputs = Array.from(tr.getElementsByTagName('input'));
         const regInput = inputs.find(el => el.dataset.key === 'regular');
         const vipInput = inputs.find(el => el.dataset.key === 'vip');
+        const rcvInput = inputs.find(el => el.dataset.key === 'received');
         
-        if (regInput) regularTotal += parseInt(regInput.value) || 0;
-        if (vipInput) vipTotal += parseInt(vipInput.value) || 0;
+        const r = regInput ? (parseInt(regInput.value) || 0) : 0;
+        const v = vipInput ? (parseInt(vipInput.value) || 0) : 0;
+        const c = rcvInput ? (parseInt(rcvInput.value) || 0) : 0;
+
+        globalRegular += r;
+        globalVip += v;
+        
+        groupRegular += r;
+        groupVip += v;
+        groupReceived += c;
     }
 
-    document.getElementById(`${prefix}-regular-sum`).innerText = regularTotal.toLocaleString();
-    document.getElementById(`${prefix}-vip-sum`).innerText = vipTotal.toLocaleString();
-    document.getElementById(`${prefix}-total-sum`).innerText = (regularTotal + vipTotal).toLocaleString();
+    document.getElementById(`${prefix}-regular-sum`).innerText = globalRegular.toLocaleString();
+    document.getElementById(`${prefix}-vip-sum`).innerText = globalVip.toLocaleString();
+    document.getElementById(`${prefix}-total-sum`).innerText = (globalRegular + globalVip).toLocaleString();
 }
 
 function saveAllData() {
@@ -281,7 +307,7 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         input.dataset.key = key;
         if (!hidden) input.className = 'input-cell';
         
-        if (key === 'regular' || key === 'vip') {
+        if (key === 'regular' || key === 'vip' || key === 'received') {
             input.oninput = function () { saveAllData(); updateTableSummary(tableId); };
         } else {
             input.onchange = saveAllData;
@@ -356,6 +382,8 @@ function addRow(tableId, data = null, nameRowspan = 1) {
     
     tbody.appendChild(tr);
     if (window.lucide) window.lucide.createIcons({ root: actionTd });
+    
+    updateTableSummary(tableId);
 }
 
 // 5-1. 부분합계 행(Subtotal) 추가 로직
@@ -444,6 +472,7 @@ window.smartOrganize = function (tableId) {
     // 정렬된 리스트를 화면에 다시 렌더링 (그 외 배부도 동일한 그룹핑 기능 제공)
     renderGroupedList(dataList, tableId, tbodyId);
     
+    updateTableSummary(tableId);
     saveAllData();
 };
 
