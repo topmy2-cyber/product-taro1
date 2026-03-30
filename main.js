@@ -288,7 +288,7 @@ function renderGroupedList(list, tableId) {
             const dataItem = list[i + j];
             // 첫 번째 행은 rowspan 값을 넘기고, 나머지는 0을 넘겨 cell을 숨김
             const rowspanFlag = (j === 0) ? groupSize : 0;
-            addRow(tableId, dataItem, rowspanFlag, groupTotalTickets); 
+            addRow(tableId, dataItem, rowspanFlag, groupTotalTickets, true); 
         }
 
         i += groupSize;
@@ -322,7 +322,7 @@ window.addBlankRow = function (tableId) {
 };
 
 // 5. 행 추가 기능 (그룹핑 병합 지원)
-function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null) {
+function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null, isSmartMode = false) {
     const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
     const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
@@ -589,11 +589,11 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
         }
     }
     
-    // 마우스 오버 감지 및 짝수 그룹(행) 지브라 패턴(Zebra Striping) 적용
-    if (isEvenGroup) {
-        tr.className = "group bg-slate-50/60 hover:bg-slate-100/60 transition-colors";
+    // 마우스 오버 감지 및 스마트 정리 모드 전용 지브라 패턴(Zebra Striping) 적용
+    if (isEvenGroup && isSmartMode) {
+        tr.className = "group bg-slate-100 hover:bg-slate-200 transition-colors";
     } else {
-        tr.className = "group hover:bg-slate-50 transition-colors";
+        tr.className = "group bg-white hover:bg-slate-50 transition-colors";
     }
     
     tr.appendChild(actionTd);
