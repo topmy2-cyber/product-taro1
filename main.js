@@ -312,6 +312,52 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         } else {
             input.onchange = saveAllData;
         }
+
+        // 엔터(Enter) / 쉬프트+엔터(Shift+Enter) 입력 시 상하 이동 기능 (엑셀 UX)
+        input.addEventListener('keydown', function(e) {
+            if (e.isComposing) return;
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                let currentTr = this.closest('tr');
+                let targetInput = null;
+                let stepTr = currentTr;
+                
+                while (true) {
+                    if (e.shiftKey) {
+                        stepTr = stepTr.previousElementSibling;
+                        while (stepTr && stepTr.classList.contains('subtotal-row')) stepTr = stepTr.previousElementSibling;
+                    } else {
+                        stepTr = stepTr.nextElementSibling;
+                        while (stepTr && stepTr.classList.contains('subtotal-row')) stepTr = stepTr.nextElementSibling;
+                        
+                        // 하단 끝에 도달하면 새 줄을 생성
+                        if (!stepTr && !e.shiftKey) {
+                            addRow(tableId);
+                            // 새로 생성된 마지막 줄을 타겟으로 선택
+                            stepTr = tbody.lastElementChild;
+                            while (stepTr && stepTr.classList.contains('subtotal-row')) stepTr = stepTr.previousElementSibling;
+                        }
+                    }
+                    
+                    if (!stepTr) break;
+                    
+                    const candidateInput = stepTr.querySelector(`input[data-key="${key}"]`);
+                    // 만약 병합 처리되어 숨겨진(hidden) 칸이라면 한 줄 더 넘어감
+                    if (candidateInput && candidateInput.type !== 'hidden') {
+                        targetInput = candidateInput;
+                        break;
+                    }
+                }
+                
+                if (targetInput) {
+                    targetInput.focus();
+                    if (targetInput.type === 'text' || targetInput.type === 'number') {
+                        targetInput.select();
+                    }
+                }
+            }
+        });
+
         return input;
     };
 
