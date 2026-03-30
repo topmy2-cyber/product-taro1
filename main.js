@@ -173,6 +173,11 @@ function loadSavedData(forceRender = false) {
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const safeDateKey = dateStr.replace(/[.#$\[\]]/g, '_');
 
+    if (forceRender) {
+        isLocalUpdate = false;
+        clearTimeout(localUpdateTimer);
+    }
+
     if (firebaseDb) {
         // [클라우드 연동 모드]
         // 파이어베이스 네트워크 연결을 기다리는 동안 화면이 휑하게 비어있지 않도록 일단 기본 10행 그리기
@@ -184,8 +189,8 @@ function loadSavedData(forceRender = false) {
         
         currentSyncRef = firebaseDb.ref('tickets/' + safeDateKey);
         currentSyncRef.on('value', (snapshot) => {
-            // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트
-            if (isLocalUpdate && !forceRender) return; 
+            // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트 (클로저 버그 방지)
+            if (isLocalUpdate) return; 
             const data = snapshot.val();
             // 클라우드에 비어있으면 아까 그린 기본 10행을 유지하고, 데이터가 있으면 덮어씌움
             renderTableData(data);
