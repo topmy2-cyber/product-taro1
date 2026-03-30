@@ -334,11 +334,32 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
     const isEvenGroup = (noCount % 2 === 0);
 
     const createInput = (key, value, type = 'text', hidden = false) => {
-        const input = document.createElement('input');
-        input.type = hidden ? 'hidden' : type;
-        input.value = value || '';
+        let input;
+        if (type === 'textarea') {
+            input = document.createElement('textarea');
+            input.rows = 1;
+            input.value = value || '';
+            input.className = 'input-cell resize-none overflow-hidden';
+            input.style.padding = '12px';
+            input.style.lineHeight = '1.5';
+            
+            // 자동 높이 조절
+            input.addEventListener('input', function() {
+                this.style.height = '48px'; 
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            setTimeout(() => {
+                input.style.height = '48px';
+                if (input.scrollHeight > 48) input.style.height = (input.scrollHeight) + 'px';
+            }, 0);
+        } else {
+            input = document.createElement('input');
+            input.type = hidden ? 'hidden' : type;
+            input.value = value || '';
+            if (!hidden) input.className = 'input-cell';
+        }
+        
         input.setAttribute('data-key', key);
-        if (!hidden) input.className = 'input-cell';
         
         if (key === 'regular' || key === 'vip' || key === 'received') {
             input.addEventListener('input', function() { 
@@ -352,6 +373,18 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
         // 엔터(Enter) / 쉬프트+엔터(Shift+Enter) 입력 시 상하 이동 기능 (엑셀 UX)
         input.addEventListener('keydown', function(e) {
             if (e.isComposing) return;
+            
+            // textarea 엑셀식 줄바꿈 지원 (Alt + Enter)
+            if (e.key === 'Enter' && e.altKey && type === 'textarea') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + "\n" + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 1;
+                this.dispatchEvent(new Event('input')); // 리사이즈 및 저장 트리거
+                return;
+            }
+            
             if (e.key === 'Enter') {
                 e.preventDefault();
                 let currentTr = this.closest('tr');
@@ -532,7 +565,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
 
     // 8. 비고란
     td = document.createElement('td');
-    td.appendChild(createInput('remarks', data?.remarks));
+    td.appendChild(createInput('remarks', data?.remarks, 'textarea'));
     tr.appendChild(td);
 
     // 9. 조작 버튼 세트
@@ -757,7 +790,7 @@ window.downloadPDF = function (btn) {
     btn.disabled = true;
 
     // PDF 렌더링 시 텍스트 잘림 현상을 방지하기 위해 input 요소들을 임시로 텍스트 분할이 허용된 div 레이아웃으로 변환
-    const inputs = element.querySelectorAll('input.input-cell');
+    const inputs = element.querySelectorAll('.input-cell');
     const placeholders = [];
     inputs.forEach(input => {
         const div = document.createElement('div');
