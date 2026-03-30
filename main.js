@@ -138,11 +138,9 @@ function getTableData(tbodyId) {
         // 부분합계 행(읽기 전용)은 저장 대상에서 제외
         if (tr.classList.contains('subtotal-row')) continue;
         
-        const inputs = Array.from(tr.getElementsByTagName('input'));
-        if (inputs.length === 0) continue;
-
+        // DOM 탐색 안정성 강화를 위해 querySelector 전면 적용 (결합/배열 오류 원천 차단)
         const getValue = (key) => {
-            const el = inputs.find(input => input.dataset.key === key);
+            const el = tr.querySelector(`input[data-key="${key}"]`);
             return el ? el.value : '';
         };
 
@@ -303,7 +301,7 @@ function addRow(tableId, data = null, nameRowspan = 1) {
         const input = document.createElement('input');
         input.type = hidden ? 'hidden' : type;
         input.value = value || '';
-        input.dataset.key = key;
+        input.setAttribute('data-key', key);
         if (!hidden) input.className = 'input-cell';
         
         if (key === 'regular' || key === 'vip' || key === 'received') {
