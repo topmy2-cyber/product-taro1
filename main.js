@@ -188,9 +188,9 @@ function renderTableData(data) {
             renderGroupedList(data.tickets, 'performer-table');
         }
         
-        // 그 외 배부는 일반 렌더링 (병합 안함)
+        // 그 외 배부도 동일하게 자동 병합 그룹핑 지원
         if (data.others && data.others.length > 0) {
-            data.others.forEach(item => addRow('other-table', item));
+            renderGroupedList(data.others, 'other-table');
         }
     }
 
@@ -421,10 +421,10 @@ function updateRowNumbers(tbodyId) {
 
 // 6. 스마트 정리 기능 (같은 출연자끼리 묶고 부분합계 도출)
 window.smartOrganize = function (tableId) {
-    if (tableId !== 'performer-table') return;
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
     
     // 현재 입력된 유효 데이터만 긁어옴
-    const dataList = getTableData('performer-body');
+    const dataList = getTableData(tbodyId);
     if (dataList.length === 0) return;
 
     // 이름 오름차순으로 정렬
@@ -437,9 +437,12 @@ window.smartOrganize = function (tableId) {
         return nameA.localeCompare(nameB);
     });
 
-    // 정렬된 데이터를 다시 저장소에 덮어씌움 (이후 Firebase 동기화를 통해 모든 유저 화면에서 renderTableData가 재호출됨)
-    document.getElementById('performer-body').innerHTML = '';
-    dataList.forEach(item => addRow('performer-table', item));
+    // 정렬된 데이터를 다시 화면에 뿌림 (데이터 구조에 맞게 renderGroupedList 재활용)
+    const tbody = document.getElementById(tbodyId);
+    tbody.innerHTML = '';
+    
+    // 정렬된 리스트를 화면에 다시 렌더링 (그 외 배부도 동일한 그룹핑 기능 제공)
+    renderGroupedList(dataList, tableId, tbodyId);
     
     saveAllData();
 };
