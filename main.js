@@ -49,9 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
 
-    // 기본 행 추가
-    addRow('performer-table');
-    addRow('other-table');
+    // 기본 행 10개씩 추가 (엑셀처럼 바로 입력 가능하게)
+    const performerBody = document.getElementById('performer-body');
+    const otherBody = document.getElementById('other-body');
+    if (performerBody && performerBody.rows.length === 0) {
+        for(let i=0; i<10; i++) addRow('performer-table');
+    }
+    if (otherBody && otherBody.rows.length === 0) {
+        for(let i=0; i<10; i++) addRow('other-table');
+    }
 
     // AI 분석 버튼 연결
     const btnParse = document.getElementById('btn-parse');
@@ -112,6 +118,19 @@ function addRow(tableId, data = null) {
 }
 
 // 5. AI 분석 기능
+window.toggleAIModal = function() {
+    const modal = document.getElementById('ai-modal');
+    if (!modal) return;
+    if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.getElementById('ai-input').focus();
+    } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+};
+
 async function handleAIParse() {
     const text = document.getElementById('ai-input').value.trim();
     if (!text) return;
@@ -119,6 +138,9 @@ async function handleAIParse() {
     const loading = document.getElementById('loading');
     loading.classList.remove('hidden');
     loading.classList.add('flex');
+    
+    // 분석 시작 시 모달 닫기
+    toggleAIModal();
 
     try {
         const response = await fetch('/api/gemini', {
