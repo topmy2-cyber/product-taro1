@@ -297,8 +297,8 @@ function addRow(tableId, data = null, nameRowspan = 1) {
 
     const tr = document.createElement('tr');
     
-    // 서브토탈을 제외한 순수 데이터 로우의 개수로 순번 계산
-    const noCount = tbody.querySelectorAll('tr:not(.subtotal-row)').length + 1;
+    // 그룹 단위로 순번을 계산 (로우 갯수가 아니라 번호칸의 갯수 기준)
+    const noCount = tbody.querySelectorAll('.no-cell').length + 1;
 
     const createInput = (key, value, type = 'text', hidden = false) => {
         const input = document.createElement('input');
@@ -433,18 +433,18 @@ function deleteRow(btn, tableId) {
     const tr = btn.closest('tr');
     tr.remove();
     const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
-    updateRowNumbers(tbodyId);
-    saveAllData();
+    
+    // 병합된 엘리먼트를 삭제할 때 UI가 꼬이는 rowspan 에러를 방지하고 순서(NO)를 최신화하기 위해 즉각 재정렬
+    const dataList = getTableData(tbodyId);
+    document.getElementById(tbodyId).innerHTML = '';
+    renderGroupedList(dataList, tableId, tbodyId);
+    
+    // 부족해진 행 빈칸 다시 채워기
+    let currentCount = document.getElementById(tbodyId).querySelectorAll('tr:not(.subtotal-row)').length;
+    while (currentCount < 10) { addRow(tableId); currentCount++; }
+    
     updateTableSummary(tableId);
-}
-
-function updateRowNumbers(tbodyId) {
-    const tbody = document.getElementById(tbodyId);
-    const rows = tbody.querySelectorAll('tr:not(.subtotal-row)');
-    for (let i = 0; i < rows.length; i++) {
-        const noCell = rows[i].querySelector('.no-cell');
-        if (noCell) noCell.innerText = i + 1;
-    }
+    saveAllData();
 }
 
 // 6. 스마트 정리 기능 (같은 출연자끼리 묶고 부분합계 도출)
