@@ -330,7 +330,8 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
     const tr = document.createElement('tr');
     
     // 그룹 단위로 순번을 계산 (로우 갯수가 아니라 번호칸의 갯수 기준)
-    const noCount = tbody.querySelectorAll('.no-cell').length + 1;
+    const noCount = tbody.querySelectorAll('.no-cell').length + (nameRowspan > 0 ? 1 : 0);
+    const isEvenGroup = (noCount % 2 === 0);
 
     const createInput = (key, value, type = 'text', hidden = false) => {
         const input = document.createElement('input');
@@ -454,7 +455,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
     // 1. NO cell (rowspan 적용)
     if (nameRowspan > 0) {
         const td = document.createElement('td');
-        td.className = 'no-cell bg-white'; 
+        td.className = 'no-cell'; 
         if (nameRowspan > 1) td.rowSpan = nameRowspan;
         td.innerText = noCount;
         tr.appendChild(td);
@@ -465,7 +466,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
     if (nameRowspan > 0) {
         td = document.createElement('td');
         if (nameRowspan > 1) td.rowSpan = nameRowspan;
-        td.className = "bg-white relative";
+        td.className = "relative";
         td.appendChild(createInput('name', data?.name));
         tr.appendChild(td);
     } else {
@@ -536,7 +537,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
 
     // 9. 조작 버튼 세트
     const actionTd = document.createElement('td');
-    actionTd.className = 'bg-white border-l border-slate-100 align-middle py-1';
+    actionTd.className = 'border-l border-slate-100 align-middle py-1';
     actionTd.setAttribute('data-html2canvas-ignore', 'true');
     
     // 스마트 정리(병합) 뷰에서는 하위 병합 열의 조작 버튼칸 자체를 렌더링 생략
@@ -587,6 +588,14 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
             btnGroup.title = '스마트 정리 모드에서는 순서 변경이 불가능합니다.';
         }
     }
+    
+    // 마우스 오버 감지 및 짝수 그룹(행) 지브라 패턴(Zebra Striping) 적용
+    if (isEvenGroup) {
+        tr.className = "group bg-slate-50/60 hover:bg-slate-100/60 transition-colors";
+    } else {
+        tr.className = "group hover:bg-slate-50 transition-colors";
+    }
+    
     tr.appendChild(actionTd);
     
     tbody.appendChild(tr);
