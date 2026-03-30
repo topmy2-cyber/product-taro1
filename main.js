@@ -171,9 +171,8 @@ function getTableData(tbodyId) {
             remarks: getValue('remarks')
         };
 
-        if (Object.values(rowData).some(val => val !== '')) {
-            rows.push(rowData);
-        }
+        // 빈 칸이더라도 사용자가 추가한 행 구조(띄어쓰기 개념 등)를 영구 보존하기 위해 무조건 저장함
+        rows.push(rowData);
     }
     return rows;
 }
@@ -528,15 +527,59 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null)
     td.appendChild(createInput('remarks', data?.remarks));
     tr.appendChild(td);
 
-    // 9. 삭제 버튼
+    // 9. 조작 버튼 세트
     const actionTd = document.createElement('td');
-    actionTd.className = 'text-center bg-white';
+    actionTd.className = 'bg-white border-l border-slate-100 align-middle py-1';
     actionTd.setAttribute('data-html2canvas-ignore', 'true');
-    const button = document.createElement('button');
-    button.className = 'text-slate-300 hover:text-red-500';
-    button.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
-    button.onclick = function () { deleteRow(this, tableId); };
-    actionTd.appendChild(button);
+    
+    // 스마트 정리(병합) 뷰에서는 하위 병합 열의 조작 버튼칸 자체를 렌더링 생략
+    if (nameRowspan === 0) {
+        actionTd.style.display = 'none';
+    } else {
+        const btnGroup = document.createElement('div');
+        // 세로 병합되었을 때 버튼 그룹이 길어지지 않게 가운데 정렬 보장
+        btnGroup.className = 'flex items-center justify-center gap-0.5 mx-auto bg-slate-50/50 rounded-lg w-max border border-slate-100 p-0.5 shadow-sm';
+
+        // 1. 추가
+        const addBtn = document.createElement('button');
+        addBtn.className = 'p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 focus:bg-blue-100 rounded transition-all tooltip';
+        addBtn.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i>';
+        addBtn.title = '아래에 빈 행 삽입';
+        addBtn.onclick = function () { insertRowAfter(this, tableId); };
+
+        // 2. 위로
+        const upBtn = document.createElement('button');
+        upBtn.className = 'p-1 text-slate-400 hover:text-slate-800 hover:bg-slate-200 focus:bg-slate-300 rounded transition-all';
+        upBtn.innerHTML = '<i data-lucide="chevron-up" class="w-4 h-4"></i>';
+        upBtn.title = '위로 이동';
+        upBtn.onclick = function () { moveRowUp(this, tableId); };
+
+        // 3. 아래로
+        const downBtn = document.createElement('button');
+        downBtn.className = 'p-1 text-slate-400 hover:text-slate-800 hover:bg-slate-200 focus:bg-slate-300 rounded transition-all';
+        downBtn.innerHTML = '<i data-lucide="chevron-down" class="w-4 h-4"></i>';
+        downBtn.title = '아래로 이동';
+        downBtn.onclick = function () { moveRowDown(this, tableId); };
+
+        // 4. 삭제
+        const delBtn = document.createElement('button');
+        delBtn.className = 'p-1 text-red-300 hover:text-red-500 hover:bg-red-50 focus:bg-red-100 rounded transition-all';
+        delBtn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+        delBtn.title = '행 삭제';
+        delBtn.onclick = function () { deleteRow(this, tableId); };
+
+        btnGroup.appendChild(addBtn);
+        btnGroup.appendChild(upBtn);
+        btnGroup.appendChild(downBtn);
+        btnGroup.appendChild(delBtn);
+        actionTd.appendChild(btnGroup);
+        
+        // 스마트 정리(병합) 상태일 땐 조작을 막아놔서 UI 꼬임을 원천봉쇄 (버튼 비활성화)
+        if (nameRowspan > 1) {
+            btnGroup.classList.add('opacity-30', 'pointer-events-none');
+            btnGroup.title = '스마트 정리 모드에서는 순서 변경이 불가능합니다.';
+        }
+    }
     tr.appendChild(actionTd);
     
     tbody.appendChild(tr);
@@ -604,6 +647,54 @@ function deleteRow(btn, tableId) {
     updateTableSummary(tableId);
     saveAllData();
 }
+
+function insertRowAfter(btn, tableId) {
+    const tr = btn.closest('tr');
+    const tbody = tr.parentNode;
+    // 맨 끝에 빈 행을 생성한 뒤 눌러진 행 바로 아래(nextSibling)로 이동 삽입
+    addRow(tableId);
+    const newRow = tbody.lastElementChild;
+    tbody.insertBefore(newRow, tr.nextSibling);
+    
+    // 순서(NO) 재정렬 및 파이어베이스 저장
+    const dataList = getTableData(tbody.id);
+    tbody.innerHTML = '';
+    dataList.forEach(item => addRow(tableId, item, 1));
+    saveAllData();
+    updateTableSummary(tableId);
+}
+
+function moveRowUp(btn, tableId) {
+    const tr = btn.closest('tr');
+    const prev = tr.previousElementSibling;
+    if (!prev) return; // 이미 맨 위라면 무시
+    
+    tr.parentNode.insertBefore(tr, prev); // 현재 행을 윗 행의 위로 이동
+    
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
+    const dataList = getTableData(tbodyId);
+    document.getElementById(tbodyId).innerHTML = '';
+    dataList.forEach(item => addRow(tableId, item, 1));
+    saveAllData();
+    updateTableSummary(tableId);
+}
+
+function moveRowDown(btn, tableId) {
+    const tr = btn.closest('tr');
+    const next = tr.nextElementSibling;
+    if (!next) return; // 이미 맨 아래라면 무시
+    
+    // 다음 행을 현재 행의 위로 끌어올림으로써, 현재 행이 아래로 떨어지는 효과 부여
+    tr.parentNode.insertBefore(next, tr); 
+    
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
+    const dataList = getTableData(tbodyId);
+    document.getElementById(tbodyId).innerHTML = '';
+    dataList.forEach(item => addRow(tableId, item, 1));
+    saveAllData();
+    updateTableSummary(tableId);
+}
+
 
 // 6. 스마트 정리 기능 (같은 출연자끼리 묶고 부분합계 도출)
 window.smartOrganize = function (tableId) {
