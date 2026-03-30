@@ -636,3 +636,76 @@ window.downloadPDF = function (btn) {
         alert("PDF 생성 중 오류가 발생했습니다.");
     });
 };
+
+// --- 드래그 다중 선택 및 일괄 지우기 (Bulk Delete) 기능 ---
+let isCellDragging = false;
+let dragStartInput = null;
+let dragSelectedCells = new Set();
+
+document.addEventListener('mousedown', (e) => {
+    // 입력창 내부가 아닌 배경 등 빈 공간을 클릭하면 선택 초기화
+    if (e.target.tagName !== 'INPUT' || !e.target.classList.contains('input-cell')) {
+        dragSelectedCells.forEach(cell => cell.classList.remove('bg-blue-100'));
+        dragSelectedCells.clear();
+        return;
+    }
+    
+    isCellDragging = true;
+    dragStartInput = e.target;
+    
+    // 기존에 여러 개 선택되어 있던 상태라면 클릭 리셋
+    dragSelectedCells.forEach(cell => cell.classList.remove('bg-blue-100'));
+    dragSelectedCells.clear();
+    
+    // 현재 칸 선택 (배경색 파랗게 하이라이트)
+    dragSelectedCells.add(e.target);
+    e.target.classList.add('bg-blue-100');
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isCellDragging) return;
+    
+    // 드래그 중인 상태일 때: 브라우저 기본 글자 드래그(Text Selection) 방해 회피
+    // 텍스트 입력창은 드래그 시 포커스를 꽉 잡고 있으므로, 옆칸으로 넘어가면 포커스를 풀어줌
+    if (dragStartInput && document.activeElement === dragStartInput) {
+        const rect = dragStartInput.getBoundingClientRect();
+        // 타일의 범위를 마우스가 벗어나는 순간 포커스 블러 (체감 반응 향상을 위해 +-5 픽셀 버퍼 둠)
+        if (e.clientX < rect.left - 5 || e.clientX > rect.right + 5 || 
+            e.clientY < rect.top - 5 || e.clientY > rect.bottom + 5) {
+            dragStartInput.blur(); 
+        }
+    }
+
+    // 마우스가 지나가는 자리(입력칸)를 파란색으로 다중 선택함
+    if (e.target.tagName === 'INPUT' && e.target.classList.contains('input-cell')) {
+        if (!dragSelectedCells.has(e.target)) {
+            dragSelectedCells.add(e.target);
+            e.target.classList.add('bg-blue-100');
+        }
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isCellDragging = false;
+    dragStartInput = null;
+});
+
+// 키보드 키 이벤트를 감지하여 일괄 삭제 (Delete, Backspace)
+document.addEventListener('keydown', (e) => {
+    // 다중 선택(2칸 이상) 모드 접속 상태에서만 일괄 비우기 규칙 발동
+    if (dragSelectedCells.size > 1 && (e.key === 'Backspace' || e.key === 'Delete')) {
+        e.preventDefault(); // 기본(글씨 1개 지우는 거) 방지
+        
+        // 파란색 칠해진 묶음을 모두 돌면서 내용을 빈칸('')으로 청소
+        dragSelectedCells.forEach(cell => {
+            cell.value = '';
+            cell.classList.remove('bg-blue-100');
+        });
+        dragSelectedCells.clear(); // 선택목록 날리기
+        
+        // 일괄 변경된 값에 맞추어 표 요약 다시 내고 클라우드 동기화 수행
+        updateTableSummary('performer-table');
+        updateTableSummary('other-table');
+        saveAllData();
+    }
+});
