@@ -133,13 +133,19 @@ function loadSavedData(forceRender = false) {
 
     if (firebaseDb) {
         // [클라우드 연동 모드]
-        if (currentSyncRef) currentSyncRef.off(); // 이전 날짜 실시간 수신기능 해제
+        // 파이어베이스 네트워크 연결을 기다리는 동안 화면이 휑하게 비어있지 않도록 일단 기본 10행 그리기
+        if (!isLocalUpdate || forceRender) {
+            renderTableData(null); 
+        }
 
+        if (currentSyncRef) currentSyncRef.off(); // 이전 날짜 실시간 수신기능 해제
+        
         currentSyncRef = firebaseDb.ref('tickets/' + dateStr);
         currentSyncRef.on('value', (snapshot) => {
             // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트
-            if (isLocalUpdate && !forceRender) return;
+            if (isLocalUpdate && !forceRender) return; 
             const data = snapshot.val();
+            // 클라우드에 비어있으면 아까 그린 기본 10행을 유지하고, 데이터가 있으면 덮어씌움
             renderTableData(data);
         });
     } else {
