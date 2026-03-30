@@ -27,8 +27,10 @@ function showMainContent() {
 }
 
 // 3. 데이터 저장 및 불러오기 로직
-function updateTableSummary() {
-    const tbody = document.getElementById('ticket-body');
+function updateTableSummary(tableId) {
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
+    const prefix = tableId === 'performer-table' ? 'performer' : 'other';
+    const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
 
     let regularTotal = 0;
@@ -42,15 +44,16 @@ function updateTableSummary() {
         }
     }
 
-    document.getElementById(`ticket-regular-sum`).innerText = regularTotal.toLocaleString();
-    document.getElementById(`ticket-vip-sum`).innerText = vipTotal.toLocaleString();
-    document.getElementById(`ticket-total-sum`).innerText = (regularTotal + vipTotal).toLocaleString();
+    document.getElementById(`${prefix}-regular-sum`).innerText = regularTotal.toLocaleString();
+    document.getElementById(`${prefix}-vip-sum`).innerText = vipTotal.toLocaleString();
+    document.getElementById(`${prefix}-total-sum`).innerText = (regularTotal + vipTotal).toLocaleString();
 }
 
 function saveAllData() {
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const data = {
-        tickets: getTableData('ticket-body'),
+        performers: getTableData('performer-body'),
+        others: getTableData('other-body'),
         date: dateStr
     };
     localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
@@ -88,28 +91,32 @@ function loadSavedData() {
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const saved = localStorage.getItem(`ticket_management_data_${dateStr}`);
 
-    const ticketBody = document.getElementById('ticket-body');
-    ticketBody.innerHTML = '';
+    const performerBody = document.getElementById('performer-body');
+    const otherBody = document.getElementById('other-body');
+    
+    performerBody.innerHTML = '';
+    otherBody.innerHTML = '';
 
     if (saved) {
         const data = JSON.parse(saved);
         
-        // 이전 버전(출연자+그외 분리) 데이터 호환 마이그레이션 적용
         if (data.performers && data.performers.length > 0) {
-            data.performers.forEach(item => addRow('ticket-table', item));
+            data.performers.forEach(item => addRow('performer-table', item));
         }
         if (data.others && data.others.length > 0) {
-            data.others.forEach(item => addRow('ticket-table', item));
+            data.others.forEach(item => addRow('other-table', item));
         }
-        // 신규 구조 로드
+        // 통합 시절에 저장된 tickets 배열이 있다면 모두 안전을 위해 출연자(performer) 명단으로 우선 흡수
         if (data.tickets && data.tickets.length > 0) {
-            data.tickets.forEach(item => addRow('ticket-table', item));
+            data.tickets.forEach(item => addRow('performer-table', item));
         }
     }
 
-    while (ticketBody.rows.length < 10) addRow('ticket-table');
+    while (performerBody.rows.length < 10) addRow('performer-table');
+    while (otherBody.rows.length < 10) addRow('other-table');
 
-    updateTableSummary();
+    updateTableSummary('performer-table');
+    updateTableSummary('other-table');
 
     return !!saved;
 }
@@ -158,7 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 5. 행 추가 기능
 function addRow(tableId, data = null) {
-    const tbody = document.getElementById('ticket-body');
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
+    const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
 
     const tr = document.createElement('tr');
@@ -191,7 +199,7 @@ function addRow(tableId, data = null) {
             if (field.key === 'regular' || field.key === 'vip') {
                 input.oninput = function() {
                     saveAllData();
-                    updateTableSummary();
+                    updateTableSummary(tableId);
                 };
             } else {
                 input.onchange = saveAllData;
@@ -206,21 +214,22 @@ function addRow(tableId, data = null) {
     const button = document.createElement('button');
     button.className = 'text-slate-300 hover:text-red-500';
     button.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
-    button.onclick = function() { deleteRow(this); };
+    button.onclick = function() { deleteRow(this, tableId); };
     actionTd.appendChild(button);
     tr.appendChild(actionTd);
     tbody.appendChild(tr);
 
     if (window.lucide) window.lucide.createIcons({ root: actionTd });
-    updateTableSummary();
+    updateTableSummary(tableId);
 }
 
-function deleteRow(btn) {
+function deleteRow(btn, tableId) {
     const tr = btn.closest('tr');
     tr.remove();
-    updateRowNumbers('ticket-body');
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
+    updateRowNumbers(tbodyId);
     saveAllData();
-    updateTableSummary();
+    updateTableSummary(tableId);
 }
 
 function updateRowNumbers(tbodyId) {
@@ -265,9 +274,11 @@ async function handleAIParse() {
     toggleAIModal();
 
     try {
-        const promptText = `사용자가 제공한 티켓 배부 정보(텍스트 또는 이미지)를 분석하여 JSON 배열로 반환해줘. 
-        데이터가 여러 명일 경우 배열에 모두 포함시켜줘.
-        필드: regular, vip, name, recipient, received, phone, remarks.
+        const promptText = `사용자가 제공한 티켓 배부 정보(텍스트 또는 사진)를 분석하여, 인물들을 두 그룹으로 나누어 다음 구조의 JSON 객체로 반환해줘.
+        1) 'performers' 배열: 다음 17명의 지정된 출연자 명단(김택, 이대희, 장진혁, 박찬열, 최민호, 서장훈, 김태술, 전태풍, 정진운, 오승훈, 문수인, 정규민, 줄리엔강, 조진세, 박찬웅, 손태진, 산다라박)과 관련된 티켓.
+        2) 'others' 배열: 위 출연자 명단에 속하지 않은 일반 지인, 기타 초대 등 명백히 출연자와 무관하거나 판단하기 애매한 명단은 무조건 여기에 배정.
+        각 배열 안의 객체 필드: regular, vip, name, recipient, received, phone, remarks.
+        반환 예시: {"performers": [...], "others": [...]}
         주의: 분석할 수 없는 데이터는 제외해줘. 텍스트 내용: "${text}"`;
 
         const parts = [{ text: promptText }];
@@ -287,7 +298,7 @@ async function handleAIParse() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contents: [{ parts: parts }],
-                generationConfig: { temperature: 0.1 }
+                generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
             })
         });
 
@@ -295,13 +306,23 @@ async function handleAIParse() {
         const raw = data.candidates[0].content.parts[0].text;
         const res = JSON.parse(raw.replace(/```json|```/g, '').trim());
 
-        const items = Array.isArray(res) ? res : (res.items || res.tickets || res.performers || res.others || [res]);
-
-        items.forEach(i => {
-            if (i && (i.name || i.phone || i.regular || i.vip)) {
-                addRow('ticket-table', i);
+        // 배열로 응답한 옛날 포맷 fallback (안전망)
+        if (Array.isArray(res)) {
+            res.forEach(i => {
+                if (i && (i.name || i.phone || i.regular || i.vip)) addRow('performer-table', i);
+            });
+        } else {
+            if (res.performers && Array.isArray(res.performers)) {
+                res.performers.forEach(i => {
+                    if (i && (i.name || i.phone || i.regular || i.vip)) addRow('performer-table', i);
+                });
             }
-        });
+            if (res.others && Array.isArray(res.others)) {
+                res.others.forEach(i => {
+                    if (i && (i.name || i.phone || i.regular || i.vip)) addRow('other-table', i);
+                });
+            }
+        }
 
         saveAllData();
     } catch (e) {
