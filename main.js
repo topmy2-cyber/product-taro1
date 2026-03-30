@@ -95,8 +95,12 @@ function updateTableSummary(tableId) {
         // 개별 행의 [총 티켓] (일반석 + VIP석) 자동 연산 및 UI 갱신 (읽기 전용 표시)
         const totalInput = tr.querySelector('input[data-key="total_tickets"]');
         if (totalInput) {
-            const sum = r + v;
-            totalInput.value = sum > 0 ? sum : '';
+            const parentTd = totalInput.closest('td');
+            // 병합된 그룹의 총합 칸이라면 개별 연산으로 덮어씌우지 않음
+            if (!parentTd || !parentTd.getAttribute('data-merged')) {
+                const sum = r + v;
+                totalInput.value = sum > 0 ? sum : '';
+            }
         }
 
         globalRegular += r;
@@ -270,15 +274,22 @@ function renderGroupedList(list, tableId) {
         let subVip = 0;
         let subReceived = 0;
 
+        // 1. 먼저 순회하며 전체 합계를 사전 계산
         for (let j = 0; j < groupSize; j++) {
             const dataItem = list[i + j];
             subRegular += parseInt(dataItem.regular) || 0;
             subVip += parseInt(dataItem.vip) || 0;
             subReceived += parseInt(dataItem.received) || 0;
-            
+        }
+
+        const groupTotalTickets = subRegular + subVip;
+
+        // 2. 그룹 크기만큼 다시 행을 추가하되, 첫 행에만 그룹 전체 [총 티켓] 수를 전달
+        for (let j = 0; j < groupSize; j++) {
+            const dataItem = list[i + j];
             // 첫 번째 행은 rowspan 값을 넘기고, 나머지는 0을 넘겨 cell을 숨김
             const rowspanFlag = (j === 0) ? groupSize : 0;
-            addRow(tableId, dataItem, rowspanFlag); 
+            addRow(tableId, dataItem, rowspanFlag, groupTotalTickets); 
         }
 
         i += groupSize;
@@ -305,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 5. 행 추가 기능 (그룹핑 병합 지원)
-function addRow(tableId, data = null, nameRowspan = 1) {
+function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null) {
     const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
     const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
@@ -469,16 +480,33 @@ function addRow(tableId, data = null, nameRowspan = 1) {
     td.appendChild(createInput('vip', data?.vip, 'number'));
     tr.appendChild(td);
 
-    // 4.5 총 티켓 (자동 계산 뷰어)
-    td = document.createElement('td');
+    // 4.5 총 티켓 (자동 계산 뷰어 또는 병합 뷰)
     const bgClass = tableId === 'performer-table' ? 'bg-blue-50/20' : 'bg-emerald-50/20';
     const textClass = tableId === 'performer-table' ? 'text-blue-600' : 'text-emerald-600';
-    td.className = `${bgClass}`;
-    const totalInp = createInput('total_tickets', data?.total_tickets, 'number');
-    totalInp.readOnly = true;
-    totalInp.className = `input-cell font-bold ${textClass} bg-transparent cursor-default pointer-events-none`;
-    td.appendChild(totalInp);
-    tr.appendChild(td);
+    
+    if (nameRowspan > 0) {
+        td = document.createElement('td');
+        if (nameRowspan > 1) {
+            td.rowSpan = nameRowspan;
+            td.setAttribute('data-merged', 'true');
+        }
+        td.className = `${bgClass} align-middle`;
+        
+        const mergedVal = (groupTotalTickets !== null && groupTotalTickets > 0) ? groupTotalTickets : (data?.total_tickets || '');
+        const totalInp = createInput('total_tickets', mergedVal, 'number');
+        totalInp.readOnly = true;
+        totalInp.className = `input-cell font-bold ${textClass} bg-transparent cursor-default pointer-events-none`;
+        td.appendChild(totalInp);
+        tr.appendChild(td);
+    } else {
+        // 병합되어 가려지는 셀은 생성하되 숨김 처리
+        td = document.createElement('td');
+        td.style.display = 'none';
+        const totalInp = createInput('total_tickets', '', 'number');
+        totalInp.readOnly = true;
+        td.appendChild(totalInp);
+        tr.appendChild(td);
+    }
 
     // 5. 수령자
     td = document.createElement('td');
