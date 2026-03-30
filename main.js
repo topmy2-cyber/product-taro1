@@ -92,6 +92,13 @@ function updateTableSummary(tableId) {
         const v = vipInput ? (parseInt(vipInput.value) || 0) : 0;
         const c = rcvInput ? (parseInt(rcvInput.value) || 0) : 0;
 
+        // 개별 행의 [총 티켓] (일반석 + VIP석) 자동 연산 및 UI 갱신 (읽기 전용 표시)
+        const totalInput = tr.querySelector('input[data-key="total_tickets"]');
+        if (totalInput) {
+            const sum = r + v;
+            totalInput.value = sum > 0 ? sum : '';
+        }
+
         globalRegular += r;
         globalVip += v;
         
@@ -379,7 +386,8 @@ function addRow(tableId, data = null, nameRowspan = 1) {
                 e.preventDefault(); // 기본 한 칸 붙여넣기 방지
                 
                 const rowsData = pastedText.split(/\r?\n/).filter(row => row.trim() !== '');
-                const keys = ['name', 'regular', 'vip', 'recipient', 'received', 'phone', 'remarks'];
+                // 현재 UI 열 순서 (NO 열은 제외. 이름, 일반, VIP, 총티켓, 수령자, 수령티켓, 연락처, 비고)
+                const keys = ['name', 'regular', 'vip', 'total_tickets', 'recipient', 'received', 'phone', 'remarks'];
                 
                 let currentTr = this.closest('tr');
                 const tbody = currentTr.closest('tbody');
@@ -459,6 +467,17 @@ function addRow(tableId, data = null, nameRowspan = 1) {
     // 4. VIP석
     td = document.createElement('td');
     td.appendChild(createInput('vip', data?.vip, 'number'));
+    tr.appendChild(td);
+
+    // 4.5 총 티켓 (자동 계산 뷰어)
+    td = document.createElement('td');
+    const bgClass = tableId === 'performer-table' ? 'bg-blue-50/20' : 'bg-emerald-50/20';
+    const textClass = tableId === 'performer-table' ? 'text-blue-600' : 'text-emerald-600';
+    td.className = `${bgClass}`;
+    const totalInp = createInput('total_tickets', data?.total_tickets, 'number');
+    totalInp.readOnly = true;
+    totalInp.className = `input-cell font-bold ${textClass} bg-transparent cursor-default pointer-events-none`;
+    td.appendChild(totalInp);
     tr.appendChild(td);
 
     // 5. 수령자
