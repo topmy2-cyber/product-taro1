@@ -362,6 +362,60 @@ function addRow(tableId, data = null, nameRowspan = 1) {
             }
         });
 
+        // 엑셀 붙여넣기 (다중 셀 지원) 기능
+        input.addEventListener('paste', function(e) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const pastedText = clipboardData.getData('Text');
+            
+            // 엑셀처럼 탭(\t)이나 줄바꿈(\n)이 포함되어 있으면 표 형태로 붙여넣기 발동
+            if (pastedText.includes('\t') || pastedText.includes('\n')) {
+                e.preventDefault(); // 기본 한 칸 붙여넣기 방지
+                
+                const rowsData = pastedText.split(/\r?\n/).filter(row => row.trim() !== '');
+                const keys = ['regular', 'vip', 'name', 'recipient', 'received', 'phone', 'remarks'];
+                
+                let currentTr = this.closest('tr');
+                const tbody = currentTr.closest('tbody');
+                const startColIndex = keys.indexOf(this.getAttribute('data-key'));
+                
+                if (startColIndex === -1) return;
+                
+                for (let i = 0; i < rowsData.length; i++) {
+                    const rowText = rowsData[i];
+                    const colsData = rowText.split('\t');
+                    
+                    // 표의 끝에 도달하여 줄이 더 부족하면 새 행을 생성합니다
+                    if (!currentTr) {
+                        addRow(tableId);
+                        currentTr = tbody.lastElementChild;
+                        while (currentTr && currentTr.classList.contains('subtotal-row')) {
+                            currentTr = currentTr.previousElementSibling;
+                        }
+                    }
+                    
+                    for (let j = 0; j < colsData.length; j++) {
+                        const targetColIndex = startColIndex + j;
+                        if (targetColIndex < keys.length) {
+                             const targetKey = keys[targetColIndex];
+                             const targetInput = currentTr.querySelector(`input[data-key="${targetKey}"]`);
+                             if (targetInput && !targetInput.readOnly) {
+                                 targetInput.value = colsData[j].trim();
+                             }
+                        }
+                    }
+                    
+                    // 다음 줄로 이동 (부분합계 UI는 무시하고 건너뜀)
+                    let nextTr = currentTr.nextElementSibling;
+                    while (nextTr && nextTr.classList.contains('subtotal-row')) nextTr = nextTr.nextElementSibling;
+                    currentTr = nextTr;
+                }
+                
+                // 붙여넣기 직후 표 전체 갱신 및 클라우드 저장
+                saveAllData();
+                updateTableSummary(tableId);
+            }
+        });
+
         return input;
     };
 
