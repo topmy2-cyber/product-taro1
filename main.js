@@ -328,12 +328,21 @@ function processFile(file) {
     const loading = document.getElementById('file-loading');
     const textarea = document.getElementById('ai-input');
     
+    const fileName = file.name.toLowerCase();
+    const isImage = file.type.startsWith('image/');
+
+    // 지원하지 않는 오피스/한글/PDF 파일 예외 처리
+    const unsupportedExts = ['hwp', 'hwpx', 'doc', 'docx', 'pdf', 'ppt', 'pptx'];
+    const ext = fileName.split('.').pop();
+    if (unsupportedExts.includes(ext)) {
+        alert("지원되지 않는 파일 형식입니다. (현재 사진, 엑셀, 텍스트 파일만 지원)\n한글, 워드, PDF 파일의 내용은 드래그하여 텍스트로 복사 붙여넣기 하거나, 표 부분만 스크린샷 캡처 후 붙여넣어(Ctrl+V) 주세요.");
+        return;
+    }
+
     loading.classList.remove('hidden');
     loading.classList.add('flex');
 
     const reader = new FileReader();
-    const fileName = file.name.toLowerCase();
-    const isImage = file.type.startsWith('image/');
 
     reader.onload = function(e) {
         try {
@@ -380,12 +389,12 @@ function processFile(file) {
 }
 
 // 8. PDF 다운로드 기능
-window.downloadPDF = function() {
+window.downloadPDF = function(btn) {
     const element = document.getElementById('main-content');
     const date = document.getElementById('event-date').value || '4월 11일 (토)';
     
     // 로딩 표시 (선택사항)
-    const btn = event.currentTarget;
+    btn = btn || event.currentTarget;
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="animate-spin mr-2">...</i> 생성 중';
     btn.disabled = true;

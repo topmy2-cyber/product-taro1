@@ -116,7 +116,7 @@
                     <i data-lucide="ticket" class="text-blue-600"></i> 열농단 티켓 배부 관리 시스템
                 </h1>
             </div>
-            <div class="flex items-center gap-3" data-html2canvas-ignore>
+            <div class="flex items-center gap-3">
                 <label for="event-date" class="text-sm font-semibold text-slate-600">행사 날짜:</label>
                 <select id="event-date" class="border rounded-lg px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 cursor-pointer">
                     <option value="4월 11일 (토)">4월 11일 (토)</option>
@@ -129,7 +129,7 @@
                     <option value="6월 17일 (수)">6월 17일 (수)</option>
                     <option value="6월 27일 (토)">6월 27일 (토)</option>
                 </select>
-                <button onclick="downloadPDF()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-slate-200">
+                <button onclick="downloadPDF(this)" data-html2canvas-ignore class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-slate-200">
                     <i data-lucide="file-down" class="w-4 h-4"></i> PDF 다운로드
                 </button>
             </div>
