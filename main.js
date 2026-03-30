@@ -1,8 +1,8 @@
 // 1. 보안 설정 (비밀번호: shwlgus)
-const ADMIN_PASSWORD = "shwlgus"; 
+const ADMIN_PASSWORD = "shwlgus";
 
 // 2. 로그인 함수 (전역)
-window.checkLogin = function() {
+window.checkLogin = function () {
     const passwordInput = document.getElementById('login-password');
     if (!passwordInput) return;
 
@@ -27,10 +27,8 @@ function showMainContent() {
 }
 
 // 3. 데이터 저장 및 불러오기 로직
-function updateTableSummary(tableId) {
-    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
-    const prefix = tableId === 'performer-table' ? 'performer' : 'other';
-    const tbody = document.getElementById(tbodyId);
+function updateTableSummary() {
+    const tbody = document.getElementById('ticket-body');
     if (!tbody) return;
 
     let regularTotal = 0;
@@ -44,16 +42,15 @@ function updateTableSummary(tableId) {
         }
     }
 
-    document.getElementById(`${prefix}-regular-sum`).innerText = regularTotal.toLocaleString();
-    document.getElementById(`${prefix}-vip-sum`).innerText = vipTotal.toLocaleString();
-    document.getElementById(`${prefix}-total-sum`).innerText = (regularTotal + vipTotal).toLocaleString();
+    document.getElementById(`ticket-regular-sum`).innerText = regularTotal.toLocaleString();
+    document.getElementById(`ticket-vip-sum`).innerText = vipTotal.toLocaleString();
+    document.getElementById(`ticket-total-sum`).innerText = (regularTotal + vipTotal).toLocaleString();
 }
 
 function saveAllData() {
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const data = {
-        performers: getTableData('performer-body'),
-        others: getTableData('other-body'),
+        tickets: getTableData('ticket-body'),
         date: dateStr
     };
     localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
@@ -80,7 +77,7 @@ function getTableData(tbodyId) {
             phone: inputs[6].value,
             remarks: inputs[7].value
         };
-        
+
         if (Object.values(rowData).some(val => val !== '')) {
             rows.push(rowData);
         }
@@ -91,27 +88,29 @@ function getTableData(tbodyId) {
 function loadSavedData() {
     const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const saved = localStorage.getItem(`ticket_management_data_${dateStr}`);
-    
-    const performerBody = document.getElementById('performer-body');
-    performerBody.innerHTML = '';
-    const otherBody = document.getElementById('other-body');
-    otherBody.innerHTML = '';
+
+    const ticketBody = document.getElementById('ticket-body');
+    ticketBody.innerHTML = '';
 
     if (saved) {
         const data = JSON.parse(saved);
+        
+        // 이전 버전(출연자+그외 분리) 데이터 호환 마이그레이션 적용
         if (data.performers && data.performers.length > 0) {
-            data.performers.forEach(item => addRow('performer-table', item));
+            data.performers.forEach(item => addRow('ticket-table', item));
         }
         if (data.others && data.others.length > 0) {
-            data.others.forEach(item => addRow('other-table', item));
+            data.others.forEach(item => addRow('ticket-table', item));
+        }
+        // 신규 구조 로드
+        if (data.tickets && data.tickets.length > 0) {
+            data.tickets.forEach(item => addRow('ticket-table', item));
         }
     }
 
-    while (performerBody.rows.length < 10) addRow('performer-table');
-    while (otherBody.rows.length < 10) addRow('other-table');
+    while (ticketBody.rows.length < 10) addRow('ticket-table');
 
-    updateTableSummary('performer-table');
-    updateTableSummary('other-table');
+    updateTableSummary();
 
     return !!saved;
 }
@@ -119,7 +118,7 @@ function loadSavedData() {
 // 4. 페이지 초기화
 document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) window.lucide.createIcons();
-    
+
     if (sessionStorage.getItem('authenticated') === 'true') {
         showMainContent();
     }
@@ -136,18 +135,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 붙여넣기 이벤트 지원 (스크린샷 붙여넣기 등)
     document.addEventListener('paste', handlePaste);
+
+    // 드래그 앤 드롭 파일 업로드 지원
+    const dropzone = document.getElementById('file-dropzone');
+    if (dropzone) {
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+        dropzone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+        });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                processFile(e.dataTransfer.files[0]);
+            }
+        });
+    }
 });
 
 // 5. 행 추가 기능
 function addRow(tableId, data = null) {
-    const tbody = tableId === 'performer-table' ? document.getElementById('performer-body') : document.getElementById('other-body');
+    const tbody = document.getElementById('ticket-body');
     if (!tbody) return;
 
-    const rowCount = tbody.rows.length + 1;
     const tr = document.createElement('tr');
-    
     const fields = [
-        { key: 'no', value: data?.no || rowCount },
+        { key: 'no', value: data?.no || (tbody.rows.length + 1) },
         { key: 'regular', value: data?.regular || '', type: 'number' },
         { key: 'vip', value: data?.vip || '', type: 'number' },
         { key: 'name', value: data?.name || '' },
@@ -167,27 +184,29 @@ function addRow(tableId, data = null) {
             const input = document.createElement('input');
             input.type = field.type || 'text';
             input.value = field.value;
+            input.dataset.key = field.key;
             input.className = 'input-cell';
             if (field.readonly) {
                 input.readOnly = true;
-                input.tabIndex = -1; // Tab 포커스 제외
+                input.tabIndex = -1;
             }
-            input.oninput = () => {
-                if (field.key === 'regular' || field.key === 'vip') {
-                    const ins = tr.getElementsByTagName('input');
-                    const rVal = ins[0].value.trim();
-                    const vVal = ins[1].value.trim();
-                    if (rVal === '' && vVal === '') {
-                        ins[3].value = '';
+            if (field.key === 'regular' || field.key === 'vip') {
+                input.oninput = function() {
+                    const tr = this.closest('tr');
+                    const reg = parseInt(tr.querySelector('input[data-key="regular"]').value) || 0;
+                    const vip = parseInt(tr.querySelector('input[data-key="vip"]').value) || 0;
+                    const totalInput = tr.querySelector('input[data-key="total"]');
+                    if (tr.querySelector('input[data-key="regular"]').value === "" && tr.querySelector('input[data-key="vip"]').value === "") {
+                        totalInput.value = "";
                     } else {
-                        const r = parseInt(rVal) || 0;
-                        const v = parseInt(vVal) || 0;
-                        ins[3].value = r + v; // 총 티켓 자동 합산
+                        totalInput.value = reg + vip;
                     }
-                }
-                saveAllData();
-                updateTableSummary(tableId);
-            };
+                    saveAllData();
+                    updateTableSummary();
+                };
+            } else {
+                input.onchange = saveAllData;
+            }
             td.appendChild(input);
         }
         tr.appendChild(td);
@@ -195,73 +214,75 @@ function addRow(tableId, data = null) {
 
     const actionTd = document.createElement('td');
     actionTd.className = 'text-center';
-    actionTd.innerHTML = `<button onclick="this.closest('tr').remove(); saveAllData(); updateTableSummary('${tableId}');" class="text-slate-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+    const button = document.createElement('button');
+    button.className = 'text-slate-300 hover:text-red-500';
+    button.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+    button.onclick = function() { deleteRow(this); };
+    actionTd.appendChild(button);
     tr.appendChild(actionTd);
     tbody.appendChild(tr);
-    
+
     if (window.lucide) window.lucide.createIcons({ root: actionTd });
-    updateTableSummary(tableId);
+    updateTableSummary();
 }
 
-// 6. AI 모달 및 분석
-let currentAITarget = '';
-let currentFileData = null; // { mime_type: string, data: base64_string }
+function deleteRow(btn) {
+    const tr = btn.closest('tr');
+    tr.remove();
+    updateRowNumbers('ticket-body');
+    saveAllData();
+    updateTableSummary();
+}
 
-window.toggleAIModal = function(targetTable = '') {
+function updateRowNumbers(tbodyId) {
+    const tbody = document.getElementById(tbodyId);
+    for (let i = 0; i < tbody.rows.length; i++) {
+        tbody.rows[i].querySelector('.no-cell').innerText = i + 1;
+    }
+}
+
+// 6. AI 기능 변수
+let currentAITarget = '';
+let currentFileData = null;
+
+function toggleAIModal(target = '') {
     const modal = document.getElementById('ai-modal');
-    if (!modal) return;
-    
-    // 상태 초기화
-    currentFileData = null;
-    const fileInput = document.getElementById('file-upload');
-    if (fileInput) fileInput.value = '';
-    const textarea = document.getElementById('ai-input');
-    if (textarea) textarea.value = '';
-    
     if (modal.classList.contains('hidden')) {
-        currentAITarget = targetTable;
-        const targetName = targetTable === 'performer-table' ? '출연자 티켓' : '그 외 티켓';
-        
-        document.getElementById('modal-title').innerHTML = `<i data-lucide="sparkles" class="w-5 h-5"></i> AI 스마트 입력 - ${targetName}`;
-        document.getElementById('modal-desc').innerText = `[${targetName}] 시트에 추가할 정보를 입력하거나 사진/파일을 올려주세요.`;
-        document.getElementById('btn-text').innerText = `${targetName} 시트에 데이터 추가`;
-        
+        currentAITarget = target;
+        currentFileData = null;
+        document.getElementById('ai-input').value = '';
+        document.getElementById('file-loading').classList.add('hidden');
+        document.getElementById('file-loading').classList.remove('flex');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        textarea.focus();
-        if (window.lucide) window.lucide.createIcons({ root: document.getElementById('modal-header') });
+        document.getElementById('ai-input').focus();
     } else {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
-        currentAITarget = '';
     }
-};
+}
 
 async function handleAIParse() {
-    const text = document.getElementById('ai-input').value.trim();
+    const text = document.getElementById('ai-input').value;
     if (!text && !currentFileData) {
-        alert("분석할 내용이나 파일을 입력해주세요.");
+        alert('분석할 내용이나 파일을 입력해주세요.');
         return;
     }
 
     const loading = document.getElementById('loading');
     loading.classList.remove('hidden');
     loading.classList.add('flex');
-    
-    const targetName = currentAITarget === 'performer-table' ? '출연자 티켓' : '그 외 티켓';
-    const originalTarget = currentAITarget;
-    
+
     toggleAIModal();
 
     try {
-        // 프롬프트 구성
-        const promptText = `사용자가 제공한 [${targetName}] 배부 정보(텍스트 또는 이미지)를 분석하여 JSON 배열로 반환해줘. 
+        const promptText = `사용자가 제공한 티켓 배부 정보(텍스트 또는 이미지)를 분석하여 JSON 배열로 반환해줘. 
         데이터가 여러 명일 경우 배열에 모두 포함시켜줘.
         필드: regular, vip, name, total, recipient, received, phone, remarks.
         주의: 분석할 수 없는 데이터는 제외해줘. 텍스트 내용: "${text}"`;
 
         const parts = [{ text: promptText }];
-        
+
         // 이미지가 있는 경우 페이로드에 추가
         if (currentFileData) {
             parts.push({
@@ -285,15 +306,15 @@ async function handleAIParse() {
         const raw = data.candidates[0].content.parts[0].text;
         const res = JSON.parse(raw.replace(/```json|```/g, '').trim());
 
-        const items = Array.isArray(res) ? res : (res.items || res.performers || res.others || [res]);
-        
+        const items = Array.isArray(res) ? res : (res.items || res.tickets || res.performers || res.others || [res]);
+
         items.forEach(i => {
             if (i && (i.name || i.phone || i.total)) {
-                addRow(originalTarget, i);
+                addRow('ticket-table', i);
             }
         });
-        
-        saveAllData(); 
+
+        saveAllData();
     } catch (e) {
         console.error(e);
         alert('분석 실패. 텍스트가 잘 인식되도록 사진을 다시 찍거나 직접 입력해주세요.');
@@ -304,7 +325,7 @@ async function handleAIParse() {
 }
 
 // 7. 파일 업로드 및 텍스트/이미지 추출
-window.handleFileSelect = function(input) {
+window.handleFileSelect = function (input) {
     const file = input.files[0];
     if (!file) return;
     processFile(file);
@@ -327,7 +348,7 @@ function handlePaste(e) {
 function processFile(file) {
     const loading = document.getElementById('file-loading');
     const textarea = document.getElementById('ai-input');
-    
+
     const fileName = file.name.toLowerCase();
     const isImage = file.type.startsWith('image/');
 
@@ -344,7 +365,7 @@ function processFile(file) {
 
     const reader = new FileReader();
 
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         try {
             if (isImage) {
                 // 이미지 처리: Base64 추출
@@ -389,10 +410,10 @@ function processFile(file) {
 }
 
 // 8. PDF 다운로드 기능
-window.downloadPDF = function(btn) {
+window.downloadPDF = function (btn) {
     const element = document.getElementById('main-content');
     const date = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
-    
+
     // 로딩 표시 (선택사항)
     btn = btn || event.currentTarget;
     const originalText = btn.innerHTML;
@@ -403,8 +424,8 @@ window.downloadPDF = function(btn) {
         margin: [10, 5, 10, 5], // 상, 좌, 하, 우
         filename: `티켓배부현황_${date}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-            scale: 2, 
+        html2canvas: {
+            scale: 2,
             useCORS: true,
             logging: false,
             windowWidth: 1200 // 캔버스 캡처 시 너비 고정
