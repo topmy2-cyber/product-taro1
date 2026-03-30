@@ -8,39 +8,51 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
-        body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
         
-        /* Excel Style Grid */
-        .table-container { overflow-x: auto; background: white; border-radius: 8px; border: 1px solid #cbd5e1; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; table-layout: fixed; }
+        /* Modern Excel Design */
+        .table-container { 
+            overflow-x: auto; 
+            background: white; 
+            border-radius: 12px; 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); 
+        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; table-layout: fixed; }
         
         th { 
-            background-color: #f8fafc; 
+            background-color: #f1f5f9; 
             color: #475569; 
             font-weight: 700; 
             text-align: center; 
-            padding: 10px; 
-            border: 1px solid #cbd5e1;
+            padding: 14px 10px; 
+            border-bottom: 2px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
             font-size: 13px;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
+        th:last-child { border-right: none; }
         
         td { 
             padding: 0; 
-            border: 1px solid #cbd5e1; 
-            height: 38px;
+            border-bottom: 1px solid #e2e8f0; 
+            border-right: 1px solid #e2e8f0; 
+            height: 48px;
             vertical-align: middle;
+            transition: background-color 0.15s ease;
         }
+        td:last-child { border-right: none; }
+        tr:last-child td { border-bottom: none; }
         
-        tr:hover { background-color: #f8fafc; }
+        tr:hover td { background-color: #f8fafc; }
         
         .input-cell { 
             width: 100%; 
             height: 100%;
-            padding: 0 10px;
+            padding: 0 12px;
             background: transparent; 
             border: none; 
             outline: none; 
@@ -52,36 +64,32 @@
         .input-cell:focus { 
             background: #fff; 
             box-shadow: inset 0 0 0 2px #3b82f6; 
-            z-index: 10;
+            border-radius: 4px;
+            position: relative;
+            z-index: 2;
         }
 
-        .input-cell[readonly] {
+        .input-cell[readonly], .no-cell {
             background-color: #f8fafc;
             color: #64748b;
-            cursor: not-allowed;
             font-weight: 600;
         }
         
-        .no-cell { 
-            background-color: #f8fafc; 
-            text-align: center; 
-            font-weight: 600; 
-            color: #64748b;
-            font-size: 12px;
-        }
+        .input-cell[readonly] { cursor: not-allowed; }
+        .no-cell { text-align: center; font-size: 13px; }
 
         input[type="number"] { text-align: center; }
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
+        /* Print and PDF Generation Styles */
         @media print {
-            button, .no-print, [data-html2canvas-ignore] { display: none !important; }
-            .table-container { overflow: visible !important; border: none !important; }
-            table { width: 100% !important; border: 1px solid #000 !important; table-layout: auto !important; }
-            th, td { border: 1px solid #000 !important; padding: 4px !important; }
-            body { background: white !important; padding: 0 !important; }
+            button, .no-print, [data-html2canvas-ignore], #login-overlay { display: none !important; }
+            body { background-color: #fff !important; }
+            .table-container { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+            th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .input-cell[readonly], .no-cell { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
-    </style>
 </head>
 <body class="p-4 md:p-8">
     <!-- Login Overlay -->
