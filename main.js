@@ -762,8 +762,9 @@ window.downloadPDF = function (btn) {
     inputs.forEach(input => {
         const div = document.createElement('div');
         div.className = input.className;
-        // 기존 텍스트 중앙정렬, 배경 스타일 등을 유지하면서 줄바꿈 속성을 강제 주입
-        div.style.cssText = 'min-height: 48px; border: none; padding: 0.5rem; text-align: center; word-break: break-all; white-space: pre-wrap; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;';
+        // 기존 텍스트 중앙정렬 등을 유지하되, 내용이 많을 경우 아래로 무한 확장될 수 있도록 고정 높이(100%, 48px)를 해제
+        // 한글 단어 단위 잘림을 위해 word-break: keep-all 적용
+        div.style.cssText = 'border: none; padding: 0.5rem; text-align: center; word-break: keep-all; overflow-wrap: anywhere; white-space: pre-wrap; width: 100%; display: block;';
         div.innerText = input.value;
         
         input.parentNode.insertBefore(div, input);
