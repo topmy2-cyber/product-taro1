@@ -314,6 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
+// 4-1. 행 추가 버튼 전용 트리거 (수동 추가 시 즉각 클라우드 저장 트리거)
+window.addBlankRow = function (tableId) {
+    addRow(tableId);
+    updateTableSummary(tableId);
+    saveAllData(); // 즉시 저장하여 새로고침 시에도 빈 줄이 증발하지 않도록 보장
+};
+
 // 5. 행 추가 기능 (그룹핑 병합 지원)
 function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null) {
     const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
