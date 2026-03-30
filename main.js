@@ -50,13 +50,14 @@ function updateTableSummary(tableId) {
 }
 
 function saveAllData() {
+    const dateStr = document.getElementById('event-date').value || new Date().toISOString().split('T')[0];
     const data = {
         performers: getTableData('performer-body'),
         others: getTableData('other-body'),
-        date: document.getElementById('event-date').value
+        date: dateStr
     };
-    localStorage.setItem('ticket_management_data', JSON.stringify(data));
-    console.log("Data Auto-Saved");
+    localStorage.setItem(`ticket_management_data_${dateStr}`, JSON.stringify(data));
+    console.log("Data Auto-Saved for " + dateStr);
 }
 
 function getTableData(tbodyId) {
@@ -88,27 +89,31 @@ function getTableData(tbodyId) {
 }
 
 function loadSavedData() {
-    const saved = localStorage.getItem('ticket_management_data');
-    if (!saved) return false;
-
-    const data = JSON.parse(saved);
-    if (data.date) document.getElementById('event-date').value = data.date;
-
+    const dateStr = document.getElementById('event-date').value || new Date().toISOString().split('T')[0];
+    const saved = localStorage.getItem(`ticket_management_data_${dateStr}`);
+    
     const performerBody = document.getElementById('performer-body');
     performerBody.innerHTML = '';
-    if (data.performers && data.performers.length > 0) {
-        data.performers.forEach(item => addRow('performer-table', item));
-    }
-    while (performerBody.rows.length < 10) addRow('performer-table');
-
     const otherBody = document.getElementById('other-body');
     otherBody.innerHTML = '';
-    if (data.others && data.others.length > 0) {
-        data.others.forEach(item => addRow('other-table', item));
+
+    if (saved) {
+        const data = JSON.parse(saved);
+        if (data.performers && data.performers.length > 0) {
+            data.performers.forEach(item => addRow('performer-table', item));
+        }
+        if (data.others && data.others.length > 0) {
+            data.others.forEach(item => addRow('other-table', item));
+        }
     }
+
+    while (performerBody.rows.length < 10) addRow('performer-table');
     while (otherBody.rows.length < 10) addRow('other-table');
 
-    return true;
+    updateTableSummary('performer-table');
+    updateTableSummary('other-table');
+
+    return !!saved;
 }
 
 // 4. 페이지 초기화
@@ -119,16 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
         showMainContent();
     }
 
-    document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
+    const lastDate = localStorage.getItem('last_accessed_date') || new Date().toISOString().split('T')[0];
+    document.getElementById('event-date').value = lastDate;
 
-    if (!loadSavedData()) {
-        for(let i=0; i<10; i++) {
-            addRow('performer-table');
-            addRow('other-table');
-        }
-    }
+    loadSavedData();
 
-    document.getElementById('event-date').onchange = saveAllData;
+    document.getElementById('event-date').onchange = (e) => {
+        localStorage.setItem('last_accessed_date', e.target.value);
+        loadSavedData();
+    };
 
     // 붙여넣기 이벤트 지원 (스크린샷 붙여넣기 등)
     document.addEventListener('paste', handlePaste);
