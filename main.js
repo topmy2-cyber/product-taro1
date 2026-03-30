@@ -171,9 +171,15 @@ function addRow(tableId, data = null) {
             input.oninput = () => {
                 if (field.key === 'regular' || field.key === 'vip') {
                     const ins = tr.getElementsByTagName('input');
-                    const r = parseInt(ins[0].value) || 0;
-                    const v = parseInt(ins[1].value) || 0;
-                    ins[3].value = r + v; // 총 티켓 자동 합산
+                    const rVal = ins[0].value.trim();
+                    const vVal = ins[1].value.trim();
+                    if (rVal === '' && vVal === '') {
+                        ins[3].value = '';
+                    } else {
+                        const r = parseInt(rVal) || 0;
+                        const v = parseInt(vVal) || 0;
+                        ins[3].value = r + v; // 총 티켓 자동 합산
+                    }
                 }
                 saveAllData();
                 updateTableSummary(tableId);
