@@ -12,7 +12,7 @@ const FIREBASE_CONFIG = {
     authDomain: "product-f6f4e.firebaseapp.com",
     // 웹앱 생성 시점에 따라 아래 databaseURL이 누락되어 뜨는 경우가 많습니다. 
     // 파이어베이스 콘솔의 'Realtime Database' 탭에 들어가서 상단에 뜨는 매우 긴 주소(https://~)를 복사해 꼭 넣어주세요!
-    databaseURL: "https://product-f6f4e-default-rtdb.firebaseio.com", // <-- 수정 필요할 수 있음
+    databaseURL: "https://product-f6f4e-default-rtdb.asia-southeast1.firebasedatabase.app/", // <-- 수정 필요할 수 있음
     projectId: "product-f6f4e",
     storageBucket: "product-f6f4e.firebasestorage.app",
     messagingSenderId: "105855342587",
