@@ -157,7 +157,7 @@ function getTableData(tbodyId) {
         
         // DOM 탐색 안정성 강화를 위해 querySelector 전면 적용 (결합/배열 오류 원천 차단)
         const getValue = (key) => {
-            const el = tr.querySelector(`input[data-key="${key}"]`);
+            const el = tr.querySelector(`[data-key="${key}"]`);
             return el ? el.value : '';
         };
 
@@ -410,7 +410,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
                     
                     if (!stepTr) break;
                     
-                    const candidateInput = stepTr.querySelector(`input[data-key="${key}"]`);
+                    const candidateInput = stepTr.querySelector(`[data-key="${key}"]`);
                     // 만약 병합 처리되어 숨겨진(hidden) 칸이라면 한 줄 더 넘어감
                     if (candidateInput && candidateInput.type !== 'hidden') {
                         targetInput = candidateInput;
@@ -420,7 +420,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
                 
                 if (targetInput) {
                     targetInput.focus();
-                    if (targetInput.type === 'text' || targetInput.type === 'number') {
+                    if (targetInput.type === 'text' || targetInput.type === 'number' || targetInput.tagName.toLowerCase() === 'textarea') {
                         targetInput.select();
                     }
                 }
@@ -463,7 +463,7 @@ function addRow(tableId, data = null, nameRowspan = 1, groupTotalTickets = null,
                         const targetColIndex = startColIndex + j;
                         if (targetColIndex < keys.length) {
                              const targetKey = keys[targetColIndex];
-                             const targetInput = currentTr.querySelector(`input[data-key="${targetKey}"]`);
+                             const targetInput = currentTr.querySelector(`[data-key="${targetKey}"]`);
                              if (targetInput && !targetInput.readOnly) {
                                  targetInput.value = colsData[j].trim();
                              }
