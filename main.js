@@ -50,7 +50,7 @@ function updateTableSummary(tableId) {
 }
 
 function saveAllData() {
-    const dateStr = document.getElementById('event-date').value || '4월 11일 (토)';
+    const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const data = {
         performers: getTableData('performer-body'),
         others: getTableData('other-body'),
@@ -89,7 +89,7 @@ function getTableData(tbodyId) {
 }
 
 function loadSavedData() {
-    const dateStr = document.getElementById('event-date').value || '4월 11일 (토)';
+    const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     const saved = localStorage.getItem(`ticket_management_data_${dateStr}`);
     
     const performerBody = document.getElementById('performer-body');
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showMainContent();
     }
 
-    const lastDate = localStorage.getItem('last_accessed_date') || '4월 11일 (토)';
+    const lastDate = localStorage.getItem('last_accessed_date') || '[1경기] 4월 11일 (토)';
     document.getElementById('event-date').value = lastDate;
 
     loadSavedData();
@@ -391,7 +391,7 @@ function processFile(file) {
 // 8. PDF 다운로드 기능
 window.downloadPDF = function(btn) {
     const element = document.getElementById('main-content');
-    const date = document.getElementById('event-date').value || '4월 11일 (토)';
+    const date = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
     
     // 로딩 표시 (선택사항)
     btn = btn || event.currentTarget;
