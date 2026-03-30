@@ -27,6 +27,28 @@ function showMainContent() {
 }
 
 // 3. 데이터 저장 및 불러오기 로직
+function updateTableSummary(tableId) {
+    const tbodyId = tableId === 'performer-table' ? 'performer-body' : 'other-body';
+    const prefix = tableId === 'performer-table' ? 'performer' : 'other';
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+
+    let regularTotal = 0;
+    let vipTotal = 0;
+
+    for (let i = 0; i < tbody.rows.length; i++) {
+        const inputs = tbody.rows[i].getElementsByTagName('input');
+        if (inputs.length >= 2) {
+            regularTotal += parseInt(inputs[0].value) || 0;
+            vipTotal += parseInt(inputs[1].value) || 0;
+        }
+    }
+
+    document.getElementById(`${prefix}-regular-sum`).innerText = regularTotal.toLocaleString();
+    document.getElementById(`${prefix}-vip-sum`).innerText = vipTotal.toLocaleString();
+    document.getElementById(`${prefix}-total-sum`).innerText = (regularTotal + vipTotal).toLocaleString();
+}
+
 function saveAllData() {
     const data = {
         performers: getTableData('performer-body'),
@@ -125,7 +147,7 @@ function addRow(tableId, data = null) {
         { key: 'regular', value: data?.regular || '', type: 'number' },
         { key: 'vip', value: data?.vip || '', type: 'number' },
         { key: 'name', value: data?.name || '' },
-        { key: 'total', value: data?.total || '', type: 'number' },
+        { key: 'total', value: data?.total || '', type: 'number', readonly: true },
         { key: 'recipient', value: data?.recipient || '' },
         { key: 'received', value: data?.received || '', type: 'number' },
         { key: 'phone', value: data?.phone || '' },
@@ -142,14 +164,19 @@ function addRow(tableId, data = null) {
             input.type = field.type || 'text';
             input.value = field.value;
             input.className = 'input-cell';
+            if (field.readonly) {
+                input.readOnly = true;
+                input.tabIndex = -1; // Tab 포커스 제외
+            }
             input.oninput = () => {
                 if (field.key === 'regular' || field.key === 'vip') {
                     const ins = tr.getElementsByTagName('input');
                     const r = parseInt(ins[0].value) || 0;
                     const v = parseInt(ins[1].value) || 0;
-                    ins[3].value = r + v;
+                    ins[3].value = r + v; // 총 티켓 자동 합산
                 }
                 saveAllData();
+                updateTableSummary(tableId);
             };
             td.appendChild(input);
         }
@@ -158,11 +185,12 @@ function addRow(tableId, data = null) {
 
     const actionTd = document.createElement('td');
     actionTd.className = 'text-center';
-    actionTd.innerHTML = `<button onclick="this.closest('tr').remove(); saveAllData();" class="text-slate-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+    actionTd.innerHTML = `<button onclick="this.closest('tr').remove(); saveAllData(); updateTableSummary('${tableId}');" class="text-slate-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
     tr.appendChild(actionTd);
     tbody.appendChild(tr);
     
     if (window.lucide) window.lucide.createIcons({ root: actionTd });
+    updateTableSummary(tableId);
 }
 
 // 6. AI 모달 및 분석
