@@ -264,7 +264,8 @@ function renderGroupedList(list, tableId) {
         
         // 이름이 존재할 경우에만 인접한 동일 이름끼리 그룹핑
         if (item.name && item.name.trim() !== "") {
-            while (i + groupSize < list.length && list[i + groupSize].name === item.name) {
+            const currentName = item.name.trim();
+            while (i + groupSize < list.length && (list[i + groupSize].name || "").trim() === currentName) {
                 groupSize++;
             }
         }
