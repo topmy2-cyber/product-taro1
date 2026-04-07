@@ -848,7 +848,7 @@ window.downloadPDF = function (btn) {
             windowWidth: 1150
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-        pagebreak: { mode: ['css', 'legacy'], avoid: 'tr' }
+        pagebreak: { mode: ['css', 'legacy'], avoid: 'tr', before: '#section-other' }
     };
 
     // 다운로드 실행
