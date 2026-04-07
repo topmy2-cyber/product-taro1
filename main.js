@@ -836,8 +836,8 @@ window.downloadPDF = function (btn) {
             logging: false,
             scrollX: 0,
             scrollY: 0,
-            // 캔버스 사이즈가 컨테이너(max-width 1280px)보다 작아서 잘리는 현상 방지. 최소 1300 보장
-            windowWidth: Math.max(1300, window.innerWidth)
+            // 캔버스 사이즈가 컨테이너(max-width 1280px)보다 작아서 잘리는 현상 방지. 최소 1400 보장
+            windowWidth: Math.max(1400, window.innerWidth)
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
         pagebreak: { mode: ['css', 'legacy'], avoid: 'tr' }
