@@ -786,6 +786,14 @@ window.downloadPDF = function (btn) {
     const tableContainers = document.querySelectorAll('.table-container');
     tableContainers.forEach(container => container.style.overflowX = 'visible');
 
+    // PDF 전용 레이아웃 픽스 (왼쪽 여백 증발 방지 및 너비 고정)
+    const originalBodyClass = document.body.className;
+    const originalElementClass = element.className;
+    
+    // 중앙 정렬(mx-auto)과 불필요한 패딩을 모두 제거하고, 1150px로 딱 맞게 렌더링 캔버스를 고정시킴
+    document.body.className = "bg-white";
+    element.className = "w-[1150px] max-w-none mx-0 px-4 bg-white";
+
     // 로딩 표시
     btn = btn || event.currentTarget;
     const originalText = btn.innerHTML;
@@ -827,7 +835,7 @@ window.downloadPDF = function (btn) {
     });
 
     const opt = {
-        margin: [10, 3], // 상하 10mm, 좌우 여백 3mm
+        margin: [10, 5], // 상하 10mm, 좌우 여백 5mm
         filename: `티켓배부현황_${date}.pdf`,
         image: { type: 'jpeg', quality: 1.0 },
         html2canvas: {
@@ -836,8 +844,8 @@ window.downloadPDF = function (btn) {
             logging: false,
             scrollX: 0,
             scrollY: 0,
-            // 캔버스 사이즈가 컨테이너(max-width 1280px)보다 작아서 잘리는 현상 방지. 최소 1400 보장
-            windowWidth: Math.max(1400, window.innerWidth)
+            // 위에서 고정한 1150px과 정확히 일치시켜 왼쪽 빈 여백이나 오른쪽 잘림 원천 차단
+            windowWidth: 1150
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
         pagebreak: { mode: ['css', 'legacy'], avoid: 'tr' }
@@ -846,6 +854,9 @@ window.downloadPDF = function (btn) {
     // 다운로드 실행
     html2pdf().set(opt).from(element).save().then(() => {
         // 복구
+        document.body.className = originalBodyClass;
+        element.className = originalElementClass;
+        
         placeholders.forEach(p => {
             p.input.style.display = '';
             p.div.remove();
@@ -862,6 +873,9 @@ window.downloadPDF = function (btn) {
         console.error('PDF 다운로드 실패:', err);
         
         // 에러 시 복구
+        document.body.className = originalBodyClass;
+        element.className = originalElementClass;
+
         placeholders.forEach(p => {
             p.input.style.display = '';
             p.div.remove();
