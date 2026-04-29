@@ -290,6 +290,32 @@ function renderTableData(data) {
     return !!data;
 }
 
+// 4-0. 비상용 로컬 데이터 강제 복구 기능
+window.recoverLocalData = function() {
+    const dateStr = document.getElementById('event-date').value || '[1경기] 4월 11일 (토)';
+    const safeDateKey = dateStr.replace(/[.#$\[\]]/g, '_');
+    const savedLocal = localStorage.getItem(`ticket_management_data_${dateStr}`);
+    
+    if (!savedLocal) {
+        alert("이 기기(브라우저)에는 해당 날짜의 복구 가능한 데이터가 존재하지 않습니다.");
+        return;
+    }
+
+    const parsedLocal = JSON.parse(savedLocal);
+    const confirmMsg = "정말로 이 기기에 저장된 과거 데이터를 화면에 강제로 불러와 클라우드에 덮어씌우시겠습니까?\n(기존에 보이지 않던 데이터를 살려낼 때 사용합니다)";
+    
+    if (confirm(confirmMsg)) {
+        if (firebaseDb) {
+            firebaseDb.ref('tickets/' + safeDateKey).set(parsedLocal).then(() => {
+                alert("데이터 복구 및 클라우드 동기화가 완료되었습니다!");
+            }).catch(e => {
+                alert("클라우드 저장 중 오류가 발생했지만, 화면에는 복구됩니다.");
+            });
+        }
+        renderTableData(parsedLocal);
+    }
+};
+
 function renderGroupedList(list, tableId) {
     let i = 0;
     while (i < list.length) {

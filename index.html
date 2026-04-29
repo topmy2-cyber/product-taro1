@@ -149,7 +149,9 @@
                     <option value="[7경기] 6월 13일 (토)">[7경기] 6월 13일 (토)</option>
                     <option value="[8경기] 6월 17일 (수)">[8경기] 6월 17일 (수)</option>
                     <option value="[9경기] 6월 27일 (토)">[9경기] 6월 27일 (토)</option>
-                </select>
+                <button onclick="recoverLocalData()" data-html2canvas-ignore class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all shadow-sm border border-red-200" title="화면에 데이터가 보이지 않을 때 누르면 브라우저의 과거 데이터를 강제로 불러와 복구합니다.">
+                    <i data-lucide="database-zap" class="w-4 h-4"></i> 비상 복구
+                </button>
                 <button onclick="downloadPDF(this)" data-html2canvas-ignore class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-slate-200">
                     <i data-lucide="file-down" class="w-4 h-4"></i> PDF 다운로드
                 </button>
@@ -278,6 +280,6 @@
 
 
 
-    <script src="main.js"></script>
+    <script src="main.js?v=202404071800"></script>
 </body>
 </html>
