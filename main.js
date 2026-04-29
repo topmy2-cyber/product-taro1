@@ -8,7 +8,7 @@ const ADMIN_PASSWORD = "shwlgus";
 // (키값이 채워지면 앱은 자동으로 실시간 공유시트 모드로 변신합니다!)
 // ==========================================
 const FIREBASE_CONFIG = {
-    apiKey: "", // "AIzaSyCohWki6En4FBDXMz41-8n9vMoKjH-TNls" - 기존 데이터 복구를 위해 임시 비활성화
+    apiKey: "AIzaSyCohWki6En4FBDXMz41-8n9vMoKjH-TNls",
     authDomain: "product-f6f4e.firebaseapp.com",
     // 웹앱 생성 시점에 따라 아래 databaseURL이 누락되어 뜨는 경우가 많습니다. 
     // 파이어베이스 콘솔의 'Realtime Database' 탭에 들어가서 상단에 뜨는 매우 긴 주소(https://~)를 복사해 꼭 넣어주세요!
@@ -202,7 +202,22 @@ function loadSavedData(forceRender = false) {
             // 내가 타이핑 중이 아닐 때만 남이 바꾼 화면을 업데이트 (클로저 버그 방지)
             if (isLocalUpdate) return; 
             const data = snapshot.val();
-            // 클라우드에 비어있으면 아까 그린 기본 10행을 유지하고, 데이터가 있으면 덮어씌움
+
+            // [데이터 자동 마이그레이션 로직]
+            // 클라우드에 데이터가 비어있는데 브라우저 로컬 스토리지에 기존 작성본이 남아있다면, 이를 클라우드로 업로드하여 공유 상태로 전환
+            if (!data) {
+                const savedLocal = localStorage.getItem(`ticket_management_data_${dateStr}`);
+                if (savedLocal) {
+                    console.log("Migration: Uploading local data to Firebase for " + dateStr);
+                    const parsedLocal = JSON.parse(savedLocal);
+                    // 클라우드 서버에 데이터 저장 -> 다른 사용자들에게도 실시간으로 뿌려짐
+                    firebaseDb.ref('tickets/' + safeDateKey).set(parsedLocal);
+                    renderTableData(parsedLocal);
+                    return;
+                }
+            }
+
+            // 클라우드에 데이터가 있으면 화면을 덮어씌움
             renderTableData(data);
         });
     } else {
