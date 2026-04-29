@@ -8,7 +8,7 @@ const ADMIN_PASSWORD = "shwlgus";
 // (키값이 채워지면 앱은 자동으로 실시간 공유시트 모드로 변신합니다!)
 // ==========================================
 const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyCohWki6En4FBDXMz41-8n9vMoKjH-TNls",
+    apiKey: "", // "AIzaSyCohWki6En4FBDXMz41-8n9vMoKjH-TNls" - 기존 데이터 복구를 위해 임시 비활성화
     authDomain: "product-f6f4e.firebaseapp.com",
     // 웹앱 생성 시점에 따라 아래 databaseURL이 누락되어 뜨는 경우가 많습니다. 
     // 파이어베이스 콘솔의 'Realtime Database' 탭에 들어가서 상단에 뜨는 매우 긴 주소(https://~)를 복사해 꼭 넣어주세요!
