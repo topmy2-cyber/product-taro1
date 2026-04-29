@@ -204,20 +204,39 @@ function loadSavedData(forceRender = false) {
             const data = snapshot.val();
 
             // [데이터 자동 마이그레이션 로직]
-            // 클라우드에 데이터가 비어있는데 브라우저 로컬 스토리지에 기존 작성본이 남아있다면, 이를 클라우드로 업로드하여 공유 상태로 전환
-            if (!data) {
+            // 클라우드에 비어있거나 '빈 칸'만 저장된 상태인데 브라우저 로컬에 내용이 있다면 강제 마이그레이션
+            const isDataEmpty = (d) => {
+                if (!d) return true;
+                let empty = true;
+                const checkList = (list) => {
+                    if (!list) return;
+                    for (let row of list) {
+                        if (row.name || row.regular || row.vip || row.recipient || row.received || row.phone || row.remarks) {
+                            empty = false;
+                        }
+                    }
+                };
+                checkList(d.performers);
+                checkList(d.tickets);
+                checkList(d.others);
+                return empty;
+            };
+
+            if (isDataEmpty(data)) {
                 const savedLocal = localStorage.getItem(`ticket_management_data_${dateStr}`);
                 if (savedLocal) {
-                    console.log("Migration: Uploading local data to Firebase for " + dateStr);
                     const parsedLocal = JSON.parse(savedLocal);
-                    // 클라우드 서버에 데이터 저장 -> 다른 사용자들에게도 실시간으로 뿌려짐
-                    firebaseDb.ref('tickets/' + safeDateKey).set(parsedLocal);
-                    renderTableData(parsedLocal);
-                    return;
+                    // 로컬 스토리지 데이터에 실질적인 내용이 있을 때만 덮어씌움
+                    if (!isDataEmpty(parsedLocal)) {
+                        console.log("Migration: Uploading local data to Firebase for " + dateStr);
+                        firebaseDb.ref('tickets/' + safeDateKey).set(parsedLocal);
+                        renderTableData(parsedLocal);
+                        return;
+                    }
                 }
             }
 
-            // 클라우드에 데이터가 있으면 화면을 덮어씌움
+            // 클라우드에 유의미한 데이터가 있으면 화면을 덮어씌움
             renderTableData(data);
         });
     } else {
